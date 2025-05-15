@@ -260,26 +260,31 @@ public class UsersController extends MskimRequestMapping{
 		Users dbUser = dao.selectOne(login);		
 		
 		// 비밀번호 일치시
-	    if(n_pass1.equals(n_pass2)) {
-	    	if(password.equals(dbUser.getPassword())) {
+		if(password.equals(dbUser.getPassword())){
+	    	 if(!n_pass1.equals("") && !n_pass2.equals("") && n_pass1.equals(n_pass2)) {
 	    		if(dao.updatePass(login, n_pass1)) { // 비밀번호 수정성공
 	    			request.setAttribute("msg", "비밀번호 수정성공.");
-	    			request.setAttribute("url", "info?id=" + login);
+	    			request.setAttribute("url", "info");
 	    			return "openeralert"; // 알림창 띄우고 스스로 닫기
 	    		} else { // 비밀번호 수정실패
 	    			StringBuilder sb = new StringBuilder();
 	    			sb.append("alert('비밀번호 수정시 오류가 발생했습니다.');\n");
 	    			sb.append("self.close();");
 	    			request.setAttribute("script", sb.toString());
-	    			return "dummy"; // dumy.jsp 생성
+	    			return "dummy"; // dummy.jsp 생성
 	    		}
-	    	} else { // 비밀번호 오류
-	    		request.setAttribute("msg", "비밀번호가 틀렸습니다.");
+	    	} else if (n_pass1.equals("") || n_pass1.equals("")) {
+	    		request.setAttribute("msg", "새로운 비밀번호를 입력하세요");
+	    		request.setAttribute("url", "pwForm");
+	    		return "alert";
+	    	}
+	    	 else { // 비밀번호 오류
+	    		request.setAttribute("msg", "새로운 비밀번호들이 일치하지 않습니다.");
 	    		request.setAttribute("url", "pwForm");
 	    		return "alert";
 	    	} 
-	    }else {
-			request.setAttribute("msg", "수정된 비밀번호들이 일치하지 않습니다.");
+	    } else {
+			request.setAttribute("msg", "비밀번호가 틀립니다.");
 			request.setAttribute("url", "pwForm");
 			return "alert";
 	    }
