@@ -4,32 +4,32 @@ import java.time.LocalDateTime;
 
 //이동원
 public class Article {
-	private int boardid;
-    private int arti_no;
-    private String title;
+	private String board_id;
+    private String arti_no;
+    private String arti_title;
     private String arti_content;
     private String file;
     private LocalDateTime arti_date;
-    private int user_no;
+    private String user_no;
     private boolean arti_pinned;
     
-	public int getBoardid() {
-		return boardid;
+	public String getBoard_id() {
+		return board_id;
 	}
-	public void setBoardid(int boardid) {
-		this.boardid = boardid;
+	public void setBoard_id(String board_id) {
+		this.board_id = board_id;
 	}
-	public int getArti_no() {
+	public String getArti_no() {
 		return arti_no;
 	}
-	public void setArti_no(int arti_no) {
+	public void setArti_no(String arti_no) {
 		this.arti_no = arti_no;
 	}
-	public String getTitle() {
-		return title;
+	public String getarti_title() {
+		return arti_title;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setarti_title(String arti_title) {
+		this.arti_title = arti_title;
 	}
 	public String getArti_content() {
 		return arti_content;
@@ -49,10 +49,10 @@ public class Article {
 	public void setArti_date(LocalDateTime arti_date) {
 		this.arti_date = arti_date;
 	}
-	public int getUser_no() {
+	public String getUser_no() {
 		return user_no;
 	}
-	public void setUser_no(int user_no) {
+	public void setUser_no(String user_no) {
 		this.user_no = user_no;
 	}
 	public boolean isArti_pinned() {

@@ -11,14 +11,14 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.boards.Article;
 import models.boards.ArticlesDao;
-import models.boards.Board_listDao;
+import models.boards.BoardDao;
 import models.boards.CommentsDao;
 
 //이동원
-@WebServlet(urlPatterns = {"/board.jsp"}
+@WebServlet(urlPatterns = {"/board/*"}
 	, initParams = {@WebInitParam(name = "view", value="/views/")})
 public class BoardController extends MskimRequestMapping {
-	private Board_listDao boardDao = new Board_listDao();
+	private BoardDao boardDao = new BoardDao();
 	private ArticlesDao artiDao = new ArticlesDao();
 	private CommentsDao commDao = new CommentsDao();
 	
@@ -29,9 +29,9 @@ public class BoardController extends MskimRequestMapping {
 		try { pageNum = Integer.parseInt(req.getParameter("pageNum"));
 		} catch ( NumberFormatException e) {}
 		
-		String boardid = req.getParameter("boardid");
-		if(boardid == null || boardid.trim().equals("")) {
-			boardid = "1"; }
+		String board_id = req.getParameter("board_id");
+		if(board_id == null || board_id.trim().equals("")) {
+			board_id = "9999"; }
 		
 		String column = req.getParameter("column");
 		String keyword = req.getParameter("keyword");
@@ -42,23 +42,23 @@ public class BoardController extends MskimRequestMapping {
 		}
 		
 		int limit = 10;
-		int artiCount = artiDao.count(boardid, column, keyword);
-		List<Article> artiList = artiDao.list(boardid, pageNum, limit, column, keyword);
+		int artiCount = artiDao.count(board_id, column, keyword);
+		List<Article> artiList = artiDao.list(board_id, pageNum, limit, column, keyword);
 		int maxpage = (int)Math.ceil(1.0 * artiCount/limit);
 		int startpage = ((int)Math.ceil(pageNum/10.0) - 1) * 10 + 1;
 		int endpage = Math.min(startpage + 9, maxpage);
 		if(endpage > maxpage) endpage = maxpage;
-				
-		String boardname = boardDao.selectOne(boardid);
-		req.getSession().setAttribute("boardid", boardid);
-		req.getSession().setAttribute("boardname", boardname);
-		req.getSession().setAttribute("artiCount", boardname);
-		req.getSession().setAttribute("pageNum", pageNum);
-		req.getSession().setAttribute("artiList", artiList);
-		req.getSession().setAttribute("startpage", startpage);
-		req.getSession().setAttribute("endpage", endpage);
-		req.getSession().setAttribute("maxpage", maxpage);
-		int boardNum = artiCount - (pageNum - 1) * limit;
+		
+		String board_name = boardDao.selectName(board_id);
+		req.setAttribute("board_name", board_name);
+		req.setAttribute("artiCount", artiCount);
+		req.setAttribute("artiList", artiList);
+		req.setAttribute("pageNum", pageNum);
+		req.setAttribute("startpage", startpage);
+		req.setAttribute("endpage", endpage);
+		req.setAttribute("maxpage", maxpage);
+		int artiIndex = artiCount - (pageNum - 1) * limit;
+		req.setAttribute("artiIndex", artiIndex);
 		return "board";
 	}
 }

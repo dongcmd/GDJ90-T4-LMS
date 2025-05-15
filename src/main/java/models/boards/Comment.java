@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class Comment {
     private int comm_no;
     private int arti_no;
-    private int user_no;
+    private String user_no;
     private String comm_content;
     private LocalDateTime comm_date;
 
@@ -26,11 +26,11 @@ public class Comment {
         this.arti_no = arti_no;
     }
 
-    public int getUser_no() {
+    public String getUser_no() {
         return user_no;
     }
 
-    public void setUser_no(int user_no) {
+    public void setUser_no(String user_no) {
         this.user_no = user_no;
     }
 

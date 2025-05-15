@@ -9,15 +9,19 @@ import models.boards.Article;
 
 public interface ArtiMapper {
 	
-	@Select("select count(arti_no) from articles "
-			+ " where boardid = #{boardid} "
-			+ " and ${column} like #{keyword}")
+	@Select("<script>select count(arti_no) from articles "
+			+ " where board_id = #{board_id} "
+			+ " <if test='column != null'> " 
+			+ " and ${column} like concat('%',#{keyword},'%') "
+			+ " </if></script>")
 	int count(Map<String, Object> map);
 
-	@Select("select * from articles "
-			+ " where boardid = #{boardid} "
-			+ " and ${column} like #{keyword} "
-			+ " order by arti_no")
+	@Select("<script>select * from articles "
+			+ " where board_id = #{board_id} "
+			+ " <if test='column != null'> " 
+			+ " and ${column} like concat('%',#{keyword},'%') "
+			+ " </if>"
+			+ " order by arti_no desc</script>")
 	List<Article> list(Map<String, Object> map);
 
 }

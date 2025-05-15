@@ -9,13 +9,13 @@ import models.MyBatisConnection;
 import models.mappers.BoardMapper;
 
 //이동원
-public class Board_listDao {
+public class BoardDao {
 	private Class<BoardMapper> cls = BoardMapper.class;
 	private Map<String, Object> map = new HashMap<>();
 
-	public String selectOne(String boardid) {
+	public String selectName(String board_id) {
 		SqlSession session = MyBatisConnection.getConnection();
-		try { return session.getMapper(cls).selectOne(boardid);
+		try { return session.getMapper(cls).selectName(board_id);
 		} catch(Exception e) { e.printStackTrace();
 		} finally { MyBatisConnection.close(session); }
 		return null;
