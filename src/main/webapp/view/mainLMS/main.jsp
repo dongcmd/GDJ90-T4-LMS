@@ -5,17 +5,19 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>구디 대학교 학사관리 시스템</title>
+    <title>메인</title>
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
+	    li{list-style: none;}
+	    .main_list{height: 400px; padding: 5; background-color: #fff; border-radius: 10px;}
+	    .main_list .list-group-item{border: none; border-bottom: 1px solid #eee;}
+	    .main_list .list-group-item:last-child{border: none;}
     </style>
 </head>
 <body>
-    <div class="col-sm-10 container">
-    	<div class="row py-5" style="justify-content: center; gap: 10px;">
-        	<div class="main_list col-sm-5 p-5">
+<div class="row py-5" style="justify-content: center; gap: 10px;">
+                <div class="main_list col-sm-5 p-5">
                     <h3 class="mb-4">공지사항</h3>
                     <ul class="list-group list-group-flush">
                         <c:forEach var="m" items="${list}">
@@ -58,10 +60,10 @@
                             <c:forEach var="m" items="${list}">
                                 <tr>
                                     <a href="#">
-                                        <td>과목명</td>
-                                        <td>강의실</td>
-                                        <td>이름</td>
-                                        <td>강사명</td>
+                                        <td>info?id=${m.id}   ${m.name}</td>
+                                        <td>${m.name}</td>
+                                        <td>${m.tel}</td>
+                                        <td>${m.email}</td>
                                     </a>
                                 </tr>
                             </c:forEach>
@@ -85,13 +87,9 @@
                             <li class="list-group-item">
                                 <a href="list?boardid=${m.id}&info?num=${m.id}">2025-1학기 미등록자 구제등록 안내(4.24. ~ 4.30.)...</a>
                             </li>
-                            <li class="list-group-item">
-                                <a href="list?boardid=${m.id}&info?num=${m.id}">2025-1학기 미등록자 구제등록 안내(4.24. ~ 4.30.)...</a>
-                            </li>
                         </c:forEach>
                     </ul>
                 </div>
-            </div>        
-	</div>
+            </div>
 </body>
 </html>

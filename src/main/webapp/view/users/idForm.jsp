@@ -12,10 +12,26 @@
 	<h3 align="center">아이디 찾기</h3>
 	<form action="id" method="post">
 		<table class="table">
-			<tr><th>이름</th><td><input type="text" name="name" class="form-control"></td></tr>
+			<tr><th>이름</th><td><input type="text" name="user_name" class="form-control"></td></tr>
 			<tr><th>이메일</th><td><input type="text" name="email" class="form-control"></td></tr>
 			<tr><td colspan="2" align="center"><input type="submit" value="아이디 찾기" class="btn btn-primary"></td></tr>
 		</table>
 	</form>
+	
+	<script type="text/javascript">
+			function input_check(f){
+				if(f.user_no.value.trim() == ""){
+					alert("아이디를 입력하세요");
+					f.user_no.focus();
+					return false; 
+				}
+				if(f.email.value.trim() == ""){
+					alert("이메일을 입력하세요");
+					f.password.focus();
+					return false; 
+				}
+				return true;
+			}
+		</script>
 	</body>
 </html>

@@ -4,11 +4,13 @@ import javax.servlet.annotation.WebFilter;
 import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
 
-@WebFilter("/*") 
+//원동인
+@WebFilter("/*")
 public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 	@Override
 	protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
-		builder.addDecoratorPath("/users/*", "/layout/MainLayout.jsp")
+		
+		builder.addDecoratorPath("/users/*", "/layouts/layout.jsp")
 		.addExcludedPath("/users/loginForm")
 		.addExcludedPath("/users/idForm")
 		.addExcludedPath("/users/id")
@@ -16,5 +18,9 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 		.addExcludedPath("/users/info")
 		.addExcludedPath("/users/updateForm")
 		.addExcludedPath("/users/pwForm");
+		builder.addDecoratorPath("/mainLMS/*", "/layouts/layout.jsp");
+		builder.addDecoratorPath("/deptLMS/*", "/layouts/layout.jsp");
+		builder.addDecoratorPath("/classLMS/*", "/layouts/layout.jsp");
+
 	}
 }

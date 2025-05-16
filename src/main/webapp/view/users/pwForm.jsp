@@ -1,28 +1,76 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
-<%-- /webapp/member/pwForm.jsp
-1. 비밀번호 찾기 버튼 클릭시
-   3개의 값이 모두 입력 되어야만 pw.jsp 페이지를 요청하도록 자바스크립트 추가하기
---%>    
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>비밀번호재설정</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>비밀번호 재설정</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 60px auto;
+        }
+        .form-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
-<body>
-	<h3 align="center">비밀번호재설정</h3>
-	<form action="updatepw" method="post"onsubmit="return input_check(this)">
- 		<table class="table">
-     		<tr><th>현재 비밀번호</th><td><input type="password" name="password"  class="form-control"></td></tr>
-     		<tr><th>새로운 비밀번호</th><td><input type="password" name="new_password1"  class="form-control"></td></tr>
-     		<tr><th>새로운 비밀번호 재입력</th><td><input type="password" name="new_password2"  class="form-control"></td></tr>
-     		<tr><td colspan="2" align="center"><input type="submit" value="비밀번호 재설정"  class="btn btn-primary"></td></tr>
-  		</table>	
-	</form>
+<body class="bg-light">
+
+<div class="container form-container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="form-title">비밀번호 재설정</div>
+            <form action="updatepw" method="post" name="f" onsubmit="return input_check(this)">
+                <div class="form-group">
+                    <label>현재 비밀번호</label>
+                    <input type="password" name="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>새로운 비밀번호</label>
+                    <input type="password" name="new_password1" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>새로운 비밀번호 재입력</label>
+                    <input type="password" name="new_password2" class="form-control">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-light btn-outline-secondary">비밀번호 재설정</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function input_check(f) {
+        if (f.password.value.trim() === "") {
+            alert("현재 비밀번호를 입력하세요.");
+            f.password.focus();
+            return false;
+        }
+        if (f.new_password1.value.trim() === "") {
+            alert("새로운 비밀번호를 입력하세요.");
+            f.new_password1.focus();
+            return false;
+        }
+        if (f.new_password2.value.trim() === "") {
+            alert("새로운 비밀번호를 다시 입력하세요.");
+            f.new_password2.focus();
+            return false;
+        }
+        if (f.new_password1.value !== f.new_password2.value) {
+            alert("새로운 비밀번호가 서로 일치하지 않습니다.");
+            f.new_password2.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+
 </body>
 </html>
-
