@@ -1,14 +1,13 @@
 package models.boards;
 
-import java.time.LocalDateTime;
-
+import java.util.Date;
 // 이동원
 public class Comment {
     private int comm_no;
     private int arti_no;
     private String user_no;
     private String comm_content;
-    private LocalDateTime comm_date;
+    private Date comm_date;
 
     public int getComm_no() {
         return comm_no;
@@ -42,11 +41,11 @@ public class Comment {
         this.comm_content = comm_content;
     }
 
-    public LocalDateTime getComm_date() {
+    public Date getComm_date() {
         return comm_date;
     }
 
-    public void setComm_date(LocalDateTime comm_date) {
+    public void setComm_date(Date comm_date) {
         this.comm_date = comm_date;
     }
 }

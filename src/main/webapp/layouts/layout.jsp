@@ -4,8 +4,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <%-- /webapp/layout/layout.jsp --%>
 <c:set var="path" value="${pageContext.request.contextPath }"/>
-<c:set var="mainPrefix" value="${path}/mainLMS/" />
-
+<c:set var="
+            Prefix" value="${path}/mainLMS/" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,20 +37,20 @@
             </h1>
             <h2 class="m-0" style="flex: 2;">구디 대학교 학사관리 시스템</h2>
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
-                <li class="nav-item">
-                  <a class="nav-link" href="win_opne('main.jsp')">${sessionScope.name} 님 반갑습니다.</a>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
-                </li>
-                <li class="nav-item">
-                    <a href="${path}/member/logout" class="btn btn-dark" role="button">로그아웃</a>
-                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="win_opne('main.jsp')">${sessionScope.name} 님 반갑습니다.</a>
+              </li>
+              <li class="nav-item">
+                  <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
+              </li>
+              <li class="nav-item">
+                <a href="${path}/member/logout" class="btn btn-dark" role="button">로그아웃</a>
+               </li>
             </ul>
         </div>
         
         <%-- 알림모달 --%>
-        <div class="modal fade" id="myModal">
+    <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-m">
               <div class="modal-content" style="width: 800px;">
                 <div class="modal-header">
@@ -73,6 +73,7 @@
                         <tr>
                             <td class="checkbox-column">
                                 <input type="checkbox" name="idchks" class="idchk" value="">
+
                                 ${sessionScope.is_pinned}
                             </td>
                             <td>${sessionScope.notif_no}</td>
@@ -178,7 +179,6 @@
             <sitemesh:write property="body" />  
         </div>
     </div>
- 	
 	<%-- 공통 푸터 --%>
     <footer class="footer d-flex" style="height: 100px; margin-top: 10px; background-color: #eee;">
         <ul class="nav justify-content-around align-items-center" style="width: 100%;">

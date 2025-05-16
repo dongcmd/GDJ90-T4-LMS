@@ -14,7 +14,8 @@
 	<c:if test="${artiCount == 0}">
 		등록된 게시글이 없습니다.
 	</c:if>
-	<c:if test="${artiCount > 0}">
+	<c:if test="${artiCount > 0}"> <%-- 게시글 목록 --%>
+
 		<form action="board" method="post" name="searchForm">
 			<input type="hidden" name="pageNum" value="1">
 			<input type="hidden" name="board_id" value="${param.board_id}">
@@ -36,11 +37,16 @@
 					<tr><td>${artiIndex}</td><c:set var="artiIndex" value="${artiIndex-1}" />
 							<td><a href="article?num=${arti.arti_no}">${arti.arti_title}</a></td>
 							<td><c:if test="${not empty arti.file}">O</c:if></td>
-							<td>${arti.user_no}</td>
+							<td>${arti.user_name}</td>
 							<td><fmt:formatDate value="${arti.arti_date}" pattern="yyyy-MM-dd" /></td>							
 					</tr>
 				</c:forEach>
 		</tr></table>
+		<%-- 하단 페이지 처리하기 --%>
+		<tr><td colspan="5" align="center">
+			<c:if test="${artiIndex <= 1}">[이전]</c:if>
+			<c:if test="${artiIndex > 1}">
+				<a href="javascript:boardSubmit(${ })"
 	</c:if>
 </body>
 </html>
