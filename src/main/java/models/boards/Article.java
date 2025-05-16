@@ -1,6 +1,6 @@
 package models.boards;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 //이동원
 public class Article {
@@ -9,10 +9,23 @@ public class Article {
     private String arti_title;
     private String arti_content;
     private String file;
-    private LocalDateTime arti_date;
+    private Date arti_date;
     private String user_no;
     private boolean arti_pinned;
+    private String user_name;
     
+	public String getArti_title() {
+		return arti_title;
+	}
+	public void setArti_title(String arti_title) {
+		this.arti_title = arti_title;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
 	public String getBoard_id() {
 		return board_id;
 	}
@@ -24,12 +37,6 @@ public class Article {
 	}
 	public void setArti_no(String arti_no) {
 		this.arti_no = arti_no;
-	}
-	public String getarti_title() {
-		return arti_title;
-	}
-	public void setarti_title(String arti_title) {
-		this.arti_title = arti_title;
 	}
 	public String getArti_content() {
 		return arti_content;
@@ -43,10 +50,10 @@ public class Article {
 	public void setFile(String file) {
 		this.file = file;
 	}
-	public LocalDateTime getArti_date() {
+	public Date getArti_date() {
 		return arti_date;
 	}
-	public void setArti_date(LocalDateTime arti_date) {
+	public void setArti_date(Date arti_date) {
 		this.arti_date = arti_date;
 	}
 	public String getUser_no() {

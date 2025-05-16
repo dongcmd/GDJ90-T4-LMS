@@ -16,7 +16,8 @@ public interface ArtiMapper {
 			+ " </if></script>")
 	int count(Map<String, Object> map);
 
-	@Select("<script>select * from articles "
+	@Select("<script>select a.*, u.user_name from articles a "
+			+ " join users u on a.user_no = u.user_no "
 			+ " where board_id = #{board_id} "
 			+ " <if test='column != null'> " 
 			+ " and ${column} like concat('%',#{keyword},'%') "

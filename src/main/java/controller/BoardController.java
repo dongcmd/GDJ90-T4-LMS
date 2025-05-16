@@ -10,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.boards.Article;
-import models.boards.ArticlesDao;
+import models.boards.ArticleDao;
 import models.boards.BoardDao;
-import models.boards.CommentsDao;
+import models.boards.CommentDao;
 
 //이동원
 @WebServlet(urlPatterns = {"/board/*"}
 	, initParams = {@WebInitParam(name = "view", value="/views/")})
 public class BoardController extends MskimRequestMapping {
 	private BoardDao boardDao = new BoardDao();
-	private ArticlesDao artiDao = new ArticlesDao();
-	private CommentsDao commDao = new CommentsDao();
+	private ArticleDao artiDao = new ArticleDao();
+	private CommentDao commDao = new CommentDao();
 	
 	@RequestMapping("board")
 	public String board(HttpServletRequest req,

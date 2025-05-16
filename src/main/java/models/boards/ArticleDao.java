@@ -11,7 +11,7 @@ import models.mappers.ArtiMapper;
 import models.mappers.BoardMapper;
 
 //이동원
-public class ArticlesDao {
+public class ArticleDao {
 	private Class<ArtiMapper> cls = ArtiMapper.class;
 	private Map<String, Object> map = new HashMap<>();
 
