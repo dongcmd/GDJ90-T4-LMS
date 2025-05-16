@@ -15,6 +15,7 @@
 		등록된 게시글이 없습니다.
 	</c:if>
 	<c:if test="${artiCount > 0}"> <%-- 게시글 목록 --%>
+
 		<form action="board" method="post" name="searchForm">
 			<input type="hidden" name="pageNum" value="1">
 			<input type="hidden" name="board_id" value="${param.board_id}">

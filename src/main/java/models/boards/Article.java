@@ -2,6 +2,7 @@ package models.boards;
 
 import java.util.Date;
 
+
 //이동원
 public class Article {
 	private String board_id;
@@ -26,6 +27,7 @@ public class Article {
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
+
 	public String getBoard_id() {
 		return board_id;
 	}

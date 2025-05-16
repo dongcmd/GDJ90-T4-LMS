@@ -19,6 +19,7 @@ import models.boards.CommentDao;
 	, initParams = {@WebInitParam(name = "view", value="/views/")})
 public class BoardController extends MskimRequestMapping {
 	private BoardDao boardDao = new BoardDao();
+
 	private ArticleDao artiDao = new ArticleDao();
 	private CommentDao commDao = new CommentDao();
 	

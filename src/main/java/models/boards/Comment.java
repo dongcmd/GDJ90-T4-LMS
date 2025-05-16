@@ -1,7 +1,6 @@
 package models.boards;
 
 import java.util.Date;
-
 // 이동원
 public class Comment {
     private int comm_no;
