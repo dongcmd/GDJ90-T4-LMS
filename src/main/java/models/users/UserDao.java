@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 
 import models.MyBatisConnection;
-import models.mapper.UserMapper;
+import models.mappers.UserMapper;
 
 /* model/users/UsersDao.java - 김기흔 */
 
