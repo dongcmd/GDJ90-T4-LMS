@@ -44,4 +44,16 @@ public class ArticleDao {
 		}
 		return null;
 	}
+
+	public Article selectOne(int arti_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).selectOne(arti_no);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
 }

@@ -15,13 +15,10 @@ public class Class1Dao {
 
 	public List<Class1> list() {
 		SqlSession session = MyBatisConnection.getConnection();
-		try {
-			return session.getMapper(cls).selectList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			MyBatisConnection.close(session);
-		}
+		try { return session.getMapper(cls).selectList();
+		} catch (Exception e) { e.printStackTrace();
+		} finally { MyBatisConnection.close(session); }
 		return null;
 	}
+
 }

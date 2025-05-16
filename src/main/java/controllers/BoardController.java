@@ -13,13 +13,14 @@ import models.boards.Article;
 import models.boards.ArticleDao;
 import models.boards.BoardDao;
 import models.boards.CommentDao;
+import models.classes.Reg_classDao;
 
 //이동원
 @WebServlet(urlPatterns = {"/board/*"}
 	, initParams = {@WebInitParam(name = "view", value="/views/")})
 public class BoardController extends MskimRequestMapping {
+	private Reg_classDao reg_classDao = new Reg_classDao();
 	private BoardDao boardDao = new BoardDao();
-
 	private ArticleDao artiDao = new ArticleDao();
 	private CommentDao commDao = new CommentDao();
 	
@@ -61,8 +62,18 @@ public class BoardController extends MskimRequestMapping {
 		int artiIndex = artiCount - (pageNum - 1) * limit;
 		req.setAttribute("artiIndex", artiIndex);
 		
-		// 더미데이터, 추후 삭제 후 다른 값 추가
+		String user_no = (String)req.getAttribute("user_no");
+		
 		req.setAttribute("class1", 3);
 		return "board/board";
+	}
+	
+	@RequestMapping("article")
+	public String article(HttpServletRequest req,
+			HttpServletResponse res) {
+		int arti_no = Integer.parseInt(req.getParameter("arti_no"));
+		Article arti = artiDao.selectOne(arti_no);
+		req.setAttribute("arti", arti);
+		return "board/article";
 	}
 }

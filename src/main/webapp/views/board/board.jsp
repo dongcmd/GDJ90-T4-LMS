@@ -12,8 +12,9 @@
 <body>
 <c:if test="${class1 != null}">
 <table class="table table-bordered">
-	<tr> 나오냐?
-	<%-- 
+강의게시판일 경우 강의정보 표시
+	<%--
+	<tr>
 		<th>학기</th><td>${class1.year}-${class1.term}</td>
 		<th>강의코드</th><td>${class1.class_no}-${ban}</td>
 		<th>강의명</th><td>${class1.class_name}</td>
@@ -24,8 +25,8 @@
 		<th>이수학점</th><td>${class1.credit}</td>
 		<th>강의시간</th><td>요일 및 교시(시간)</td>
 		<th>강의실</th><td>${class1.classroom}</td>
-		 --%>
 	</tr>
+	 --%>
 </table>
 </c:if>
 <h2>${board_name} 게시판</h2>
@@ -35,7 +36,7 @@
 	<c:if test="${artiCount > 0}"> <%-- 게시글 목록 --%>
 		<form action="board" method="post" name="searchForm">
 			<input type="hidden" name="pageNum" value="1">
-			<input type="hidden" name="board_id" value="${param.board_id}">
+			<input type="hidden" name="board_id" value="${board_id}">
 			<select name="column" class="form-control">
 				<option value="title">제목</option>
 				<option value="writer">작성자</option>
@@ -54,7 +55,7 @@
 			</tr></thead>
 				<c:forEach var="arti" items="${artiList}">
 					<tr><td>${artiIndex}</td><c:set var="artiIndex" value="${artiIndex-1}" />
-							<td><a href="article?num=${arti.arti_no}">${arti.arti_title}</a></td>
+							<td><a href="article?arti_no=${arti.arti_no}">${arti.arti_title}</a></td>
 							<td><c:if test="${not empty arti.file}">O</c:if></td>
 							<td>${arti.user_name}</td>
 							<td><fmt:formatDate value="${arti.arti_date}" pattern="yyyy-MM-dd" /></td>							
@@ -90,7 +91,7 @@
 		f.pageNum.value = page;
 		f.submit();
 	}
-</script>
+</script> 교시 표시 수정 필요
 <script type="text/javascript">
    const period=[
       '09:00 ~ 09:50',

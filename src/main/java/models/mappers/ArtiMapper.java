@@ -26,4 +26,9 @@ public interface ArtiMapper {
 			+ " order by arti_no desc limit #{start}, #{limit}</script>")
 	List<Article> list(Map<String, Object> map);
 
+	@Select("select a.*, u.user_name from articles a "
+			+ " join users u on a.user_no = u.user_no "
+			+ " where arti_no = #{value}")
+	Article selectOne(int arti_no);
+
 }
