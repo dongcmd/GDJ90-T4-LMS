@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Select;
 import models.Class1;
 
 public interface Class1Mapper {
-	@Select("selet * from classes")
+	@Select("selects * from classes")
 	List<Class1> selectList();
 }

@@ -11,11 +11,21 @@ public class Class1 {
 	private int class_grade; // 학년
 	private int credit; // 이수학점
 	private String classroom; // 강의실
+
+	public String getProf() {
+		return prof;
+	}
+
+	public void setProf(String prof) {
+		this.prof = prof;
+	}
+
 	private int s_time; // 시작교시
 	private int e_time; // 종료교시
 	private int max_p; // 정원
 	private String c_plan; // 강의계획
 	private String file; // 첨부파일
+	private String prof;
 
 	public String getClass_no() {
 		return class_no;
@@ -139,10 +149,10 @@ public class Class1 {
 
 	@Override
 	public String toString() {
-		return "classes [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
+		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
 				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
 				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
-				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + "]";
+				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", prof=" + prof + "]";
 	}
 
 }
