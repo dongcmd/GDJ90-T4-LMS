@@ -77,21 +77,21 @@ public class UserController extends MskimRequestMapping{
 		String email = request.getParameter("email");
 			
 		String user_no = dao.userSearch(user_name, email);	
-		if(user_no.equals("999")) { //아이디가 관리자아이디일 경우
-			request.setAttribute("msg", "조회할 수 없는 계정입니다.");
-			request.setAttribute("url", "idForm");
-			System.out.println("admin");
-			return "alert";
-		}else if(!user_no.equals(null)) { //아이디가 null이 아닐 경우
-			request.setAttribute("user_no", user_no);
-			System.out.println("not null");
-			return "users/idchk";
-		} else {
-		request.setAttribute("msg", "아이디가 없습니다.");
-		request.setAttribute("url", "idForm");
-		System.out.println("null");
-		return "alert";
-		}
+		  if (user_no == null) {
+		        request.setAttribute("msg", "아이디가 없습니다.");
+		        request.setAttribute("url", "idForm");
+		        System.out.println("null");
+		        return "alert";
+		    } else if ("999".equals(user_no)) {  // ✅ null-safe 방식으로 비교
+		        request.setAttribute("msg", "조회할 수 없는 계정입니다.");
+		        request.setAttribute("url", "idForm");
+		        System.out.println("admin");
+		        return "alert";
+		    } else {
+		        request.setAttribute("user_no", user_no);
+		        System.out.println("not null");
+		        return "users/id";
+		    }
 	}
 	// 비밀번호 초기화 =================================================================
 	@RequestMapping("resetpw")

@@ -6,7 +6,8 @@
 <%-- webapp/view/users/id.jsp --%>
 <html>
 	<head>
-	<meta charset="UTF-8">
+	<meta charset="UTF-8">	
+
 	<title>아이디 찾기</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 	</head>
@@ -25,7 +26,7 @@
 			</tr>
 		</table>
 		<script type="text/javascript">
-			function idsend(user_no){ // id : 실제 id에서 뒤의 2자리를 제외한 값
+			function idsend(user_no){ 
 				opener.document.f.user_no.value = user_no; 
 				self.close(); // 현재 페이지를 닫기
 			}

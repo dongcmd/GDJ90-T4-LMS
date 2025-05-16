@@ -21,7 +21,7 @@
 	<script type="text/javascript">
 			function input_check(f){
 				if(f.user_no.value.trim() == ""){
-					alert("아이디를 입력하세요");
+					alert("이름을 입력하세요");
 					f.user_no.focus();
 					return false; 
 				}

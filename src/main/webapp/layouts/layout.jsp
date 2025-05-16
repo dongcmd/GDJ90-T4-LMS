@@ -38,7 +38,7 @@
             <h2 class="m-0" style="flex: 2;">구디 대학교 학사관리 시스템</h2>
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
               <li class="nav-item">
-                <a class="nav-link" href="win_open('main')">${sessionScope.user_name} 님 반갑습니다.</a>
+                <a class="nav-link" onclick="win_open('info')">${sessionScope.user_name} 님 반갑습니다.</a>
               </li>
               <li class="nav-item">
                   <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
@@ -193,5 +193,11 @@
             </li>
         </ul>
     </footer>
+    
+   <script type="text/javascript">
+    function win_open(page){ //page : idForm, pwForm
+		open(page,"","width=500, height=350, left=50, top=150");
+	}
+    </script>
 </body>
 </html>
