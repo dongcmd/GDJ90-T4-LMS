@@ -19,6 +19,7 @@ public class ClassesController extends MskimRequestMapping {
 
 	@RequestMapping("signUpClass")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("✅ [디버그] signUpClass 메서드 호출됨");
 		List<classes> list = dao.list();
 		request.setAttribute("classesList", list);
 		return "mainLMS/signUpClass";
