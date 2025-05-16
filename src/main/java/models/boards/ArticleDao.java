@@ -8,7 +8,6 @@ import org.apache.ibatis.session.SqlSession;
 
 import models.MyBatisConnection;
 import models.mappers.ArtiMapper;
-import models.mappers.BoardMapper;
 
 //이동원
 public class ArticleDao {

@@ -16,13 +16,14 @@ public interface ArtiMapper {
 			+ " </if></script>")
 	int count(Map<String, Object> map);
 
-	@Select("<script>select a.*, u.user_name from articles a "
+	@Select("<script>"
+			+ "select a.*, u.user_name from articles a "
 			+ " join users u on a.user_no = u.user_no "
 			+ " where board_id = #{board_id} "
 			+ " <if test='column != null'> " 
 			+ " and ${column} like concat('%',#{keyword},'%') "
 			+ " </if>"
-			+ " order by arti_no desc</script>")
+			+ " order by arti_no desc limit #{start}, #{limit}</script>")
 	List<Article> list(Map<String, Object> map);
 
 }
