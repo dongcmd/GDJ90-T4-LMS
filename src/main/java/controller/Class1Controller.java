@@ -9,18 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
-import models.classes;
-import models.classesDao;
+import models.Class1;
+import models.Class1Dao;
 
 @WebServlet(urlPatterns = { "/mainLMS/*", "/deptLMS/*", "/classLMS/*" }, initParams = {
 		@WebInitParam(name = "view", value = "/views/") })
-public class ClassesController extends MskimRequestMapping {
-	private classesDao dao = new classesDao();
+public class Class1Controller extends MskimRequestMapping {
+	private Class1Dao dao = new Class1Dao();
 
 	@RequestMapping("signUpClass")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("✅ [디버그] signUpClass 메서드 호출됨");
-		List<classes> list = dao.list();
+		List<Class1> list = dao.list();
 		request.setAttribute("classesList", list);
 		return "mainLMS/signUpClass";
 	}

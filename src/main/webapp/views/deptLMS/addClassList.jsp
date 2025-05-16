@@ -10,7 +10,6 @@
 </head>
 <body>
 	<h2>강의 추가</h2>
-	<form action=""></form>
 	<table>
 		<tr>
 			<td>과목명</td>

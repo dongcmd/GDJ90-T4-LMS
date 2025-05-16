@@ -1,6 +1,6 @@
 package models;
 
-public class classes {
+public class Class1 {
 	private String class_no; // 강의코드
 	private String ban; // 반
 	private int year; // 연도

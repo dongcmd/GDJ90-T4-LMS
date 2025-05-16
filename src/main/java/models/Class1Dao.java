@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
-import models.mappers.ClassesMapper;
+import models.mappers.Class1Mapper;
 
-public class classesDao {
-	private Class<ClassesMapper> cls = ClassesMapper.class;
+public class Class1Dao {
+	private Class<Class1Mapper> cls = Class1Mapper.class;
 	private Map<String, Object> map = new HashMap<String, Object>();
 
-	public List<classes> list() {
+	public List<Class1> list() {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
 			return session.getMapper(cls).selectList();
