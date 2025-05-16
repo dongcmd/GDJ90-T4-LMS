@@ -8,7 +8,6 @@ import org.apache.ibatis.session.SqlSession;
 
 import models.MyBatisConnection;
 import models.mappers.ArtiMapper;
-
 //이동원
 public class ArticleDao {
 	private Class<ArtiMapper> cls = ArtiMapper.class;
