@@ -31,6 +31,5 @@ import gdu.mskim.RequestMapping;
 @WebServlet(urlPatterns = {"/mainLMS/*"},
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class MainController extends MskimRequestMapping{
-	
 
 }
