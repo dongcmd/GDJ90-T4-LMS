@@ -11,7 +11,6 @@ public class Class1 {
 	private int class_grade; // 학년
 	private int credit; // 이수학점
 	private String classroom; // 강의실
-
 	public String getProf() {
 		return prof;
 	}
