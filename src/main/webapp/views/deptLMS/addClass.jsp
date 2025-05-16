@@ -13,26 +13,28 @@
 	<form action="add" name="f" method="post" onsubmit="return input_check(this)">
 		<table class="table">
 			<tr>
-				<td>과목명</td>
+				<td colspan="2">과목명</td>
 				<td>과목 코드</td>
 				<td>분반</td>
 				<td>학년</td>
-			</tr>
-			<tr>
-				<td><input type="text" name="className" class="form-control"></td>
-				<td><input type="text" name="classNo" class="form-control"></td>
-				<td><input type="text" name="classBan" class="form-control" style="width: 80px;"></td>
-				<td><input type="text" name="class" class="form-control" style="width: 80px;"></td>
-				<td><button class="btn btn-light btn-outline-secondary">강의 검색</button></td>
-			</tr>
-			<tr>
-				<td>이수학점</td>
-				<td>수강인원</td>
-				<td>강의실</td>
 				<td></td>
 			</tr>
 			<tr>
-				<td><input type="number" name="credit" class="form-control"></td>
+				<td colspan="2"><input type="text" name="className" class="form-control"></td>
+				<td><input type="text" name="classNo" class="form-control"></td>
+				<td><input type="text" name="classBan" class="form-control" style="width: 80px;"></td>
+				<td><input type="text" name="classGrade" class="form-control" style="width: 80px;"></td>
+				<td><button class="btn btn-light btn-outline-secondary">강의 검색</button></td>
+			</tr>
+			<tr>
+				<td colspan="2">이수학점</td>
+				<td>수강인원</td>
+				<td>강의실</td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="number" name="credit" class="form-control"></td>
 				<td><input type="number" name="maxP" class="form-control"></td>
 				<td><input type="text" name="classRoom" class="form-control" style="width: 80px;"></td>
 				<td></td>
@@ -59,13 +61,19 @@
 						<label for="thu">목&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<label for="fri">금</label>
 					</div></td>
-					<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="text-align: right;">시작 교시<span style="color: red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				</td>
 				<td><input type="number" min="1" max="9" name="sTime" oninput="updateTime(0,this)" class="form-control"></td>
 				<td><span id="startPeriod"></span></td>
+				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="text-align: right;">종료 교시<span style="color: red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -73,7 +81,12 @@
 				<td><input type="number" min="1" max="9" name="eTime" oninput="updateTime(1,this)" class="form-control"></td>
 				<td><span id="endPeriod"></span></td>
 				<td></td>
-				<td><button type="button" class="btn btn-dark">수정</button></td>
+				<td></td>
+				<td style="text-align: right;"><a href="javascript:input_check()" class="btn btn-primary">수정</a></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="file" name="file1" class="btn btn-light btn-outline-secondary"></td>
 			</tr>
 		</table>
 	</form>
@@ -108,6 +121,7 @@
 				f.id.focus();
 				return false; //기본 이벤트 취소 
 			}
+			f.submit();
 		}
 	</script>
 </body>
