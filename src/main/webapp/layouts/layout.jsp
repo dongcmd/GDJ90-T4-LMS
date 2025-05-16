@@ -4,8 +4,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <c:set var="path" value="${pageContext.request.contextPath }"/>
 
-<c:set var="
-            Prefix" value="${path}/mainLMS/" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,12 +40,11 @@
             <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
             	<h2 class="m-0" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2>
             </c:if>
-            <c:if test="${fn:startsWith(relativeURI, '/classMS/')}">
+            <c:if test="${fn:startsWith(relativeURI, '/classLMS/')}">
             	<h2 class="m-0" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2>
             </c:if>
             
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
-
                 <li class="nav-item">
                   <a class="nav-link" onclick="win_open('info')"><span>${sessionScope.user_name}</span> 님 반갑습니다.</a>
                 </li>
@@ -60,7 +57,7 @@
             </ul>
         </div>
         <%-- 알림모달 --%>
-    <div class="modal fade" id="myModal">
+        <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-m">
               <div class="modal-content" style="width: 800px;">
                 <div class="modal-header">
@@ -68,7 +65,6 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-
 					<table class="table">
 					    <thead>
 					        <tr>
@@ -112,7 +108,7 @@
 	                    <a class="nav-link" href="${path}/mainLMS/bord?id=9999">공지 게시판</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" href="${path}/deptLms/board?id=${}">학과 LNS</a>
+	                    <a class="nav-link" href="${path}/deptLms/board?id=">학과 LNS</a>
 	                </li> 
 	                <c:if test="${sessionScope.user.role == 1}">
 		                <li class="nav-item">
@@ -190,8 +186,8 @@
             <sitemesh:write property="body" />  
         </div>
     </div>
-
-	<%-- 공통 푸터 --%>
+ 	
+	<%-- 푸터 --%>
     <footer class="footer d-flex" style="height: 100px; margin-top: 10px; background-color: #eee;">
         <ul class="nav justify-content-around align-items-center" style="width: 100%;">
             <li class="nav-item ">
