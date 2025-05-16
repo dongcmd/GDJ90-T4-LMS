@@ -22,7 +22,7 @@
 				<td><input type="text" name="className" class="form-control"></td>
 				<td><input type="text" name="classNo" class="form-control"></td>
 				<td><input type="text" name="classBan" class="form-control" style="width: 80px;"></td>
-				<td><input type="text" name="classBan" class="form-control" style="width: 80px;"></td>
+				<td><input type="text" name="class" class="form-control" style="width: 80px;"></td>
 				<td><button class="btn btn-light btn-outline-secondary">강의 검색</button></td>
 			</tr>
 			<tr>
