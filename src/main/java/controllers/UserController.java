@@ -59,11 +59,9 @@ public class UserController extends MskimRequestMapping{
 			msg = "비밀번호를 확인하세요";
 			url = "loginForm";
 		} else { 
-			request.getSession().setAttribute("user_name", user.getUser_name());
-			request.getSession().setAttribute("password", user.getPassword());
-			request.getSession().setAttribute("user_no", user_no);
 			msg = user.getUser_name() + "님 반갑습니다.";
 			url = "main";
+			request.getSession().setAttribute("login", user_no);
 		}
 		request.setAttribute("msg", msg);
 		request.setAttribute("url", url);
@@ -125,9 +123,11 @@ public class UserController extends MskimRequestMapping{
 	
 	// 마이페이지 =================================================================
 	@RequestMapping("main")
+	@MSLogin("loginIdCheck")
 	public String main(HttpServletRequest request, HttpServletResponse response) { 
-		String user_no = request.getParameter("user_no");
-		String login = (String)request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
+		User user = dao.selectOne(login);
+		request.setAttribute("user", user);  
 		// 로그아웃 상태
 		if(login.equals(null) || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인하세요");
@@ -148,7 +148,7 @@ public class UserController extends MskimRequestMapping{
 	}
 	// 관리자 계정 체크 =================================================================
 	public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url", "loginForm");
@@ -164,7 +164,7 @@ public class UserController extends MskimRequestMapping{
 	// 로그인 아이디 체크 =================================================================
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
 		String user_no = request.getParameter("user_no");
-		String login = (String)request.getSession().getAttribute("user_no");
+		String login = (String)request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url", "loginForm");
@@ -178,7 +178,7 @@ public class UserController extends MskimRequestMapping{
 	}
 	// 로그인 아이디 체크(팝업창) =================================================================
 	public String loginIdCheckPopup(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		if(login == null || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url", "loginForm");
@@ -191,7 +191,7 @@ public class UserController extends MskimRequestMapping{
 	@RequestMapping("info")
 	@MSLogin("loginIdCheckPopup")
 	public String info(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		User user = dao.selectOne(login);
 		request.setAttribute("user", user);  
 		return "users/info";
@@ -201,7 +201,7 @@ public class UserController extends MskimRequestMapping{
 	@RequestMapping("updateForm")
 	@MSLogin("loginIdCheckPopup") // 로그인 아이디 체크
 	public String updateForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		User user = dao.selectOne(login);
 		request.setAttribute("user", user);
 		return "users/updateForm";
@@ -245,7 +245,7 @@ public class UserController extends MskimRequestMapping{
 	@RequestMapping("pwForm")
 	@MSLogin("passwordLoginCheck")
 	public String passwordForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		// 로그아웃 상태
 		if(login == null || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인하세요");
@@ -298,7 +298,7 @@ public class UserController extends MskimRequestMapping{
 	}
 	// 비밀번호 : 로그아웃 상태시 pwForm 이동 ======================================
 	public String passwordLoginCheck(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		if(login == null || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인하세요");
 			request.setAttribute("url", "loginForm");
@@ -308,8 +308,9 @@ public class UserController extends MskimRequestMapping{
 	}
 	// 관리자가 아니면 접근 불가 기능=================================================
 	@RequestMapping("adminForm")
+	@MSLogin("loginAdminCheck")
 	public String adminForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("user_no");
+		String login = (String) request.getSession().getAttribute("login");
 		if(login == null || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인하세요");
 			request.setAttribute("url", "loginForm");

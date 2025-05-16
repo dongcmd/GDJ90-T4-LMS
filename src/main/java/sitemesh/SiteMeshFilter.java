@@ -10,7 +10,7 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 	@Override
 	protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
 		
-		builder.addDecoratorPath("/users/*", "/layouts/layout.jsp")
+		builder.addDecoratorPath("/users/*", "/layouts/MainLayout.jsp")
 		.addExcludedPath("/users/loginForm")
 		.addExcludedPath("/users/idForm")
 		.addExcludedPath("/users/id")
@@ -18,9 +18,9 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 		.addExcludedPath("/users/info")
 		.addExcludedPath("/users/updateForm")
 		.addExcludedPath("/users/pwForm");
-		builder.addDecoratorPath("/mainLMS/*", "/layouts/layout.jsp");
-		builder.addDecoratorPath("/deptLMS/*", "/layouts/layout.jsp");
-		builder.addDecoratorPath("/classLMS/*", "/layouts/layout.jsp");
+		builder.addDecoratorPath("/mainLMS/*", "/layouts/MainLayout.jsp");
+		builder.addDecoratorPath("/deptLMS/*", "/layouts/MainLayout.jsp");
+		builder.addDecoratorPath("/classLMS/*", "/layouts/MainLayout.jsp");
 
 	}
 }
