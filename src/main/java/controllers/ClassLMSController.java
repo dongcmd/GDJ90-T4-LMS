@@ -1,4 +1,4 @@
-package controller;
+package controllers;
 
 import java.util.List;
 
@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
-import models.Class1;
-import models.Class1Dao;
+import models.classes.Class1;
+import models.classes.Class1Dao;
 
-@WebServlet(urlPatterns = { "/mainLMS/*", "/deptLMS/*", "/classLMS/*" }, initParams = {
+@WebServlet(urlPatterns = { "/classLMS/*"}, initParams = {
 		@WebInitParam(name = "view", value = "/views/") })
-public class Class1Controller extends MskimRequestMapping {
+public class ClassLMSController extends MskimRequestMapping {
 
 	private Class1Dao dao = new Class1Dao();
 

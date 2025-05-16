@@ -1,4 +1,4 @@
-package models;
+package models.classes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import models.MyBatisConnection;
 import models.mappers.Class1Mapper;
 
 public class Class1Dao {

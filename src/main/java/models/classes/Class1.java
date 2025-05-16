@@ -1,4 +1,4 @@
-package models;
+package models.classes;
 
 public class Class1 {
 	private String class_no; // 강의코드

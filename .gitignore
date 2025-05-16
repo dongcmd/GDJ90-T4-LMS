@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
 
+src/main/java/sql/
+src/main/java/models/mappers/mybatis.properties
+
 ### Eclipse ###
 .metadata
 bin/

@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Select;
 
-import models.Class1;
+import models.classes.Class1;
+
 
 public interface Class1Mapper {
 	@Select("selects * from classes")
