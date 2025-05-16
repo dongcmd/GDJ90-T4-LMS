@@ -110,7 +110,7 @@
 	                <li class="nav-item">
 	                    <a class="nav-link" href="${path}/deptLms/board?id=">학과 LNS</a>
 	                </li> 
-	                <c:if test="${sessionScope.user.role == 1}">
+	                <c:if test="${sessionScope.user.role == '1'}">
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 신청</a>
@@ -120,7 +120,7 @@
 		                </li>
 	                </c:if>
 
-		            <c:if test="${sessionScope.role == 3}">
+		            <c:if test="${sessionScope.users.role eq '3'}">
 		                <li class="nav-item">
 		                    <a class="nav-link" href="adminForm">사용자 관리</a>
 		                </li>

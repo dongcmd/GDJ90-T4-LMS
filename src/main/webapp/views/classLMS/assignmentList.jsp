@@ -5,7 +5,7 @@
 <html>
 	<head>
 	<meta charset="UTF-8">
-	<title>강의 계획서</title>
+	<title>과제 제출</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	</head>
 	<body>
@@ -33,18 +33,35 @@
        		</tr>
 		</table>
 		
-		<h3 class="my-4">강의 계획서</h3>
-		<div class="d-flex mb-4" style="gap:10px">
-			<table class="table table-bordered col-sm-4 mb-0">
-	       		<tr>
-	       			<th style="background-color: #eee;">파일</th>
-	       			<td>${file} 중간고사.pdf</td>
-	       		</tr>
-       		</table>
-			<button type="button" class="btn btn-dark">다운로드</button>
-		</div>
-		<textarea class="form-control" style=" resize: none; " rows="20">
-			${c_plan} 형 변환 문제를 통한 자료형의 이해, 출력 알고림즘 문제를 이용하여 공부합니다.
-		</textarea>
+		<h3 class="my-4">과제 제출</h3>
+		
+		<table class="table table-bordered"> 
+			<thead class="thead-light">
+				<tr>
+					<th>No</th>
+					<th>과제 제목</th>
+					<th>기한</th>
+					<th>제출 여부</th>
+					<th>업로드</th>
+					<th>다운로드</th>
+				</tr>
+			</thead>
+			
+		<%-- <c:forEach var="classesList" items="${classesList}"></c:forEach> --%>
+		<c:forEach var="i" begin="1" end="5">
+			<tr>
+				<td style="text-align: center">1</td>
+				<td>형변환 문제</td>
+				<td style="text-align: center">~2025/3/10 23:59:59</td>
+				<td style="text-align: center">제출</td>
+				<td>
+					<button type="button" class="btn btn-light btn-outline-secondary">업로드</button>
+				</td>
+				<td>
+					<button type="button" class="btn btn-dark">다운로드</button>
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
 	</body>
 </html>
