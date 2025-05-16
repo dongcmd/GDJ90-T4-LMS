@@ -1,4 +1,4 @@
-package controller;
+package controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,10 +33,10 @@ import gdu.mskim.RequestMapping;
 import models.users.User;
 import models.users.UserDao;
 /*
-	controller/UserController.java - 김기흔
+	controllers/UserController.java - 김기흔
 */
 @WebServlet(urlPatterns = {"/users/*"},
-initParams = {@WebInitParam(name="view",value="/view/")})
+initParams = {@WebInitParam(name="view",value="/views/")})
 
 public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
@@ -331,7 +331,7 @@ public class UserController extends MskimRequestMapping{
         request.setAttribute("users", users);
     }
 	//모든유저 리스트 =================================================================
-	@RequsestMapping("getAllUsers")
+	@RequestMapping("getAllUsers")
 	public String getAllUsers(HttpServletRequest request, HttpServletResponse response) {
 		List<User> users = dao.getAllUsers(); 
 		request.setAttribute("users", users); 
