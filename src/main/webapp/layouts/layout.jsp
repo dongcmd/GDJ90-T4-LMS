@@ -4,6 +4,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <c:set var="path" value="${pageContext.request.contextPath }"/>
 
+<c:set var="
+            Prefix" value="${path}/mainLMS/" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +47,7 @@
             </c:if>
             
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
+
                 <li class="nav-item">
                   <a class="nav-link" onclick="win_open('info')"><span>${sessionScope.user_name}</span> 님 반갑습니다.</a>
                 </li>
@@ -57,7 +60,7 @@
             </ul>
         </div>
         <%-- 알림모달 --%>
-        <div class="modal fade" id="myModal">
+    <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-m">
               <div class="modal-content" style="width: 800px;">
                 <div class="modal-header">
@@ -65,6 +68,7 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
+
 					<table class="table">
 					    <thead>
 					        <tr>
@@ -186,8 +190,8 @@
             <sitemesh:write property="body" />  
         </div>
     </div>
- 	
-	<%-- 푸터 --%>
+
+	<%-- 공통 푸터 --%>
     <footer class="footer d-flex" style="height: 100px; margin-top: 10px; background-color: #eee;">
         <ul class="nav justify-content-around align-items-center" style="width: 100%;">
             <li class="nav-item ">
