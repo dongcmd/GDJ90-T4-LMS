@@ -45,21 +45,24 @@ public class BoardController extends MskimRequestMapping {
 		int limit = 10;
 		int artiCount = artiDao.count(board_id, column, keyword);
 		List<Article> artiList = artiDao.list(board_id, pageNum, limit, column, keyword);
-		int maxpage = (int)Math.ceil(1.0 * artiCount/limit);
-		int startpage = ((int)Math.ceil(pageNum/10.0) - 1) * 10 + 1;
-		int endpage = Math.min(startpage + 9, maxpage);
-		if(endpage > maxpage) endpage = maxpage;
+		int maxPage = (int)Math.ceil(1.0 * artiCount/limit);
+		int startPage = ((int)Math.ceil(pageNum/10.0) - 1) * 10 + 1;
+		int endPage = Math.min(startPage + 9, maxPage);
+		if(endPage > maxPage) endPage = maxPage;
 		
 		String board_name = boardDao.selectName(board_id);
-		req.setAttribute("board_name", board_name);
-		req.setAttribute("artiCount", artiCount);
-		req.setAttribute("artiList", artiList);
-		req.setAttribute("pageNum", pageNum);
-		req.setAttribute("startpage", startpage);
-		req.setAttribute("endpage", endpage);
-		req.setAttribute("maxpage", maxpage);
+		req.setAttribute("board_name", board_name); // 게시판명
+		req.setAttribute("artiCount", artiCount); // 글 개수
+		req.setAttribute("artiList", artiList); // 글 List
+		req.setAttribute("pageNum", pageNum); // 페이지번호
+		req.setAttribute("startPage", startPage); // 시작 페이지
+		req.setAttribute("endPage", endPage); // 마지막 페이지
+		req.setAttribute("maxPage", maxPage); // 최대 페이지
 		int artiIndex = artiCount - (pageNum - 1) * limit;
 		req.setAttribute("artiIndex", artiIndex);
-		return "board";
+		
+		// 더미데이터, 추후 삭제 후 다른 값 추가
+		req.setAttribute("class1", 3);
+		return "board/board";
 	}
 }
