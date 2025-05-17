@@ -48,7 +48,11 @@
             
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
                 <li class="nav-item">
+
+                  <a class="nav-link" onclick="win_open('../users/info')"><span>${user_name}</span> 님 반갑습니다.</a>
+<%-- 동원 수정
                   <a class="nav-link" onclick="win_open('info')"><span>${sessionScope.user_name}</span> 님 반갑습니다.</a>
+ --%>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
@@ -100,6 +104,30 @@
 
 	<%-- 메인 레이아웃 --%>
     <div class="d-flex bg-light" style="min-height: 800px;">
+<<<<<<< HEAD
+    
+        <nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #999;">
+            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">수강신청</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">학과 LNS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">학점조회</a>
+                </li>
+                <li class="nav-item"> <%-- 이동원 --%>
+                    <a class="nav-link" href="../board/board?board_id=9999">공지게시판</a>
+                </li>
+                <c:if test="${user_no == '999'}">
+                <li class="nav-item">
+                    <a class="nav-link" href="adminForm">사용자관리</a>
+                </li>
+                </c:if>
+            </ul>
+        </nav>
+=======
     	<%-- mainLMS 메뉴 --%>
     	<c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
 			<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #999;">
@@ -111,6 +139,7 @@
 	                    <a class="nav-link" href="${path}/deptLms/board?id=">학과 LNS</a>
 	                </li> 
 	                <c:if test="${sessionScope.user.role == 1}">
+>>>>>>> main
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 신청</a>
