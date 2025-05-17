@@ -61,6 +61,9 @@ public interface UserMapper {
 	@Delete("select * from users where #{type}=#{keyword}")
 	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
 
+	@Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	int pwCheck(Map<String, Object> map);
+
 
 
 

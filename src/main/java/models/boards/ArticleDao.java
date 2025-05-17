@@ -44,4 +44,52 @@ public class ArticleDao {
 		}
 		return null;
 	}
+
+	public Article selectOne(int arti_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).selectOne(arti_no);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
+
+	public boolean insert(Article arti) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).insert(arti) > 0;
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
+
+	public String getBoard_id(String arti_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).getBoard_id(arti_no);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
+
+	public boolean delete(String arti_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).delete(arti_no) > 0;
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
 }

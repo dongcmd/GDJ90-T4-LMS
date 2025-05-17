@@ -21,6 +21,8 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 		builder.addDecoratorPath("/mainLMS/*", "/layouts/MainLayout.jsp");
 		builder.addDecoratorPath("/deptLMS/*", "/layouts/MainLayout.jsp");
 		builder.addDecoratorPath("/classLMS/*", "/layouts/MainLayout.jsp");
+		// 동원 수정
+		builder.addDecoratorPath("/board/*", "/layouts/MainLayout.jsp");
 
 	}
 }
