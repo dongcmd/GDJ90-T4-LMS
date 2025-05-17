@@ -15,7 +15,7 @@ import models.users.User;
 
 public interface UserMapper {
 
-	@Insert("insert into member (id,pass,name,gender,tel,email,picture)"
+	@Insert("insert into users (user_no,password,user_name,gender,tel,email,picture)"
 				 + " values (#{id},#{pass},#{name},#{gender},#{tel},#{email},#{picture})")
 	int insert(User user);
 	
@@ -43,14 +43,14 @@ public interface UserMapper {
 	//비밀번호 재설정
 	@Update("update users set password=#{n_pass1} where user_no=#{login}")
 	int updatePass(@Param("login") String login, @Param("n_pass1") String n_pass1);
-
-	//모든 정보 불러오기
+	
 	@Select("select * from users")
-	List<User> getAllUsers();
+	List<User> selectAll();
 	
 	
 	@Delete("delete from member where id=#{id}")
 	int delete(String id);
+	
 	
 	
 	@Select("select pass from member where id=#{id} and email=#{email} and tel =#{tel}")
@@ -59,6 +59,7 @@ public interface UserMapper {
 
 	@Delete("select * from users where #{type}=#{keyword}")
 	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
+
 
 
 

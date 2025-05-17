@@ -37,11 +37,9 @@ import models.users.UserDao;
 */
 @WebServlet(urlPatterns = {"/users/*"},
 initParams = {@WebInitParam(name="view",value="/views/")})
-
 public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
-	
-	
+		
 	// 로그인 =================================================================
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) {			
@@ -67,8 +65,7 @@ public class UserController extends MskimRequestMapping{
 		request.setAttribute("msg", msg);
 		request.setAttribute("url", url);
 		return "alert";
-	}	
-	
+	}		
 	// 아이디 찾기=========================================================================
 	@RequestMapping("id")
 	public String id(HttpServletRequest request, HttpServletResponse response) {
@@ -131,20 +128,6 @@ public class UserController extends MskimRequestMapping{
 		request.setAttribute("url", "loginForm");
 		return "alert";
 	}
-	// 관리자 계정 체크 =================================================================
-	public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		if(login == null) {
-			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "loginForm");
-			return "alert";
-		} else if (!login.equals("999")) {
-			request.setAttribute("msg", "관리자만 가능한 업무입니다.");
-			request.setAttribute("url", "main");
-			return "alert";
-		}
-		return null;
-	}
 	
 	// 로그인 아이디 체크 =================================================================
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -171,7 +154,6 @@ public class UserController extends MskimRequestMapping{
 		}
 		return null; // 정상인 경우
 	}
-	
 	/* 회원정보(DB 에서 가져오기) =================================================================*/
 	@RequestMapping("info")
 	@MSLogin("loginIdCheckPopup")
@@ -181,106 +163,103 @@ public class UserController extends MskimRequestMapping{
 		request.setAttribute("user", user);  
 		return "users/info";
 	}
-	
-	// 회원정보 수정 페이지
-	@RequestMapping("updateForm")
-	@MSLogin("loginIdCheckPopup") // 로그인 아이디 체크
-	public String updateForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		User user = dao.selectOne(login);
-		request.setAttribute("user", user);
-		return "users/updateForm";
-	}
-		
-	/* 회원정보 수정 =================================================================   */
-	@RequestMapping("update")
-	@MSLogin("loginIdCheckPopup")
-	public String update(HttpServletRequest request, HttpServletResponse response) {
-		//세션에서 요청객체 정보 불러오기		
-		User user = new User();
-		user.setUser_no(request.getParameter("user_no"));
-		user.setPassword(request.getParameter("password"));
-		user.setUser_name(request.getParameter("user_name"));
-		user.setGender(Integer.parseInt(request.getParameter("gender")));
-		user.setTel(request.getParameter("tel"));
-		user.setEmail(request.getParameter("email"));
-		user.setGrade(Integer.parseInt(request.getParameter("grade")));
-		user.setMajor_no(request.getParameter("major_no"));
-		// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
-		String login = (String)request.getSession().getAttribute("user_no");
-		User dbUser = dao.selectOne(login);		
-		String msg = "비밀번호가 틀립니다.";
-		String url = "updateForm?id=" + user.getUser_no();
-		
-		// 비밀번호 같을시
-		if(user.getPassword().equals(dbUser.getPassword())) {
-			if(dao.update(user)) {
-				msg = "회원정보 수정완료";
-				url = "info";
-			} else {
-				msg = "회원정보 수정실패";
+	// 회원정보 수정 페이지 ====================================================================
+		@RequestMapping("updateForm")
+		@MSLogin("loginIdCheckPopup") 
+		public String updateForm(HttpServletRequest request, HttpServletResponse response) {
+			String login = (String) request.getSession().getAttribute("login");
+			User user = dao.selectOne(login);
+			request.setAttribute("user", user);
+			return "users/updateForm";
+		}		
+		/* 회원정보 수정 =================================================================   */
+		@RequestMapping("update")
+		@MSLogin("loginIdCheckPopup")
+		public String update(HttpServletRequest request, HttpServletResponse response) {		
+			User user = new User();
+			user.setUser_no(request.getParameter("user_no"));
+			user.setUser_name(request.getParameter("user_name"));
+			user.setGender(Integer.parseInt(request.getParameter("gender")));
+			user.setTel(request.getParameter("tel"));
+			user.setEmail(request.getParameter("email"));
+			user.setGrade(Integer.parseInt(request.getParameter("grade")));
+			user.setMajor_no(request.getParameter("major_no"));
+			user.setPassword(request.getParameter("password"));
+			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
+			String login = (String)request.getSession().getAttribute("user_no");
+			User dbUser = dao.selectOne(login);		
+			String msg = "비밀번호가 틀립니다.";
+			String url = "users/updateForm";
+			// 비밀번호 같을시
+			if(user.getPassword().equals(dbUser.getPassword())) {
+				if(dao.update(user)) {
+					msg = "회원정보 수정완료";
+					url = "info";
+				} else {
+					msg = "회원정보 수정실패";
+				}
 			}
-		}
-		request.setAttribute("msg", msg);
-		request.setAttribute("url", url);
-		return "alert";
-	}
-	
-	// 비밀번호 재설정 창 =================================================================
-	@RequestMapping("pwForm")
-	@MSLogin("loginIdCheckPopup")
-	public String passwordForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		// 로그아웃 상태
-		if(login == null || login.trim().equals("")) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url", "loginForm");
-			return "openeralert";
-		}
-		// 로그인 상태
-		return "users/pwForm";
-	}
-    //비밀번호 재설정 ====================================================================	
-	@RequestMapping("updatepw")
-	@MSLogin("loginIdCheckPopup")
-	public String updatepw(HttpServletRequest request, HttpServletResponse response) {
-		String password = request.getParameter("password");
-		String n_pass1 = request.getParameter("new_password1");
-		String n_pass2 = request.getParameter("new_password2");
-		
-		String login = (String) request.getSession().getAttribute("user_no");
-		User dbUser = dao.selectOne(login);		
-		
-		// 비밀번호 일치시
-		if(password.equals(dbUser.getPassword())){
-	    	 if(!n_pass1.equals("") && !n_pass2.equals("") && n_pass1.equals(n_pass2)) {
-	    		if(dao.updatePass(login, n_pass1)) { // 비밀번호 수정성공
-	    			request.setAttribute("msg", "비밀번호 수정성공.");
-	    			request.setAttribute("url", "info");
-	    			return "alert"; // 알림창 띄우고 스스로 닫기
-	    		} else { // 비밀번호 수정실패
-	    			StringBuilder sb = new StringBuilder();
-	    			sb.append("alert('비밀번호 수정시 오류가 발생했습니다.');\n");
-	    			sb.append("self.close();");
-	    			request.setAttribute("script", sb.toString());
-	    			return "dummy"; // dummy.jsp 생성
-	    		}
-	    	} else if (n_pass1.equals("") || n_pass1.equals("")) {
-	    		request.setAttribute("msg", "새로운 비밀번호를 입력하세요");
-	    		request.setAttribute("url", "pwForm");
-	    		return "alert";
-	    	}
-	    	 else { // 비밀번호 오류
-	    		request.setAttribute("msg", "새로운 비밀번호들이 일치하지 않습니다.");
-	    		request.setAttribute("url", "pwForm");
-	    		return "alert";
-	    	} 
-	    } else {
-			request.setAttribute("msg", "비밀번호가 틀립니다.");
-			request.setAttribute("url", "pwForm");
+			request.setAttribute("msg", msg);
+			request.setAttribute("url", url);
 			return "alert";
-	    }
-	}
+		}
+		
+		// 비밀번호 재설정 창 =================================================================
+		@RequestMapping("pwForm")
+		@MSLogin("loginIdCheckPopup")
+		public String passwordForm(HttpServletRequest request, HttpServletResponse response) {
+			String login = (String) request.getSession().getAttribute("login");
+			// 로그아웃 상태
+			if(login == null || login.trim().equals("")) {
+				request.setAttribute("msg", "로그인하세요");
+				request.setAttribute("url", "loginForm");
+				return "openeralert";
+			}
+			// 로그인 상태
+			return "users/pwForm";
+		}
+	    //비밀번호 재설정 ====================================================================	
+		@RequestMapping("updatepw")
+		@MSLogin("loginIdCheckPopup")
+		public String updatepw(HttpServletRequest request, HttpServletResponse response) {
+			String password = request.getParameter("password");
+			String n_pass1 = request.getParameter("new_password1");
+			String n_pass2 = request.getParameter("new_password2");
+			
+			String login = (String) request.getSession().getAttribute("user_no");
+			User dbUser = dao.selectOne(login);		
+			
+			// 비밀번호 일치시
+			if(password.equals(dbUser.getPassword())){
+		    	 if(!n_pass1.equals("") && !n_pass2.equals("") && n_pass1.equals(n_pass2)) {
+		    		if(dao.updatePass(login, n_pass1)) { // 비밀번호 수정성공
+		    			request.setAttribute("msg", "비밀번호 수정성공.");
+		    			request.setAttribute("url", "info");
+		    			return "alert"; // 알림창 띄우고 스스로 닫기
+		    		} else { // 비밀번호 수정실패
+		    			StringBuilder sb = new StringBuilder();
+		    			sb.append("alert('비밀번호 수정시 오류가 발생했습니다.');\n");
+		    			sb.append("self.close();");
+		    			request.setAttribute("script", sb.toString());
+		    			return "dummy"; // dummy.jsp 생성
+		    		}
+		    	} else if (n_pass1.equals("") || n_pass1.equals("")) {
+		    		request.setAttribute("msg", "새로운 비밀번호를 입력하세요");
+		    		request.setAttribute("url", "pwForm");
+		    		return "alert";
+		    	}
+		    	 else { // 비밀번호 오류
+		    		request.setAttribute("msg", "새로운 비밀번호들이 일치하지 않습니다.");
+		    		request.setAttribute("url", "pwForm");
+		    		return "alert";
+		    	} 
+		    } else {
+				request.setAttribute("msg", "비밀번호가 틀립니다.");
+				request.setAttribute("url", "pwForm");
+				return "alert";
+		    }
+		}
+	
 	// 비밀번호 : 로그아웃 상태시 pwForm 이동 ======================================
 	public String passwordLoginCheck(HttpServletRequest request, HttpServletResponse response) {
 		String login = (String) request.getSession().getAttribute("login");
@@ -290,64 +269,6 @@ public class UserController extends MskimRequestMapping{
 			return "openeralert";
 		}
 		return null;
-	}
-	// 관리자가 아니면 접근 불가 기능=================================================
-	@RequestMapping("adminForm")
-	@MSLogin("loginAdminCheck")
-	public String adminForm(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		if(login == null || login.trim().equals("")) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url", "loginForm");
-			return "openeralert";
-		} else if(login != "999") {
-			request.setAttribute("msg", "관리자만 접근 가능합니다");
-			request.setAttribute("url", "main");			
-		} 
-		return null;
-	}
-	//유저리스트 검색필터기능 ========================================================
-	@RequestMapping("searchUsers")
-	private void searchUsers(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        // 검색 조건 파라미터 받기
-        String type = request.getParameter("type");      // e.g. user_name, user_no, email
-        String keyword = request.getParameter("keyword");
-        List<User> users = dao.searchUsers(type, keyword);
-        request.setAttribute("users", users);
-    }
-	//모든유저 리스트 =================================================================
-	@RequestMapping("getAllUsers")
-	public String getAllUsers(HttpServletRequest request, HttpServletResponse response) {
-		List<User> users = dao.getAllUsers(); 
-		request.setAttribute("users", users); 
-		return "users/adminForm";      
-	}
-	
-
-	
-	/* 회원가입 =================================================================:
-	 */
-	@RequestMapping("join") // http://localhost:8080/model2Study/member/join
-	public String join(HttpServletRequest request, HttpServletResponse response) {
-		User user = new User();
-		user.setUser_no(request.getParameter("user_no"));
-		user.setPassword(request.getParameter("pass"));
-		user.setRole(request.getParameter("role"));
-		user.setGender(Integer.parseInt(request.getParameter("gender")));
-		user.setTel(request.getParameter("tel"));
-		user.setEmail(request.getParameter("email"));
-		user.setPicture(request.getParameter("picture"));
-		
-		if(dao.insert(mem)) {
-			request.setAttribute("msg", mem.getName()+"님 회원 가입 되었습니다.");
-			request.setAttribute("url", "loginForm");
-		} else {
-			request.setAttribute
-			("msg", mem.getName()+"님 회원가입시 오류 발생했습니다.");
-			request.setAttribute("url", "joinForm");
-		}
-		return "alert"; 
 	}
 	
 	// 관리자 탈퇴 방지 =================================================================

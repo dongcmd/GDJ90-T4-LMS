@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<%-- webapp/view/users/loginForm.jsp --%>
+<%-- webapp/view/users/loginForm.jsp  김기흔--%>
 <html>
 <head>
 	<meta charset="UTF-8">

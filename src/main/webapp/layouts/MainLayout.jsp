@@ -138,14 +138,14 @@
 	                    <a class="nav-link" href="#">학과 게시판</a>
 	                </li>
 
-	                <c:if test="${sessionScope.role == 1 }">
+	                <c:if test="${user.role == 1 }">
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 조회</a>
 		                </li>
 	                </c:if>
 
-		            <c:if test="${sessionScope.role == 2 }">
+		            <c:if test="${user.role == 2 }">
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">강의 조회</a>
@@ -166,7 +166,7 @@
 	                <li class="nav-item">
 	                    <a class="nav-link" href="#">질문 게시판</a>
 	                </li> 
-	                <c:if test="${sessionScope.role == 1 }">
+	                <c:if test="${user.role == 1 }">
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">출결 관리</a>
 		                </li>
@@ -174,7 +174,7 @@
 		                    <a class="nav-link" href="#">과제 제출</a>
 		                </li>
 	                </c:if>
-		            <c:if test="${sessionScope.role == 2 }">
+		            <c:if test="${user.role == 2 }">
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">과제 관리</a>
@@ -212,7 +212,7 @@
     </footer>
     
     <script type="text/javascript">
-	    function win_open(page){ //page : idForm, pwForm
+	    function win_open(page){ 
 			open(page,"","width=500, height=350, left=50, top=150");
 		}
     </script>

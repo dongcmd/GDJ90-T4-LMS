@@ -36,7 +36,7 @@
                 <c:if test="${user.role == 1}">
                     <li class="list-group-item"><strong>학년:</strong> ${user.grade}</li>
                 </c:if>
-                <c:if test="${user.role == 1 && user.role == 2}">
+                <c:if test="${user.role == 1 || user.role == 2}">
                 <li class="list-group-item"><strong>학과:</strong> ${user.major_no}</li>
                 </c:if>
                 <c:set var="tel1" value="${fn:substring(user.tel, 0, 3)}" />
@@ -49,8 +49,8 @@
         </div>
 
         <div class="info-actions">
-            <a href="updateForm?id=${user.user_no}" class="btn btn-outline-secondary">정보 수정</a>
-            <a href="pwForm?id=${user.user_no}" class="btn btn-outline-secondary">비밀번호 재설정</a>
+            <a href="updateForm" class="btn btn-dark">정보 수정</a>
+            <a href="pwForm" class="btn btn-dark">비밀번호 재설정</a>
         </div>
     </div>
 </body>

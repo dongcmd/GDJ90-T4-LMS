@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<%-- webapp/view/users/resetPwForm.jsp --%>
+<%-- webapp/view/users/resetPwForm.jsp 김기흔 --%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -10,14 +10,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 </head>
 <body>
-	<h3 align="center">비밀번호초기화</h3>
+	<div class="d-flex justify-content-center align-items-center vh-100">
 	<form action="resetpw" method="post"onsubmit="return input_check(this)">
  		<table class="table">
+		    <tr><td colspan="2"><h3 align="center">비밀번호초기화</h3></td></tr>
      		<tr><th>아이디</th><td><input type="text" name="user_no"  class="form-control"></td></tr>
      		<tr><th>이메일</th><td><input type="text" name="email"  class="form-control"></td></tr>
-     		<tr><td colspan="2" align="center"><input type="submit" value="비밀번호 초기화"  class="btn btn-primary"></td></tr>
+     		<tr><td colspan="2" align="center"><input type="submit" value="비밀번호 초기화"  class="btn btn-light btn-outline-secondary"></td></tr>
 		</table>
 	</form>
+   </div>
 
 <script type="text/javascript">
 
