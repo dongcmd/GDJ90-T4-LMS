@@ -14,6 +14,7 @@ public class Article {
     private String user_no;
     private boolean arti_pinned;
     private String user_name;
+    private int commCount;
     
 	public String getArti_title() {
 		return arti_title;
@@ -69,5 +70,11 @@ public class Article {
 	}
 	public void setArti_pinned(boolean arti_pinned) {
 		this.arti_pinned = arti_pinned;
+	}
+	public int getCommCount() {
+		return commCount;
+	}
+	public void setCommCount(int commCount) {
+		this.commCount = commCount;
 	}
 }

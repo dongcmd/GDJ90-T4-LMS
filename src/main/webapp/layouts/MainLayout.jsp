@@ -35,7 +35,7 @@
             <a class="nav-link" href="main"><h2 class="m-0" style="flex: 2;">구디 대학교 학사관리 시스템</h2></a>
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
                 <li class="nav-item">
-                  <a class="nav-link" onclick="win_open('info')"><span>${user_name}</span> 님 반갑습니다.</a>
+                  <a class="nav-link" onclick="win_open('../users/info')"><span>${user_name}</span> 님 반갑습니다.</a>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
@@ -97,8 +97,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">학점조회</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">공지게시판</a>
+                <li class="nav-item"> <%-- 이동원 --%>
+                    <a class="nav-link" href="../board/board?board_id=9999">공지게시판</a>
                 </li>
                 <c:if test="${user_no == '999'}">
                 <li class="nav-item">

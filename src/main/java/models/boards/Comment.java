@@ -8,8 +8,17 @@ public class Comment {
     private String user_no;
     private String comm_content;
     private Date comm_date;
+    private String user_name;
 
-    public int getComm_no() {
+    public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public int getComm_no() {
         return comm_no;
     }
 
