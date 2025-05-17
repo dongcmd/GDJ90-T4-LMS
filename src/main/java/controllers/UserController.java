@@ -57,8 +57,7 @@ public class UserController extends MskimRequestMapping{
 			msg = "비밀번호를 확인하세요";
 			url = "loginForm";
 		} else { 
-			request.getSession().setAttribute("login", user_no);
-			request.getSession().setAttribute("user", user);
+			request.getSession().setAttribute("login", user);
 			msg = user.getUser_name() + "님 반갑습니다.";
 			url = "../mainLMS/main";
 		}

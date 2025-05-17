@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import models.users.Member;
 import models.users.User;
 
 /* model/mapper/UsersMapper.java - 김기흔 */
@@ -59,6 +60,10 @@ public interface UserMapper {
 
 	@Delete("select * from users where #{type}=#{keyword}")
 	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
+
+	@Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	int pwCheck(Map<String, Object> map);
+
 
 
 

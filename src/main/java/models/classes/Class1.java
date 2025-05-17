@@ -1,5 +1,6 @@
 package models.classes;
 
+//오예록
 public class Class1 {
 	private String class_no; // 강의코드
 	private String ban; // 반
@@ -11,21 +12,22 @@ public class Class1 {
 	private int class_grade; // 학년
 	private int credit; // 이수학점
 	private String classroom; // 강의실
-	public String getProf() {
-		return prof;
-	}
-
-	public void setProf(String prof) {
-		this.prof = prof;
-	}
-
 	private int s_time; // 시작교시
 	private int e_time; // 종료교시
 	private int max_p; // 정원
 	private String c_plan; // 강의계획
 	private String file; // 첨부파일
-	private String prof;
+	private String prof; // 교수명
 
+	
+	public String getProf() {
+		return prof;
+	}
+	
+	public void setProf(String prof) {
+		this.prof = prof;
+	}
+	
 	public String getClass_no() {
 		return class_no;
 	}

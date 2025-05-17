@@ -3,6 +3,8 @@ package models.mappers;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import models.boards.Article;
@@ -17,13 +19,30 @@ public interface ArtiMapper {
 	int count(Map<String, Object> map);
 
 	@Select("<script>"
-			+ "select a.*, u.user_name from articles a "
+			+ "select a.*, u.user_name, count(c.comm_no) commCount from articles a "
 			+ " join users u on a.user_no = u.user_no "
+			+ " left join comments c on a.arti_no = c.arti_no "
 			+ " where board_id = #{board_id} "
+			+ " group by a.arti_no"
 			+ " <if test='column != null'> " 
 			+ " and ${column} like concat('%',#{keyword},'%') "
 			+ " </if>"
 			+ " order by arti_no desc limit #{start}, #{limit}</script>")
 	List<Article> list(Map<String, Object> map);
+
+	@Select("select a.*, u.user_name from articles a "
+			+ " join users u on a.user_no = u.user_no "
+			+ " where arti_no = #{value}")
+	Article selectOne(int arti_no);
+
+	@Insert("insert into articles (board_id, arti_title, arti_content, user_no) "
+			+ "values (#{board_id}, #{arti_title}, #{arti_content}, #{user_no}) ")
+	int insert(Article arti);
+
+	@Select("select board_id from articles where arti_no = #{arti_no}")
+	String getBoard_id(String arti_no);
+
+	@Delete("delete from articles where arti_no = #{arti_no}")
+	int delete(String arti_no);
 
 }

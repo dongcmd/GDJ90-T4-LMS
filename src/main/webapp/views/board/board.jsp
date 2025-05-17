@@ -7,14 +7,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>board</title>
+<title>${board_name} 게시판</title>
 </head>
 <body>
 <c:if test="${class1 != null}">
 <table class="table table-bordered">
-	<tr> 나오냐?
-	<%-- 
-		<th>학기</th><td>${class1.year}-${class1.term}</td>
+강의게시판일 경우 강의정보 표시 수정필요
+	<%--
+	<tr>
+		<th>수강학기</th><td>${class1.year}-${class1.term}</td>
 		<th>강의코드</th><td>${class1.class_no}-${ban}</td>
 		<th>강의명</th><td>${class1.class_name}</td>
 		<th>학년</th><td>${class1.class_grade}</td>
@@ -22,10 +23,10 @@
 	<tr>
 		<th>교수</th><td>${class1.prof}</td>
 		<th>이수학점</th><td>${class1.credit}</td>
-		<th>강의시간</th><td>요일 및 교시(시간)</td>
+		<th>강의시간</th><td>요일 및 교시(시간)수정필요</td>
 		<th>강의실</th><td>${class1.classroom}</td>
-		 --%>
 	</tr>
+	 --%>
 </table>
 </c:if>
 <h2>${board_name} 게시판</h2>
@@ -35,8 +36,8 @@
 	<c:if test="${artiCount > 0}"> <%-- 게시글 목록 --%>
 		<form action="board" method="post" name="searchForm">
 			<input type="hidden" name="pageNum" value="1">
-			<input type="hidden" name="board_id" value="${param.board_id}">
-			<select name="column" class="form-control">
+			<input type="hidden" name="board_id" value="${board_id}">
+			<select name="column">
 				<option value="title">제목</option>
 				<option value="writer">작성자</option>
 				<option value="content">내용</option>
@@ -44,7 +45,7 @@
 			<c:if test="${not empty param.column}">
 				<script>document.searchForm.column.value='${param.column}'</script>
 			</c:if>
-			<input placeholder="검색어를 입력하세요." name="keyword" value="${param.keyword}" class="form-control">
+			<input placeholder="검색어를 입력하세요." name="keyword" value="${param.keyword}">
 			<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
 		</form>
 		<table class="table"><thead class="thead-light">
@@ -54,10 +55,12 @@
 			</tr></thead>
 				<c:forEach var="arti" items="${artiList}">
 					<tr><td>${artiIndex}</td><c:set var="artiIndex" value="${artiIndex-1}" />
-							<td><a href="article?num=${arti.arti_no}">${arti.arti_title}</a></td>
+							<td><a href="article?arti_no=${arti.arti_no}">${arti.arti_title}
+								<c:if test="${arti.commCount > 0}">[${arti.commCount}]</c:if>
+							</a></td>
 							<td><c:if test="${not empty arti.file}">O</c:if></td>
 							<td>${arti.user_name}</td>
-							<td><fmt:formatDate value="${arti.arti_date}" pattern="yyyy-MM-dd" /></td>							
+							<td><fmt:formatDate value="${arti.arti_date}" pattern="yyyy-MM-dd HH:mm" /></td>							
 					</tr>
 				</c:forEach>
 			<%-- 하단 페이지 처리하기 --%>
@@ -79,7 +82,7 @@
 			</td></tr>
 			<c:if test="${board_id != 9999 || sessionScope.login == '999'}">
 				<tr><td colspan="5" style="text-align:right">
-					<p align="right"><a href="writeForm">[글쓰기]</a></p>
+					<p align="right"><a href="writeForm?board_id=${board_id}" class="btn btn-dark">글쓰기</a></p>
 				</td></tr>
 			</c:if>
 		</table>
@@ -90,7 +93,7 @@
 		f.pageNum.value = page;
 		f.submit();
 	}
-</script>
+</script> 교시 표시 수정필요
 <script type="text/javascript">
    const period=[
       '09:00 ~ 09:50',

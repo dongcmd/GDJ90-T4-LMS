@@ -1,6 +1,9 @@
 package controllers;
 
+
 import java.util.List;
+import java.util.Date;
+
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+
 import models.users.User;
 import models.users.UserDao;
+import models.others.Event;
+import models.others.EventDao;
 
-// 개발자이름
+
 @WebServlet(urlPatterns = {"/mainLMS/*"},
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class MainLMSController extends MskimRequestMapping{
+
 	private UserDao dao = new UserDao();
 	//mainLayout 로그인 정보 전달============================
 	@RequestMapping("MainLayout")
@@ -137,4 +144,16 @@ public class MainLMSController extends MskimRequestMapping{
 	    return "alert";
 	}
 
+
+	
+	// 원동인
+	private EventDao dao_e = new EventDao();
+	@RequestMapping("event")
+	public String event(HttpServletRequest request, HttpServletResponse response) {
+		Event event = new Event();
+		event.setEvent_name(request.getParameter("event_name"));
+		event.setEven_s_date(LocalDateTime.parse(request.getParameter("even_s_date")));
+		event.setEven_e_date(LocalDateTime.parse(request.getParameter("even_e_date")));
+		return null; 
+	}
 }
