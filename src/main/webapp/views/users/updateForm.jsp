@@ -34,10 +34,12 @@
                         <label>이름</label>
                         <input type="text" name="user_name" value="${user.user_name}" class="form-control">
                     </div>
+                    <c:if test="${Sessionscope.user.role == 3 }">
                     <div class="form-group col-md-6">
                         <label>학과</label>
                         <input type="text" name="major" value="${user.major_no}" class="form-control">
                     </div>
+                    </c:if>
                 </div>
 
                 <div class="form-group">
@@ -52,7 +54,7 @@
                     </div>
                 </div>
 
-                <c:if test="${user.role == 1}">
+                <c:if test="${sessionScope.user.role == 1}">
                     <div class="form-group">
                         <label>학년</label>
                         <select name="grade" class="form-control">
@@ -81,7 +83,8 @@
                 </div>
 
                 <div class="text-right">
-                    <button type="submit" class="btn btn-outline-secondary">내 정보 수정</button>
+                    <button type="submit" class="btn btn-dark">내 정보 수정</button>
+                    <a href="info" class="btn btn-light btn-outline-secondary">뒤로가기</a>
                 </div>
             </form>
         </div>

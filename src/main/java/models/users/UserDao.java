@@ -20,11 +20,12 @@ import models.mappers.UserMapper;
 public class UserDao {
 	 private Class<UserMapper> cls = UserMapper.class;
 	 private Map<String, Object> map = new HashMap<>();
-	 public boolean insert(User mem) {
+	 
+	 public boolean insert(User user) {
 		 SqlSession conn = MyBatisConnection.getConnection();
 		 try {
 			 //executeUpdate() : 실행 후 변경된 레코드의 갯수 리턴 
-			 if(conn.getMapper(cls).insert(mem) > 0) return true;
+			 if(conn.getMapper(cls).insert(user) > 0) return true;
 			 else return false;
 		 } catch(Exception e) {
 			 e.printStackTrace();
@@ -106,20 +107,7 @@ public class UserDao {
 			}
 			return null;
 		}
-		
-	 public List<Member> list() {
-		 SqlSession session = MyBatisConnection.getConnection();
-		 try {
-			 return session.getMapper(cls).selectList();
-		 } catch (Exception e) {
-			 e.printStackTrace();
-		 } finally {
-			 MyBatisConnection.close(session);
-		 }
-		 return null;
-	 }
-	 
-		
+	
 	 public boolean delete(String id) {
 			SqlSession session = MyBatisConnection.getConnection();
 			try {
@@ -129,10 +117,9 @@ public class UserDao {
 			} finally {
 				MyBatisConnection.close(session);
 			}
-			return false;
-			
+			return false;			
 	}
-	 
+
 	public String pwSearch(String id, String email, String tel) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
@@ -144,7 +131,7 @@ public class UserDao {
 		}
 		return null;
 	}
-	
+	// 비밀번호 재설정
 	public boolean updatePass(String login, String n_pass1) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
@@ -156,6 +143,18 @@ public class UserDao {
 		}
 		return false;
 		
+	}
+	// 모든 리스트 호출
+	public List<User> selectAll() {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAll();
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
 	}
 
 	// 메일 
@@ -172,17 +171,7 @@ public class UserDao {
 		}
 		return null;
 	}
-	public List<User> getAllUsers() {
-			 SqlSession session = MyBatisConnection.getConnection();
-			 try {
-				 return session.getMapper(cls).getAllUsers();
-			 } catch (Exception e) {
-				 e.printStackTrace();
-			 } finally {
-				 MyBatisConnection.close(session);
-			 }
-		return null;
-	}
+
 	public boolean pwCheck(String user_no, String password) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
@@ -197,4 +186,5 @@ public class UserDao {
 		 }
 	return false;
 	}
+
 }

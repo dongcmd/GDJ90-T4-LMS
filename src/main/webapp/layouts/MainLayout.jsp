@@ -57,16 +57,14 @@
             <ul class="nav d-flex justify-content-end align-items-center" style="flex: 1; gap: 10px; flex-wrap:nowrap;">
                 <li class="nav-item">
 
-                  <a class="nav-link" onclick="win_open('../users/info')"><span>${user_name}</span> 님 반갑습니다.</a>
-                  <%-- 동원 수정
-                    <a class="nav-link" onclick="win_open('info')"><span>${sessionScope.user_name}</span> 님 반갑습니다.</a>
-                  --%>
+                  <a class="nav-link" onclick="win_open('../users/info')"><span>${login.user_name}</span> 님 반갑습니다.</a> <!-- 기흔 수정 -->
                 </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
                 </li>
                 <li class="nav-item">
-                    <a href="${path}/users/logout" class="btn btn-dark" role="button">로그아웃</a>
+
+                    <a href="../users/logout" class="btn btn-dark" role="button">로그아웃</a> <!-- 기흔 수정 -->
                 </li>
             </ul>
         </div>
@@ -140,10 +138,11 @@
 	                <li class="">
 	                    <a class="" href="#">공지 게시판</a>
 	                </li>
+
 	                <li class="">
 	                    <a class="" href="#">학과 LNS</a>
 	                </li> 
-	                <c:if test="${sessionScope.user.role == 1}">
+	                <c:if test="${login.role == 1}"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 신청</a>
 		                </li>
@@ -152,9 +151,11 @@
 		                </li>
 	                </c:if>
 
-		            <c:if test="${sessionScope.role == 3}">
-		                <li class="">
-		                    <a class="nav-link" href="#">사용자 관리</a>
+
+		            <c:if test="${login.role == 3}"> <!-- 기흔 수정 -->
+
+		                <li class="nav-item">
+		                    <a class="nav-link" href="adminForm">사용자 관리</a>
 		                </li>
 	                </c:if>
 	            </ul>
@@ -166,16 +167,12 @@
 	                <li class="nav-item">
 	                    <a class="nav-link" href="#">학과 게시판</a>
 	                </li>
-	
-	                <c:if test="${sessionScope.role == 1 }">
-	
+	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 조회</a>
 		                </li>
 	                </c:if>
-	
-		            <c:if test="${sessionScope.role == 2 }">
-	
+		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">강의 조회</a>
 		                </li>
@@ -192,7 +189,9 @@
 	                <li class="nav-item">
 	                    <a class="nav-link" href="#">질문 게시판</a>
 	                </li> 
-	                <c:if test="${sessionScope.role == 1 }">
+
+	                <c:if test="${user.role == 1 }"> <!-- 기흔 수정 -->
+
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">출결 관리</a>
 		                </li>
@@ -200,8 +199,7 @@
 		                    <a class="nav-link" href="#">과제 제출</a>
 		                </li>
 	                </c:if>
-		            <c:if test="${sessionScope.role == 2 }">
-	
+		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">과제 관리</a>
 		                </li>
@@ -238,7 +236,8 @@
     </footer>
     
     <script type="text/javascript">
-	    function win_open(page){ //page : idForm, pwForm
+
+	    function win_open(page){ <!-- 기흔 수정 -->
 			open(page,"","width=500, height=350, left=50, top=150");
 		}
     </script>

@@ -40,6 +40,7 @@
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-light btn-outline-secondary">비밀번호 재설정</button>
+                    <a href="info" class="btn btn-light btn-outline-secondary">뒤로가기</a>
                 </div>
             </form>
         </div>
