@@ -48,13 +48,13 @@
             
             <ul class="nav d-flex justify-content-end" style="flex: 1; gap: 10px;">
                 <li class="nav-item">
-                  <a class="nav-link" onclick="win_open('info')"><span>${sessionScope.user_name}</span> 님 반갑습니다.</a>
+                  <a class="nav-link" onclick="win_open('../users/info')"><span>${user.user_name}</span> 님 반갑습니다.</a>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
                 </li>
                 <li class="nav-item">
-                    <a href="logout" class="btn btn-dark" role="button">로그아웃</a>
+                    <a href="../users/logout" class="btn btn-dark" role="button">로그아웃</a>
                 </li>
             </ul>
         </div>
@@ -108,9 +108,9 @@
 	                    <a class="nav-link" href="${path}/mainLMS/bord?id=9999">공지 게시판</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" href="${path}/deptLms/board?id=">학과 LNS</a>
+	                    <a class="nav-link" href="${path}/deptLms/board?id=">학과 LMS</a>
 	                </li> 
-	                <c:if test="${sessionScope.user.role == 1}">
+	                <c:if test="${user.role == 1}">
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">수강 신청</a>
@@ -120,7 +120,7 @@
 		                </li>
 	                </c:if>
 
-		            <c:if test="${sessionScope.role == 3}">
+		            <c:if test="${user.role == 3}">
 		                <li class="nav-item">
 		                    <a class="nav-link" href="adminForm">사용자 관리</a>
 		                </li>

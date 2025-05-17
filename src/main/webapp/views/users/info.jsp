@@ -36,8 +36,9 @@
                 <c:if test="${user.role == 1}">
                     <li class="list-group-item"><strong>학년:</strong> ${user.grade}</li>
                 </c:if>
+                <c:if test="${user.role == 1 && user.role == 2}">
                 <li class="list-group-item"><strong>학과:</strong> ${user.major_no}</li>
-
+                </c:if>
                 <c:set var="tel1" value="${fn:substring(user.tel, 0, 3)}" />
                 <c:set var="tel2" value="${fn:substring(user.tel, 3, 7)}" />
                 <c:set var="tel3" value="${fn:substring(user.tel, 7, 11)}" />

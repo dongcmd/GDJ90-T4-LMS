@@ -10,7 +10,7 @@
 	</head>
 	<body>
 	<h3 align="center">아이디 찾기</h3>
-	<form action="id" method="post">
+	<form action="id" method="post" name="f" onsubmit="return input_check(this)">
 		<table class="table">
 			<tr><th>이름</th><td><input type="text" name="user_name" class="form-control"></td></tr>
 			<tr><th>이메일</th><td><input type="text" name="email" class="form-control"></td></tr>
@@ -20,14 +20,14 @@
 	
 	<script type="text/javascript">
 			function input_check(f){
-				if(f.user_no.value.trim() == ""){
+				if(f.user_name.value.trim() == ""){
 					alert("이름을 입력하세요");
-					f.user_no.focus();
+					f.user_name.focus();
 					return false; 
 				}
 				if(f.email.value.trim() == ""){
 					alert("이메일을 입력하세요");
-					f.password.focus();
+					f.email.focus();
 					return false; 
 				}
 				return true;

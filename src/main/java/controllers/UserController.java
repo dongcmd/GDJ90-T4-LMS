@@ -59,14 +59,15 @@ public class UserController extends MskimRequestMapping{
 			msg = "비밀번호를 확인하세요";
 			url = "loginForm";
 		} else { 
-			msg = user.getUser_name() + "님 반갑습니다.";
-			url = "main";
 			request.getSession().setAttribute("login", user_no);
+			request.getSession().setAttribute("user", user);
+			msg = user.getUser_name() + "님 반갑습니다.";
+			url = "../mainLMS/main";
 		}
 		request.setAttribute("msg", msg);
 		request.setAttribute("url", url);
 		return "alert";
-	}
+	}	
 	
 	// 아이디 찾기=========================================================================
 	@RequestMapping("id")
@@ -74,7 +75,8 @@ public class UserController extends MskimRequestMapping{
 		String user_name = request.getParameter("user_name");
 		String email = request.getParameter("email");
 			
-		String user_no = dao.userSearch(user_name, email);	
+		String user_no = dao.userSearch(user_name, email);
+
 		  if (user_no == null) {
 		        request.setAttribute("msg", "아이디가 없습니다.");
 		        request.setAttribute("url", "idForm");
@@ -121,23 +123,6 @@ public class UserController extends MskimRequestMapping{
 		return "alert";
 	}
 	
-	// 마이페이지 =================================================================
-	@RequestMapping("main")
-	@MSLogin("loginIdCheck")
-	public String main(HttpServletRequest request, HttpServletResponse response) { 
-		String login = (String) request.getSession().getAttribute("login");
-		User user = dao.selectOne(login);
-		request.setAttribute("user", user);  
-		// 로그아웃 상태
-		if(login.equals(null) || login.trim().equals("")) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url", "loginForm");
-			return "alert";
-		}
-		// 로그인 상태
-		return "users/main"; // forward 방식 
-	}
-	
 	// 로그아웃 =================================================================
 	@RequestMapping("logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
@@ -181,7 +166,7 @@ public class UserController extends MskimRequestMapping{
 		String login = (String) request.getSession().getAttribute("login");
 		if(login == null || login.trim().equals("")) {
 			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "loginForm");
+			request.setAttribute("close", true);
 			return "alert";
 		}
 		return null; // 정상인 경우
@@ -243,7 +228,7 @@ public class UserController extends MskimRequestMapping{
 	
 	// 비밀번호 재설정 창 =================================================================
 	@RequestMapping("pwForm")
-	@MSLogin("passwordLoginCheck")
+	@MSLogin("loginIdCheckPopup")
 	public String passwordForm(HttpServletRequest request, HttpServletResponse response) {
 		String login = (String) request.getSession().getAttribute("login");
 		// 로그아웃 상태
@@ -257,7 +242,7 @@ public class UserController extends MskimRequestMapping{
 	}
     //비밀번호 재설정 ====================================================================	
 	@RequestMapping("updatepw")
-	@MSLogin("passwordLoginCheck")
+	@MSLogin("loginIdCheckPopup")
 	public String updatepw(HttpServletRequest request, HttpServletResponse response) {
 		String password = request.getParameter("password");
 		String n_pass1 = request.getParameter("new_password1");
