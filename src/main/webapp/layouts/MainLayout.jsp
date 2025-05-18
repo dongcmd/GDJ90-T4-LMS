@@ -113,10 +113,10 @@
         <nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #999;">
             <ul class="main_menu nav flex-column text-center" style="width: 100%;">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">수강신청</a>
+                    <a class="nav-link" href="../mainLMS/signUpClass">수강신청</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">학과 LNS</a>
+                    <a class="nav-link" href="#">학과 LMS</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">학점조회</a>
@@ -124,42 +124,13 @@
                 <li class="nav-item"> <%-- 이동원 --%>
                     <a class="nav-link" href="../board/board?board_id=9999">공지게시판</a>
                 </li>
-                <c:if test="${user_no == '999'}">
+                <c:if test="${login.role == 3}"> <%-- 기흔 수정 --%>
                 <li class="nav-item">
-                    <a class="nav-link" href="adminForm">사용자관리</a>
+                    <a class="nav-link" href="../mainLMS/adminForm">사용자관리</a>
                 </li>
                 </c:if>
             </ul>
         </nav>
-    	<%-- mainLMS 메뉴 --%>
-		<nav class="col-sm-2 align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
-			<c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
-	            <ul class="main_menu flex-column text-center" style="width: 100%;">                       
-	                <li class="">
-	                    <a class="" href="#">공지 게시판</a>
-	                </li>
-
-	                <li class="">
-	                    <a class="" href="#">학과 LNS</a>
-	                </li> 
-	                <c:if test="${login.role == 1}"> <!-- 기흔 수정 -->
-		                <li class="nav-item">
-		                    <a class="nav-link" href="#">수강 신청</a>
-		                </li>
-		                <li class="">
-		                    <a class="nav-link" href="#">학점 조회</a>
-		                </li>
-	                </c:if>
-
-
-		            <c:if test="${login.role == 3}"> <!-- 기흔 수정 -->
-
-		                <li class="nav-item">
-		                    <a class="nav-link" href="adminForm">사용자 관리</a>
-		                </li>
-	                </c:if>
-	            </ul>
-	        </c:if>
 	        
 	        <%-- deptLMS 메뉴 --%>
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
@@ -190,7 +161,7 @@
 	                    <a class="nav-link" href="#">질문 게시판</a>
 	                </li> 
 
-	                <c:if test="${user.role == 1 }"> <!-- 기흔 수정 -->
+	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 
 		                <li class="nav-item">
 		                    <a class="nav-link" href="#">출결 관리</a>
@@ -235,11 +206,10 @@
         </ul>
     </footer>
     
-    <script type="text/javascript">
-
-	    function win_open(page){ <!-- 기흔 수정 -->
-			open(page,"","width=500, height=350, left=50, top=150");
-		}
-    </script>
+<script type="text/javascript">
+    function win_open(page){
+        open(page,"","width=500, height=350, left=50, top=150");
+    }
+</script>
 </body>
 </html>

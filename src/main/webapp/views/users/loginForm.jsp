@@ -26,7 +26,7 @@
 	<body class="bg-light">
 	  <div class="d-flex justify-content-center align-items-center vh-100">
 		<div class="login-container text-center">
-			<img src="/images/school_logo.png" alt="학교 로고" class="logo">
+			<img  src="${pageContext.request.contextPath}/picture/main_logo.png" alt="학교 로고" class="logo">
 		<form action="login" method="post" name="f" onsubmit="return input_check(this)">
 			<table class="table">
 				<tr><th>아이디</th><td><input type="text" class="form-control" name="user_no"></td></tr>
