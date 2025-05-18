@@ -67,8 +67,7 @@ public class MainLMSController extends MskimRequestMapping{
 	// 메인페이지 로그인검증 =================================================================
 	@RequestMapping("main")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
-		String user_no = request.getParameter("user_no");
-		String login = (String)request.getSession().getAttribute("login");
+		User login = (User)request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url","../users/loginForm");

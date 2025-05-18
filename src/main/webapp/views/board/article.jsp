@@ -28,7 +28,7 @@
 		<a href="deleteForm?arti_no=${arti.arti_no}" target="_blank" class="btn btn-outline-danger">삭제</a>
 		<a href="board?board_id=${board_id}" class="btn btn-light btn-outline-secondary">목록</a></td></tr></table>
 		
-<%-- 댓글 등록,조회,삭제 --%>
+<%-- 댓글 등록,조회,삭제 수정필요 강의게시판만 가능--%>
   <span id="comment"></span>
   <div class="container">
   <form action="writeComment" method="post" onsubmit="return chkComm();">
