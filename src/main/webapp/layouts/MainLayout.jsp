@@ -108,44 +108,46 @@
     </header>
 
 	<%-- 메인 레이아웃 --%>
-
     <div class="d-flex bg-light" style="min-height: 800px; overflow:hidden;">
-        <nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #999;">
-            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
-                <li class="nav-item">
-                    <a class="nav-link" href="../mainLMS/signUpClass">수강신청</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">학과 LMS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">학점조회</a>
-                </li>
-                <li class="nav-item"> <%-- 이동원 --%>
-                    <a class="nav-link" href="../board/board?board_id=9999">공지게시판</a>
-                </li>
-                <c:if test="${login.role == 3}"> <%-- 기흔 수정 --%>
-                <li class="nav-item">
-                    <a class="nav-link" href="../mainLMS/adminForm">사용자관리</a>
-                </li>
-                </c:if>
-            </ul>
-        </nav>
-	        
+    	<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
+    	
+    		<%-- mainLMS 메뉴 --%>
+    		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
+	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
+	                <li class="nav-item">
+	                    <a href="../mainLMS/signUpClass">수강신청</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a href="#">학과 LMS</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a href="#">학점조회</a>
+	                </li>
+	                <li class="nav-item"> <%-- 이동원 --%>
+	                    <a href="../board/board?board_id=9999">공지게시판</a>
+	                </li>
+	                <c:if test="${login.role == 3}"> <%-- 기흔 수정 --%>
+	                <li class="nav-item">
+	                    <a href="../mainLMS/adminForm">사용자관리</a>
+	                </li>
+	                </c:if>
+	            </ul>
+            </c:if>
+
 	        <%-- deptLMS 메뉴 --%>
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
-	                    <a class="nav-link" href="#">학과 게시판</a>
+	                    <a href="#">학과 게시판</a>
 	                </li>
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">수강 조회</a>
+		                    <a href="#">수강 조회</a>
 		                </li>
 	                </c:if>
 		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">강의 조회</a>
+		                    <a href="#">강의 조회</a>
 		                </li>
 	                </c:if>
 	            </ul>
@@ -155,30 +157,29 @@
 	        <c:if test="${fn:startsWith(relativeURI, '/classLMS/')}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
-	                    <a class="nav-link" href="#">자바 프로그래밍</a>
+	                    <a href="#">자바 프로그래밍</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" href="#">질문 게시판</a>
+	                    <a href="#">질문 게시판</a>
 	                </li> 
 
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
-
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">출결 관리</a>
+		                    <a href="#">출결 관리</a>
 		                </li>
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">과제 제출</a>
+		                    <a href="#">과제 제출</a>
 		                </li>
 	                </c:if>
 		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">과제 관리</a>
+		                    <a href="#">과제 관리</a>
 		                </li>
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">학점 관리</a>
+		                    <a href="#">학점 관리</a>
 		                </li>
 		                <li class="nav-item">
-		                    <a class="nav-link" href="#">출결 관리</a>
+		                    <a href="#">출결 관리</a>
 		                </li>
 	                </c:if>
 	            </ul>
