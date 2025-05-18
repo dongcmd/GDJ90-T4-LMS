@@ -108,8 +108,6 @@
 								<td style="text-align: right;"><button type="submit" class="btn btn-dark">추가</button></td>
 						</tr>
 				</table>
-				<input type="hidden" name="user_no" value="${login.user_no}">
-				<input type="hidden" name="major_no" value="${login.major_no}">
 		</form>
 		<script type="text/javascript">
 		const period=[
@@ -158,3 +156,4 @@
 	</script>
 </body>
 </html>
+ㅇ

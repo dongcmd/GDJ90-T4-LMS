@@ -1,6 +1,5 @@
 package models.mappers;
 
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
