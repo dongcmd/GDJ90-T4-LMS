@@ -16,6 +16,7 @@ import models.users.User;
 
 public interface UserMapper {
 
+	//사용자 추가
 	@Insert("INSERT INTO users (user_no, password, role, email, tel, user_name, gender, grade, major_no) " +
 	        "VALUES (#{user_no}, #{password}, #{role}, #{email}, #{tel}, #{user_name}, #{gender}, #{grade}, #{major_no})")
 	int insert(User user);
@@ -47,24 +48,24 @@ public interface UserMapper {
 	
 	// 사용자 삭제
 	@Delete("delete from users where user_no=#{value}")
-	int delete(String user_no);
+	int deleteuser(String user_no);
 	
+	//모든 사용자 정보 출력
 	@Select("select * from users")
 	List<User> selectAll();
-	
-	
-	
-	
-	@Select("select pass from member where id=#{id} and email=#{email} and tel =#{tel}")
-	String pwSearch(String id, String email, String tel);
+
+    @Select("select * from users where user_no like #{keyword} order by user_no")
+    List<User> searchByUserNo(@Param("keyword") String keyword);
+    
+    @Select("select * from users where user_name like #{keyword} order by user_no")
+    List<User> searchByUserName(@Param("keyword") String keyword);
+
+	 @Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	 Integer pwCheck(Map<String, Object> map);
 
 
-	@Delete("select * from users where #{type}=#{keyword}")
-	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
-
-	@Select("select user_no from users where user_no = #{user_no} and password = #{password}")
-	int pwCheck(Map<String, Object> map);
-
+    @Select("select * from users where role = #{keyword} order by user_no")
+    List<User> searchByRole(@Param("keyword") String keyword);
 
 
 

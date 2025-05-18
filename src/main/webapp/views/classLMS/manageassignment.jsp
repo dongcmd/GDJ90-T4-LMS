@@ -40,8 +40,9 @@
 				<tr>
 					<th style="text-align: center">과제명</th>
 					<th style="text-align: center">기한</th>
-					<th style="text-align: center">제출 학생 수</th>
-					<th style="text-align: center">전체 학생 수</th>
+					<th style="text-align: center">과제내용</th>
+					<th style="text-align: center">제출현황</th>
+					<th style="text-align: center">수정/삭제</th>
 				</tr>
 			</thead>
 			
@@ -50,14 +51,16 @@
 				<tr>
 					<td style="text-align: center">형변환</td>
 					<td>2025-03-01 ~ 2025-05-10</td>
-					<td style="text-align: center">10</td>
-					<td style="text-align: center">3</td>
+					<td style="text-align: center">형변환 연습문제 1~10번까지 풀기</td>
+					<td style="text-align: center">3 / 10</td>
+					<td><a href="updateAssignmentForm" class="btn btn-dark" role="button" style="align-items: center">과제수정
+						<a href="deleteAssignmentForm" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a>
 				</tr>
 			</tbody>
 		</table>
 		
 		<div class="m-5">
-			<a href="#" class="btn btn-dark" role="button">과제추가</a>
+			<a href="addAssignmentForm" class="btn btn-dark" role="button">과제추가</a>
 			<a href="#" class="btn btn-dark" role="button">과제 다운로드</a>
 			<a href="#" class="btn btn-dark" role="button">파일2 다운로드 csv</a>
 			<a href="#" class="btn btn-dark" role="button">파일업로드 csv</a>
@@ -69,7 +72,7 @@
 					<th style="text-align: center">학번</th>
 					<th style="text-align: center">학년</th>
 					<th style="text-align: center">학생명</th>
-					<th style="text-align: center">제출현환</th>
+					<th style="text-align: center">제출현황</th>
 				</tr>
 			</thead>
 			
