@@ -21,19 +21,6 @@ public class UserDao {
 	 private Class<UserMapper> cls = UserMapper.class;
 	 private Map<String, Object> map = new HashMap<>();
 	 
-	 public boolean insert(User user) {
-		 SqlSession conn = MyBatisConnection.getConnection();
-		 try {
-			 //executeUpdate() : 실행 후 변경된 레코드의 갯수 리턴 
-			 if(conn.getMapper(cls).insert(user) > 0) return true;
-			 else return false;
-		 } catch(Exception e) {
-			 e.printStackTrace();
-		 } finally {
-			 MyBatisConnection.close(conn);
-		 }
-		 return false;
-	 }
 	 //로그인정보 부르기
 	 public User selectOne(String user_no) {
 		 SqlSession session = MyBatisConnection.getConnection();
@@ -107,11 +94,26 @@ public class UserDao {
 			}
 			return null;
 		}
+		
+		// 사용자 추가
+		 public boolean insert(User user) {
+			 SqlSession conn = MyBatisConnection.getConnection();
+			 try {
+				 if(conn.getMapper(cls).insert(user) > 0) return true;
+				 else return false;
+			 } catch(Exception e) {
+				 e.printStackTrace();
+			 } finally {
+				 MyBatisConnection.close(conn);
+			 }
+			 return false;
+		 }
+		
 	
-	 public boolean delete(String id) {
+	 public boolean delete(String user_no) {
 			SqlSession session = MyBatisConnection.getConnection();
 			try {
-				return session.getMapper(cls).delete(id) > 0;
+				return session.getMapper(cls).delete(user_no) > 0;
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -132,10 +134,10 @@ public class UserDao {
 		return null;
 	}
 	// 비밀번호 재설정
-	public boolean updatePass(String login, String n_pass1) {
+	public boolean updatePass(String user_no, String n_pass1) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
-			return session.getMapper(cls).updatePass(login, n_pass1) > 0;
+			return session.getMapper(cls).updatePass(user_no, n_pass1) > 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -53,10 +53,14 @@
         </div>
 
         <div class="form-group">
-            <label>학과 코드</label>
-            <input type="text" name="major_no" class="form-control">
+            <label>학과</label>
+            <select type="text" name="major_no" class="form-control">
+            <option value="">-- 선택하세요 --</option>
+                <option value="1000">컴퓨터공학과</option>
+                <option value="2000">기계공학과</option>
+                <option value="3000">건축공학과</option>
+              </select>
         </div>
-
         <div class="form-group">
             <label>학년</label>
             <select name="grade" class="form-control">

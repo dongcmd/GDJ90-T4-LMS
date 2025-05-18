@@ -26,18 +26,18 @@
             <form action="update" method="post" onsubmit="return inputcheck(this)" name="f">
                 <div class="form-group">
                     <label>아이디(학번)</label>
-                    <input type="text" name="user_no" value="${user.user_no}" class="form-control" readonly>
+                    <input type="text" name="user_no" value="${login.user_no}" class="form-control" readonly>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label>이름</label>
-                        <input type="text" name="user_name" value="${user.user_name}" class="form-control">
+                        <input type="text" name="user_name" value="${login.user_name}" class="form-control">
                     </div>
-                    <c:if test="${Sessionscope.user.role == 3 }">
+                    <c:if test="${login.role == 3 }">
                     <div class="form-group col-md-6">
                         <label>학과</label>
-                        <input type="text" name="major" value="${user.major_no}" class="form-control">
+                        <input type="text" name="major" value="${login.major_no}" class="form-control">
                     </div>
                     </c:if>
                 </div>
@@ -45,36 +45,36 @@
                 <div class="form-group">
                     <label>성별</label><br>
                     <div class="form-check form-check-inline">
-                        <input type="radio" name="gender" value="1" ${user.gender == 1 ? "checked" : ""} class="form-check-input">
+                        <input type="radio" name="gender" value="1" ${login.gender == 1 ? "checked" : ""} class="form-check-input">
                         <label class="form-check-label">남</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" name="gender" value="2" ${user.gender == 2 ? "checked" : ""} class="form-check-input">
+                        <input type="radio" name="gender" value="2" ${login.gender == 2 ? "checked" : ""} class="form-check-input">
                         <label class="form-check-label">여</label>
                     </div>
                 </div>
 
-                <c:if test="${sessionScope.user.role == 1}">
+                <c:if test="${login.role == 1}">
                     <div class="form-group">
                         <label>학년</label>
                         <select name="grade" class="form-control">
                             <option value="choose" disabled selected>-- 선택하세요 --</option>
-                            <option value="1" ${user.grade == 1 ? "selected" : ""}>1학년</option>
-                            <option value="2" ${user.grade == 2 ? "selected" : ""}>2학년</option>
-                            <option value="3" ${user.grade == 3 ? "selected" : ""}>3학년</option>
-                            <option value="4" ${user.grade == 4 ? "selected" : ""}>4학년</option>
+                            <option value="1" ${login.grade == 1 ? "selected" : ""}>1학년</option>
+                            <option value="2" ${login.grade == 2 ? "selected" : ""}>2학년</option>
+                            <option value="3" ${login.grade == 3 ? "selected" : ""}>3학년</option>
+                            <option value="4" ${login.grade == 4 ? "selected" : ""}>4학년</option>
                         </select>
                     </div>
                 </c:if>
 
                 <div class="form-group">
                     <label>전화번호</label>
-                    <input type="text" name="tel" value="${user.tel}" class="form-control">
+                    <input type="text" name="tel" value="${login.tel}" class="form-control">
                 </div>
 
                 <div class="form-group">
                     <label>이메일</label>
-                    <input type="text" name="email" value="${user.email}" class="form-control">
+                    <input type="text" name="email" value="${login.email}" class="form-control">
                 </div>
 
                 <div class="form-group">
@@ -99,11 +99,6 @@
             return false;
         }
         return true;
-    }
-
-    function win_passchg() {
-        var op = "width=500, height=250, left=50,top=150";
-        open("passwordForm", "", op);
     }
 </script>
 
