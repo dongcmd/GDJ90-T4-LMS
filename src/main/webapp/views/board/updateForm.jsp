@@ -15,7 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 
 <meta charset="UTF-8">
-<title>${arti.arti_title} 수정하기</title>
+<title>${arti.arti_title}</title>
 </head>
 <body>
 <h2>${board_name} 게시판/${arti.arti_title} 수정하기</h2>
@@ -29,8 +29,8 @@
 			${arti.arti_content}</textarea>
 		</td></tr>
 		<tr><td>첨부파일</td>
-		<td><c:if test="${!empty arti.arti_file}">
-				<div id="file_desc">${arti.arti_file}
+		<td><c:if test="${!empty arti.file}">
+				<div id="file_desc">${arti.file}
 			  <a href="javascript:file_delete()">[첨부파일 삭제]</a></div>
 			</c:if>    
 			<input type="file" name="file1"></td></tr>
@@ -62,23 +62,39 @@ function file_delete() {
  file_desc.style.display="none"; 
 }
 </script>
-<script>
+<script type="text/javascript">
+$(function() {
+ $("#summernote").summernote({
+  height:300,
+  callbacks : {
+   //onImageUpload : 이미지 업로드 이벤트 발생.
+   //files : 한개이상의 이미지 업로드 가능. 배열
+   onImageUpload : function(files) {
+	   for(let i=0;i < files.length;i++) {
+		   sendFile(files[i]); //하나씩 ajax 이용하여 서버로 파일 전송
+	   }
+   }
+  }
+ })
+})
 function sendFile(file) {
-	   let data = new FormData();
-	   data.append("file",file);
-	   $.ajax({
-		   url : "${path}/files/uploadImage",
-		   type : "post",
-		   data : data,
-		   processData : false,
-		   contentType : false,
-		   success : function(url) {
-			   $("#summernote").summernote("insertImage",url);
-		   },
-		   error : function(e) {
-			   alert("이미지 업로드 실패 :" + e.status);
-		   }
-	   })
+ let data = new FormData(); //폼데이터를 수집하고 전송가능한 객체. 파일업로드에 사용됨.
+ data.append("file",file); //file : 이미지 파일
+ $.ajax({
+  url : "${path}/uploadImage",
+  type : "post",
+  data : data,
+  processData : false,
+  contentType : false,
+  success : function(url) {
+   //url : 업로드된 이미지의 접근 url 정보
+   $("#summernote").summernote("insertImage",url);
+     // <img src="url" > 변경.
+  },
+  error : function(e) {
+   alert("이미지 업로드 실패 :" + e.status);
+  }
+ })
 }
 </script>
 </body>
