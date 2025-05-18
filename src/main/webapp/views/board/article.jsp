@@ -24,12 +24,16 @@
 			<a href="../../files/${arti.file}">${arti.file}</a>
 			</c:if></td></tr>
 	<tr><td colspan="2" align="center">
-		<a href="updateForm?arti_no=${arti.arti_no}" class="btn btn-light btn-outline-secondary">수정</a>
-		<a href="deleteForm?arti_no=${arti.arti_no}" target="_blank" class="btn btn-outline-danger">삭제</a>
-		<a href="board?board_id=${board_id}" class="btn btn-light btn-outline-secondary">목록</a></td></tr></table>
+		<c:if test="${login.user_no == arti.user_no}">
+			<a href="updateForm?arti_no=${arti.arti_no}" class="btn btn-light btn-outline-secondary">수정</a>
+		</c:if>
+		<c:if test="${login.user_no == arti.user_no || login.user_no == '999'}">
+			<a href="#" onclick="win_open('deleteForm?arti_no=${arti.arti_no}'); return false;" class="btn btn-outline-danger">삭제</a>
+		</c:if>
+		<a href="board?board_id=${arti.board_id}" class="btn btn-light btn-outline-secondary">목록</a></td></tr></table>
 		
-<%-- 댓글 등록,조회,삭제 수정필요 강의게시판만 가능--%>
-  <span id="comment"></span>
+<%-- 댓글은 강의게시판만 가능--%>
+	<c:if test="${lms == 'class'}">
   <div class="container">
   <form action="writeComment" method="post" onsubmit="return chkComm();">
 	  <input type="hidden" name="arti_no" value="${arti.arti_no}"><%-- 게시물번호 --%>
@@ -44,12 +48,23 @@
 	    <tr><td>${c.user_name}</td><td>${c.comm_content}</td>
 		    <td><fmt:formatDate value="${c.comm_date}" pattern="yyyy-MM-dd HH:mm" /></td>
 		    <c:if test="${c.user_no == login.user_no}">
-		    	<td><a class="btn btn-outline-danger" href="commDel?comm_no=${c.comm_no}">삭제</a></td>
+		    	<td><a href="#" onclick="win_open('deleteForm?comm_no=${c.comm_no}'); return false;" class="btn btn-outline-danger">삭제</a>
 	    	</c:if>
 	    </tr>
     </c:forEach>
   </table></div>
+  </c:if>
   
+  <script>
+	  function win_open(page) {
+		    const width = 500;
+		    const height = 500;
+		    const left = (window.screen.width - width) / 2;
+		    const top = (window.screen.height - height) / 3;  // 여기를 꼭 수정
+	
+		    open(page, "popup", `width=${width},height=${height},left=${left},top=${top}`);
+		}
+  </script>
   <script>
   function chkComm() {
   	if(document.querySelector("input[name='comm_content']").value.trim() == "") {

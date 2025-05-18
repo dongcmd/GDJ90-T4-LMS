@@ -62,7 +62,7 @@ public interface UserMapper {
 	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
 
 	@Select("select user_no from users where user_no = #{user_no} and password = #{password}")
-	int pwCheck(Map<String, Object> map);
+	Integer pwCheck(Map<String, Object> map);
 
 
 

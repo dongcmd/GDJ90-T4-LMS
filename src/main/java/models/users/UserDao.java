@@ -172,12 +172,12 @@ public class UserDao {
 		return null;
 	}
 
-	public boolean pwCheck(String user_no, String password) {
+	public boolean pwCheck(String user_no, String inputPass) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 map.clear();
 			 map.put("user_no", user_no);
-			 map.put("password", password);
+			 map.put("password", inputPass);
 			 return session.getMapper(cls).pwCheck(map) > 0;
 		 } catch (Exception e) {
 			 e.printStackTrace();
