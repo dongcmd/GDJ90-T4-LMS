@@ -1,8 +1,13 @@
 package controllers;
 
 import java.util.List;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
+import java.util.Date;
+import java.util.HashMap;
+
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +28,6 @@ import models.others.Notification;
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class MainLMSController extends MskimRequestMapping{
 
-	private UserDao dao = new UserDao();
 	
 	// 로그인 아이디 체크 =================================================================
 		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -59,9 +63,13 @@ public class MainLMSController extends MskimRequestMapping{
 	@RequestMapping("main")
 	@MSLogin("loginIdCheck")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
-		String user_no = request.getParameter("user_no");
 		User login = (User)request.getSession().getAttribute("login");
-		return null;
+		if(login == null) {
+			request.setAttribute("msg", "로그인 하세요");
+			request.setAttribute("url","../users/loginForm");
+			return "alert";
+		}
+		return null; // 정상인 경우
 	}
 
 	// 사용자 관리 폼(관리자 외 접근권한 없음)=================================================
@@ -69,9 +77,9 @@ public class MainLMSController extends MskimRequestMapping{
 	@MSLogin("loginAdminCheck")
 	public String adminForm(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User) request.getSession().getAttribute("login");
+		UserDao dao = new UserDao();
 		List<User> users = dao.selectAll();
 		request.setAttribute("users", users);
-		System.out.println(users);
 		return null;
 	}
 
@@ -85,7 +93,8 @@ public class MainLMSController extends MskimRequestMapping{
 	@RequestMapping("adduser")
 	@MSLogin("loginAdminCheck")
 	public String addUser(HttpServletRequest request, HttpServletResponse response) {
-	    User user = new User();
+		UserDao dao = new UserDao();	    
+		User user = new User();
 	    user.setUser_no(request.getParameter("user_no"));
 	    user.setUser_name(request.getParameter("user_name"));
 	    user.setPassword(request.getParameter("password"));
@@ -96,7 +105,6 @@ public class MainLMSController extends MskimRequestMapping{
 	    user.setGrade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
 	    user.setEmail(request.getParameter("email"));
 	    user.setTel(request.getParameter("tel"));
-		
 		if(dao.insert(user)) {
 			request.setAttribute("msg", user.getUser_name()+"님을 사용자로 추가하였습니다.");
 			request.setAttribute("url", "adminForm");
@@ -110,6 +118,7 @@ public class MainLMSController extends MskimRequestMapping{
 	@RequestMapping("updateUserForm")
 	@MSLogin("loginAdminCheck")
 	public String updateUserForm(HttpServletRequest request, HttpServletResponse response) {;
+	UserDao dao = new UserDao();
 	String user_no = request.getParameter("user_no");
 	User user = dao.selectOne(user_no);
 	request.setAttribute("user", user);
@@ -119,6 +128,7 @@ public class MainLMSController extends MskimRequestMapping{
 	@RequestMapping("updateuser")
 	@MSLogin("loginAdminCheck")
 	public String updateuser(HttpServletRequest request, HttpServletResponse response) {
+	UserDao dao = new UserDao();
 	User user = new User();
 	user.setUser_no(request.getParameter("user_no"));
 	user.setUser_name(request.getParameter("user_name"));
@@ -144,20 +154,32 @@ public class MainLMSController extends MskimRequestMapping{
 	request.setAttribute("msg", msg);
 	request.setAttribute("url", url);
 	return "alert";
-	}		
+	}
+	//사용자 삭제폼(관리자 권한) ========================================================
+	@RequestMapping("deleteUserForm")
+	@MSLogin("loginAdminCheck")
+	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {;
+	UserDao dao = new UserDao();
+	String user_no = request.getParameter("user_no");
+	User user = dao.selectOne(user_no);
+	request.setAttribute("user", user);
+	return "mainLMS/deleteUserForm";
+	}	
+	
 	//사용자 삭제(관리자 권한) ========================================================
 	@RequestMapping("deleteuser")
-	@MSLogin("loginAdminCheck")
-	public String deleteUser(HttpServletRequest request) {
-	    String user_no = request.getParameter("user_no");
+	public String deleteuser(HttpServletRequest request , HttpServletResponse response) {
+		UserDao dao = new UserDao();
+		String user_no = request.getParameter("user_no");
 	    String password = request.getParameter("password");
 	    User login = (User) request.getSession().getAttribute("login");
 	    String msg = "비밀번호가 맞지 않습니다.";
-	    String url = "adminForm";
+	    String url = "deleteUserForm";
 	    if (password != null && login.getPassword().equals(password)) {
-	        boolean result = dao.delete(user_no);
+	        boolean result = dao.deleteuser(user_no);
 	        if (result) {
 	            msg = "사용자 삭제 완료";
+	            url = "adminForm";
 	        } else {
 	            msg = "사용자 삭제 실패";
 	        }
@@ -166,6 +188,43 @@ public class MainLMSController extends MskimRequestMapping{
 	    request.setAttribute("url", url);
 	    return "alert";
 	}
+
+	// 사용자 검색 ========================================
+	@RequestMapping("searchusers")
+	@MSLogin("loginAdminCheck")
+	public String searchusers(HttpServletRequest request, HttpServletResponse response) {
+	    String type = request.getParameter("type");       // user_name, user_no, email
+	    String keyword = request.getParameter("keyword"); // 검색어
+	    if(type.equals("role")) {
+	    	if(keyword.equals("학생")) {
+	    		keyword = "1";
+	    	}
+	    	if(keyword.equals("교수")) {
+	    		keyword = "2";
+	    	}
+	    }
+	    UserDao dao = new UserDao();
+	    if (type == null || type.isEmpty()) {
+	        request.setAttribute("msg", "검색 기준을 선택해주세요");
+	        request.setAttribute("url", "adminForm");
+	        return "alert";
+	    }
+	    if (keyword == null || keyword.isEmpty()) {
+	        request.setAttribute("msg", "검색어를 입력해주세요");
+	        request.setAttribute("url", "adminForm");
+	        return "alert";
+	    }
+
+	    List<User> users = dao.searchUsers(type, keyword);
+	    if (users == null || users.isEmpty()) {
+	        request.setAttribute("msg", "검색 결과가 없습니다.");
+	        request.setAttribute("url", "adminForm");
+	        return "alert";
+	    }
+	    request.setAttribute("users", users);
+	    return "mainLMS/adminForm";
+	}
+	
 	// 원동인
 	private EventDao eventDao = new EventDao();
 	private Notification NotifiDao = new Notification();

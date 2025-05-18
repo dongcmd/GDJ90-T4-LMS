@@ -82,18 +82,6 @@ public class UserDao {
 			}
 			return false;
 		}
-		//유저 검색
-		public List<User> searchUsers(String type, String keyword) {
-			SqlSession session = MyBatisConnection.getConnection();		
-			try {
-				return session.getMapper(cls).searchUsers(type, keyword);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				MyBatisConnection.close(session);
-			}
-			return null;
-		}
 		
 		// 사용자 추가
 		 public boolean insert(User user) {
@@ -109,11 +97,11 @@ public class UserDao {
 			 return false;
 		 }
 		
-	
-	 public boolean delete(String user_no) {
+     //사용자 삭제
+	 public boolean deleteuser(String user_no) {
 			SqlSession session = MyBatisConnection.getConnection();
 			try {
-				return session.getMapper(cls).delete(user_no) > 0;
+				return session.getMapper(cls).deleteuser(user_no) > 0;
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -158,14 +146,21 @@ public class UserDao {
 		 }
 		 return null;
 	}
-
-	// 메일 
-	public List<Member> emailList(String[] ids) {
+	
+	//사용자 검색
+	public List<User> searchUsers(String type, String keyword) {
 		SqlSession session = MyBatisConnection.getConnection();		
 		try {
-			map.clear();
-			map.put("ids", ids);
-			return session.getMapper(cls).emailList(map);
+			  switch (type) {
+	            case "user_no":
+	                return session.getMapper(cls).searchByUserNo(keyword + "%");
+	            case "user_name":
+	                return session.getMapper(cls).searchByUserName(keyword + "%");
+	            case "role":
+	                return session.getMapper(cls).searchByRole(keyword);
+	            default:
+	                return session.getMapper(cls).selectAll(); // 예외처리용
+	        }
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -174,12 +169,12 @@ public class UserDao {
 		return null;
 	}
 
-	public boolean pwCheck(String user_no, String password) {
+	public boolean pwCheck(String user_no, String inputPass) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 map.clear();
 			 map.put("user_no", user_no);
-			 map.put("password", password);
+			 map.put("password", inputPass);
 			 return session.getMapper(cls).pwCheck(map) > 0;
 		 } catch (Exception e) {
 			 e.printStackTrace();
@@ -188,5 +183,4 @@ public class UserDao {
 		 }
 	return false;
 	}
-
 }

@@ -40,9 +40,9 @@ public interface ArtiMapper {
 	int insert(Article arti);
 
 	@Select("select board_id from articles where arti_no = #{arti_no}")
-	String getBoard_id(String arti_no);
+	String getBoard_id(int arti_no);
 
 	@Delete("delete from articles where arti_no = #{arti_no}")
-	int delete(String arti_no);
+	int delete(int arti_no);
 
 }

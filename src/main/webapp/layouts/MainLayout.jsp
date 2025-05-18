@@ -45,7 +45,7 @@
             </h1>
             <%-- 메인 타이틀 --%>
             <c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
-            	<h2 class="m-0 fw_b" style="flex: 2;">구디 대학교 학사관리 시스템</h2>
+            	<a href="../mainLMS/main"><h2 class="m-0 fw_b" style="flex: 2;">구디 대학교 학사관리 시스템</h2></a>
             </c:if>
             <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
             	<h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2>
@@ -109,10 +109,11 @@
 
 	<%-- 메인 레이아웃 --%>
     <div class="d-flex bg-light" style="min-height: 800px; overflow:hidden;">
+
     	<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
     	
     		<%-- mainLMS 메뉴 --%>
-    		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
+    		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') || ${lms == 'main'}}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
 	                <li class="nav-item">
 	                    <a href="../mainLMS/signUpClass">수강신청</a>
@@ -133,9 +134,8 @@
 	                </c:if>
 	            </ul>
             </c:if>
-
 	        <%-- deptLMS 메뉴 --%>
-	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
+	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') || ${lms == 'dept'}}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
 	                    <a href="#">학과 게시판</a>
@@ -154,7 +154,7 @@
 	        </c:if>
 	        
 	        <%-- classLMS 메뉴 --%>
-	        <c:if test="${fn:startsWith(relativeURI, '/classLMS/')}">
+	        <c:if test="${fn:startsWith(relativeURI, '/classLMS/') || ${lms == 'class'}}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
 	                    <a href="#">자바 프로그래밍</a>

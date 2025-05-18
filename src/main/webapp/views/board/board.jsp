@@ -42,11 +42,14 @@
 				<option value="writer">작성자</option>
 				<option value="content">내용</option>
 			</select>
-			<c:if test="${not empty param.column}">
+			<c:if test="${!empty param.column}">
 				<script>document.searchForm.column.value='${param.column}'</script>
 			</c:if>
 			<input placeholder="검색어를 입력하세요." name="keyword" value="${param.keyword}">
 			<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
+			<c:if test="${board_id != 9999 || sessionScope.login.user_no == '999'}">
+					<a href="writeForm?board_id=${board_id}" class="btn btn-dark">글쓰기</a>
+			</c:if>
 		</form>
 		<table class="table"><thead class="thead-light">
 			<tr><th width="8%">번호</th>
@@ -58,13 +61,13 @@
 							<td><a href="article?arti_no=${arti.arti_no}">${arti.arti_title}
 								<c:if test="${arti.commCount > 0}">[${arti.commCount}]</c:if>
 							</a></td>
-							<td><c:if test="${not empty arti.file}">O</c:if></td>
+							<td><c:if test="${!empty arti.file}">O</c:if></td>
 							<td>${arti.user_name}</td>
 							<td><fmt:formatDate value="${arti.arti_date}" pattern="yyyy-MM-dd HH:mm" /></td>							
 					</tr>
 				</c:forEach>
 			<%-- 하단 페이지 처리하기 --%>
-			<tr><td colspan="5" align="center">
+			<tr><td colspan="5" style="text-align:center;">
 				<c:if test="${pageNum <= 1}">[이전]</c:if>
 				<c:if test="${pageNum > 1}">
 					<a href="javascript:boardSubmit(${pageNum-1})">[이전]</a>
@@ -80,11 +83,6 @@
 					<a href="javascript:boardSubmit(${pageNum+1})">[다음]</a>
 				</c:if>
 			</td></tr>
-			<c:if test="${board_id != 9999 || sessionScope.login == '999'}">
-				<tr><td colspan="5" style="text-align:right">
-					<p align="right"><a href="writeForm?board_id=${board_id}" class="btn btn-dark">글쓰기</a></p>
-				</td></tr>
-			</c:if>
 		</table>
 	</c:if>
 <script>
