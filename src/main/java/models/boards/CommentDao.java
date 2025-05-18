@@ -27,12 +27,32 @@ public class CommentDao {
 
 	public List<Comment> list(int arti_no) {
 		SqlSession session = MyBatisConnection.getConnection();
-	try {
-		return session.getMapper(cls).list(arti_no);
-	} catch(Exception e) { e.printStackTrace();
-	} finally { MyBatisConnection.close(session);
+		try {
+			return session.getMapper(cls).list(arti_no);
+		} catch(Exception e) { e.printStackTrace();
+		} finally { MyBatisConnection.close(session);
+		}
+		return null;
 	}
-	return null;
+
+	public Comment selectOne(int comm_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).selectOne(comm_no);
+		} catch(Exception e) { e.printStackTrace();
+		} finally { MyBatisConnection.close(session);
+		}
+		return null;
+	}
+
+	public boolean delete(int comm_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).delete(comm_no) > 0;
+		} catch(Exception e) { e.printStackTrace();
+		} finally { MyBatisConnection.close(session);
+		}
+		return false;
 	}
 
 }

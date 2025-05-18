@@ -60,6 +60,10 @@ public interface UserMapper {
     @Select("select * from users where user_name like #{keyword} order by user_no")
     List<User> searchByUserName(@Param("keyword") String keyword);
 
+	 @Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	 Integer pwCheck(Map<String, Object> map);
+
+
     @Select("select * from users where role = #{keyword} order by user_no")
     List<User> searchByRole(@Param("keyword") String keyword);
 
