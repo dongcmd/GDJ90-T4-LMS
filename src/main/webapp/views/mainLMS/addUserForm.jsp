@@ -14,7 +14,7 @@
 <div class="container">
     <h4 class="mb-4">사용자 추가</h4>
 
-    <form action="addUser" method="post" class="bg-white p-4 rounded shadow-sm">
+    <form action="adduser" method="post" class="bg-white p-4 rounded shadow-sm">
 
         <div class="form-group">
             <label>유저번호(아이디)</label>

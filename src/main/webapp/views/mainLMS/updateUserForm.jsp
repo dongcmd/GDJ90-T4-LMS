@@ -49,10 +49,15 @@
         </div>
 
         <div class="form-group">
-            <label>학과 코드</label>
-            <input type="text" name="major_no" class="form-control" value="${user.major_no}">
+            <label>학과</label>
+            <select type="text" name="major_no" class="form-control">
+            <option value="">-- 선택하세요 --</option>
+                <option value="1000">컴퓨터공학과</option>
+                <option value="2000">기계공학과</option>
+                <option value="3000">건축공학과</option>
+              </select>
         </div>
-
+		<c:if test="${user.role == 1 }">
         <div class="form-group">
             <label>학년</label>
             <select name="grade" class="form-control">
@@ -63,6 +68,7 @@
                 <option value="4" ${user.grade == 4 ? 'selected' : ''}>4학년</option>
             </select>
         </div>
+        </c:if>
 
         <div class="form-group">
             <label>이메일</label>

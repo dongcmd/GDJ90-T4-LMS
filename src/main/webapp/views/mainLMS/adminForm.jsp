@@ -14,12 +14,12 @@
     <h4 class="mb-4">사용자 관리</h4>
 
     <!--검색 필터 -->
-    <form action="searchUsers" method="post" class="form-inline mb-3">
+    <form action="searchusers" method="post" class="form-inline mb-3">
         <label class="mr-2">검색 조건</label>
         <select name="type" class="form-control mr-2">
             <option value="user_name">이름</option>
-            <option value="user_no" selected>유저번호</option>
-            <option value="email">이메일</option>
+            <option value="user_no">유저번호</option>
+            <option value="role">구분</option>
         </select>
         <input type="text" name="keyword" class="form-control mr-2" placeholder="검색어를 입력하세요">
         <button type="submit" class="btn btn-dark"">검색</button>
@@ -44,6 +44,7 @@
         </thead>
         <tbody>
             <c:forEach var="users" items="${users}" varStatus="status">
+            	<c:if test="${users.role != 3 }">
                 <tr>
                     <td>${status.index + 1}</td>
                     <td>${users.user_no}</td>
@@ -60,7 +61,7 @@
                     
                     <td>
                     <c:if test="${users.grade == 0}">
-                    ""
+                    -
                     </c:if>
                     <c:if test="${users.grade != 0}">
                     ${users.grade}
@@ -72,9 +73,10 @@
                         <a href="updateUserForm?user_no=${users.user_no}" class="btn btn-sm btn-outline-primary">수정</a>
                     </td>
                     <td>
-                        <a href ="deleteuser" class="btn btn-sm btn-outline-danger" >삭제</a>
+                        <a href ="deleteUserForm?user_no=${users.user_no}" class="btn btn-sm btn-outline-danger" >삭제</a>
                     </td>
                 </tr>
+                </c:if>
             </c:forEach>
         </tbody>
     </table>
