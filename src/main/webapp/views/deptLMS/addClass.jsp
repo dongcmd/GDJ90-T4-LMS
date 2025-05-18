@@ -105,7 +105,7 @@
 						</tr>
 						<tr>
 								<td colspan="5"><textarea class="form-control" name="courseSyllabus" style="resize: none; width: 600px;"></textarea></td>
-								<td style="text-align: right;"><button type="submit" class="btn btn-dark">수정</button></td>
+								<td style="text-align: right;"><button type="submit" class="btn btn-dark">추가</button></td>
 						</tr>
 				</table>
 				<input type="hidden" name="user_no" value="${login.user_no}">
