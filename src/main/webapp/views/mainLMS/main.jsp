@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="path" value="${pageContext.request.contextPath }"/>
+
 <%-- 원동인 --%>
 <!DOCTYPE html>
 <html>
@@ -58,6 +60,21 @@
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
             	</c:if>
             </h3>
+			<h2>${year}년 ${month + 1}월</h2>
+			
+			<c:forEach var="e" items="${eventList}">
+		        <tr>
+		            <td class="text-center">${e.event_name}</td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_s_date}" pattern="yyyy-MM-dd" /></td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_e_date}" pattern="yyyy-MM-dd" /></td>
+		           	<td class="text-center">
+                		<button class="btn btn-light btn-outline-secondary" type="button" onclick="openEditModal('${e.event_no}', '${e.event_name}', '${e.even_s_date}', '${e.even_e_date}')">수정</button>
+            		</td>
+            		<td class="text-center">
+            			<a class="btn btn-outline-danger" href="event?delete=${e.event_no}">삭제</a>
+            		</td>
+		        </tr>
+		    </c:forEach>
         </div>
 
         <div class="main_list col-sm-5 px-4 py-5">

@@ -24,9 +24,5 @@ public interface EventMapper {
 	int delete(int event_no);
 
 	@Select("select * from events order by event_no desc")
-	List<Event> evnetList();
-
-	@Select("select * from event where event_no = #{event_no}")
-	Event selectByNo(int event_no);
-
+	List<Event> eventList();
 }
