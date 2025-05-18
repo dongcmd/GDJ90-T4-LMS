@@ -14,7 +14,7 @@
 <div class="container">
     <h4 class="mb-4">사용자 정보 수정</h4>
 
-    <form action="updateUser" method="post" class="bg-white p-4 rounded shadow-sm">
+    <form action="updateuser" method="post" class="bg-white p-4 rounded shadow-sm">
 
         <!-- 유저번호 (수정 불가, readonly 처리) -->
         <div class="form-group">
@@ -25,11 +25,6 @@
         <div class="form-group">
             <label>이름</label>
             <input type="text" name="user_name" class="form-control" value="${user.user_name}" required>
-        </div>
-
-        <div class="form-group">
-            <label>비밀번호 (확인을 위해 입력)</label>
-            <input type="password" name="password" class="form-control" required>
         </div>
 
         <div class="form-group">
@@ -77,6 +72,11 @@
         <div class="form-group">
             <label>전화번호</label>
             <input type="text" name="tel" class="form-control" value="${user.tel}">
+        </div>
+        
+         <div class="form-group">
+            <label>비밀번호 (확인을 위해 입력)</label>
+            <input type="password" name="password" class="form-control" required>
         </div>
 
         <div class="text-right">

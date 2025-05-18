@@ -16,8 +16,8 @@ import models.users.User;
 
 public interface UserMapper {
 
-	@Insert("insert into users (user_no,password,user_name,gender,tel,email,picture)"
-				 + " values (#{id},#{pass},#{name},#{gender},#{tel},#{email},#{picture})")
+	@Insert("INSERT INTO users (user_no, password, role, email, tel, user_name, gender, grade, major_no) " +
+	        "VALUES (#{user_no}, #{password}, #{role}, #{email}, #{tel}, #{user_name}, #{gender}, #{grade}, #{major_no})")
 	int insert(User user);
 	
 	//로그인
@@ -37,20 +37,21 @@ public interface UserMapper {
 	int pwReset(@Param("user_no") String user_no, @Param("randpw") String randpw);
 	
 	//내 정보 수정
-	@Update("update users set user_name=#{user_name},gender=#{gender},tel=#{tel},email=#{email},"
-				+ "grade=#{grade}, major_no=#{major_no} where user_no=#{user_no}")
+	@Update("update users set user_name=#{user_name}, gender=#{gender}, tel=#{tel}, email=#{email},"
+				+ " grade=#{grade}, major_no=#{major_no} where user_no=#{user_no}")
 	int update(User user);
 	
 	//비밀번호 재설정
-	@Update("update users set password=#{n_pass1} where user_no=#{login}")
-	int updatePass(@Param("login") String login, @Param("n_pass1") String n_pass1);
+	@Update("update users set password=#{n_pass1} where user_no=#{user_no}")
+	int updatePass(@Param("user_no") String user_no, @Param("n_pass1") String n_pass1);
+	
+	// 사용자 삭제
+	@Delete("delete from users where user_no=#{value}")
+	int delete(String user_no);
 	
 	@Select("select * from users")
 	List<User> selectAll();
 	
-	
-	@Delete("delete from member where id=#{id}")
-	int delete(String id);
 	
 	
 	

@@ -78,7 +78,7 @@ public class UserController extends MskimRequestMapping{
 		        request.setAttribute("url", "idForm");
 		        System.out.println("null");
 		        return "alert";
-		    } else if ("999".equals(user_no)) {  // ✅ null-safe 방식으로 비교
+		    } else if ("999".equals(user_no)) {
 		        request.setAttribute("msg", "조회할 수 없는 계정입니다.");
 		        request.setAttribute("url", "idForm");
 		        System.out.println("admin");
@@ -131,12 +131,12 @@ public class UserController extends MskimRequestMapping{
 	// 로그인 아이디 체크 =================================================================
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
 		String user_no = request.getParameter("user_no");
-		String login = (String)request.getSession().getAttribute("login");
+		User login = (User)request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url", "loginForm");
 			return "alert";
-		} else if (!login.equals("999") && !user_no.equals(login)) {
+		} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
 			request.setAttribute("msg", "본인만 조회 가능합니다");
 			request.setAttribute("url", "main");
 			return "alert";
@@ -145,8 +145,8 @@ public class UserController extends MskimRequestMapping{
 	}
 	// 로그인 아이디 체크(팝업창) =================================================================
 	public String loginIdCheckPopup(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		if(login == null || login.trim().equals("")) {
+		User login = (User) request.getSession().getAttribute("login");
+		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("close", true);
 			return "alert";
@@ -157,20 +157,15 @@ public class UserController extends MskimRequestMapping{
 	@RequestMapping("info")
 	@MSLogin("loginIdCheckPopup")
 	public String info(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		User user = dao.selectOne(login);
-		request.setAttribute("user", user);  
 		return "users/info";
 	}
 	// 회원정보 수정 페이지 ====================================================================
 		@RequestMapping("updateForm")
 		@MSLogin("loginIdCheckPopup") 
 		public String updateForm(HttpServletRequest request, HttpServletResponse response) {
-			String login = (String) request.getSession().getAttribute("login");
-			User user = dao.selectOne(login);
-			request.setAttribute("user", user);
 			return "users/updateForm";
 		}		
+	
 		/* 회원정보 수정 =================================================================   */
 		@RequestMapping("update")
 		@MSLogin("loginIdCheckPopup")
@@ -185,12 +180,11 @@ public class UserController extends MskimRequestMapping{
 			user.setMajor_no(request.getParameter("major_no"));
 			user.setPassword(request.getParameter("password"));
 			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
-			String login = (String)request.getSession().getAttribute("user_no");
-			User dbUser = dao.selectOne(login);		
+			User login = (User)request.getSession().getAttribute("user_no");	
 			String msg = "비밀번호가 틀립니다.";
 			String url = "users/updateForm";
 			// 비밀번호 같을시
-			if(user.getPassword().equals(dbUser.getPassword())) {
+			if(user.getPassword().equals(login.getPassword())) {
 				if(dao.update(user)) {
 					msg = "회원정보 수정완료";
 					url = "info";
@@ -206,35 +200,24 @@ public class UserController extends MskimRequestMapping{
 		// 비밀번호 재설정 창 =================================================================
 		@RequestMapping("pwForm")
 		@MSLogin("loginIdCheckPopup")
-		public String passwordForm(HttpServletRequest request, HttpServletResponse response) {
-			String login = (String) request.getSession().getAttribute("login");
-			// 로그아웃 상태
-			if(login == null || login.trim().equals("")) {
-				request.setAttribute("msg", "로그인하세요");
-				request.setAttribute("url", "loginForm");
-				return "openeralert";
-			}
-			// 로그인 상태
+		public String pwForm(HttpServletRequest request, HttpServletResponse response) {
+			User login = (User) request.getSession().getAttribute("login");
 			return "users/pwForm";
 		}
 	    //비밀번호 재설정 ====================================================================	
 		@RequestMapping("updatepw")
-		@MSLogin("loginIdCheckPopup")
 		public String updatepw(HttpServletRequest request, HttpServletResponse response) {
 			String password = request.getParameter("password");
 			String n_pass1 = request.getParameter("new_password1");
 			String n_pass2 = request.getParameter("new_password2");
+			User login = (User) request.getSession().getAttribute("user_no");		
 			
-			String login = (String) request.getSession().getAttribute("user_no");
-			User dbUser = dao.selectOne(login);		
-			
-			// 비밀번호 일치시
-			if(password.equals(dbUser.getPassword())){
+			if(password.equals(login.getPassword())){
 		    	 if(!n_pass1.equals("") && !n_pass2.equals("") && n_pass1.equals(n_pass2)) {
-		    		if(dao.updatePass(login, n_pass1)) { // 비밀번호 수정성공
+		    		if(dao.updatePass(login.getUser_no(), n_pass1)) { // 비밀번호 수정성공
 		    			request.setAttribute("msg", "비밀번호 수정성공.");
 		    			request.setAttribute("url", "info");
-		    			return "alert"; // 알림창 띄우고 스스로 닫기
+		    			return "alert"; 
 		    		} else { // 비밀번호 수정실패
 		    			StringBuilder sb = new StringBuilder();
 		    			sb.append("alert('비밀번호 수정시 오류가 발생했습니다.');\n");
@@ -258,17 +241,6 @@ public class UserController extends MskimRequestMapping{
 				return "alert";
 		    }
 		}
-	
-	// 비밀번호 : 로그아웃 상태시 pwForm 이동 ======================================
-	public String passwordLoginCheck(HttpServletRequest request, HttpServletResponse response) {
-		String login = (String) request.getSession().getAttribute("login");
-		if(login == null || login.trim().equals("")) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url", "loginForm");
-			return "openeralert";
-		}
-		return null;
-	}
 	
 	// 관리자 탈퇴 방지 =================================================================
 	@RequestMapping("deleteForm")
@@ -337,186 +309,6 @@ public class UserController extends MskimRequestMapping{
 		request.setAttribute("msg", msg);
 		request.setAttribute("url", url);
 		return "alert";
-	}
+	}	
 	
-	// 리스트 =================================================================
-	@RequestMapping("list")
-	@MSLogin("loginAdminCheck")
-	public String list(HttpServletRequest request, HttpServletResponse response) {
-		// 관리자로 로그인한 경우만 실행
-		List<Member> list = dao.list();
-		request.setAttribute("list", list);
-		return "member/list";
-	}
-	
-	
-	
-	// 메일폼 =================================================================
-	/*
-	구글 stmp 서버를 이용하여 메일 전송하기
-	1. 구글계정에 접속하여 2단계 로그인 설정하기'
-	2. 앱 비밀번호 생성하기
-	3. 생성된 앱 비밀번호를 메모장을 이용하여 저장하기
-	qwer : uxcarnnhmurzohdo
-	4. mail-1.4.7.jar, activation-1.1.1.jar 파일 /lib/폴더에 복사
-	5. mail.properties 파일 /WEB-INF/ 폴더에 생성하기
-	*/
-	@RequestMapping("mailForm")
-	@MSLogin("loginAdminCheck")
-	public String mailForm(HttpServletRequest request, HttpServletResponse response) {
-		// id : 메일 전송을 위한 아이디 목록
-		String[] ids = request.getParameterValues("idchks");
-		List<Member> list = dao.emailList(ids);
-		request.setAttribute("list", list);
-		return "member/mailForm";
-	}
-	
-	
-	// 구글메일 보내기 =================================================================
-	@RequestMapping("mailSend")
-	@MSLogin("loginAdminCheck")
-	public String mailSend(HttpServletRequest request, HttpServletResponse response) {
-		// 구글 아이디 : dongin971228
-		String sender = request.getParameter("googleid") + "@gmail.com";
-		// 구글 앱 비밀번호 : uxcarnnhmurzohdo
-		String passwd = request.getParameter("googlepw");
-//		passwd="yokynyalewnaktcw";
-		// recipient : 테스트 <test1이메일>, 테스트2 <test2이메일>
-		String recipient = request.getParameter("recipient");
-		String title = request.getParameter("title");
-		String content = request.getParameter("content");
-		String mtype = request.getParameter("mtype");
-		String result = "메일 전송시 오류가 발생했습니다.";
-		Properties prop = new Properties(); // 이메일 전송을 위한 환경설정값
-		try {
-			String path = request.getServletContext().getRealPath("/") + "WEB-INF/mail.properties";
-			FileInputStream fis = new FileInputStream(path);
-			prop.load(fis); // fis가 참조하는 파일의 내용을 properties 객체의 요소로 저장
-			prop.put("mail.smtp.user",sender); // 전송 이메일 주소
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		// 메일전송을 위한 인증 객체
-		MyAuthenticator auth = new MyAuthenticator(sender, passwd);
-		// prop : 메일 전송을 위한 시스템 환경설정
-		// auth : 인증객체
-		// 메일 전송을 위한 연결 객체
-		Session mailSession = Session.getInstance(prop, auth);
-		// msg : 메일로 전송되는 데이터 객체
-		MimeMessage msg = new MimeMessage(mailSession);
-		List<InternetAddress> addrs = new ArrayList<InternetAddress>();
-		try {
-			String[] emails = recipient.split(",");
-			for(String email : emails) {
-				try {
-					// new String(이메일주소, 인코딩코드) 
-					// email.getBytes("UTF-8") : byte[] 배열
-					// 8859_1 : 웹의 기본 인코딩방식
-					addrs.add(new InternetAddress(new String(email.getBytes("UTF-8"),"8859_1")));
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			InternetAddress[] address = new InternetAddress[emails.length];
-			for(int i=0; i<addrs.size(); i++) {
-				address[i] = addrs.get(i);
-			}
-	
-			InternetAddress from = new InternetAddress(sender);
-			msg.setFrom(from); // 보내는 이메일 주소
-			// Message.RecipientType.TO : 수신자
-			// Message.RecipientType.CC : 참고인
-			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject(title); // 제목
-			msg.setSentDate(new Date()); // 전송일자
-			msg.setText(content); // 내용
-			// multipart : 내용, 첨부파일1~2 내용분리 (파츠개념)
-			MimeMultipart multipart = new MimeMultipart();
-			MimeBodyPart body = new MimeBodyPart();
-			body.setContent(content,mtype); // 내용
-			multipart.addBodyPart(body);
-			msg.setContent(multipart); // msg 안에 내용,첨부파일 등 저장
- 			Transport.send(msg); // 메일 전송
- 			result = "메일 전송이 완료 되었습니다.";
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-		// mailForm.jsp 에 구글ID, 구글비밀번호 각자 계정을 value 속성값을 등록
-		request.setAttribute("msg", result);
-		request.setAttribute("url", "list");
-		return "alert";
-	}
-	
-	// ID/PW 인증 =================================================================
-	// 내부클래스 :
-	// final 다른클래스의 부모 클래스가 될수 없는 클래스
-	public final class MyAuthenticator extends Authenticator{
-		private String id;
-		private String pw;
-		public MyAuthenticator(String id, String pw) {
-			this.id = id;
-			this.pw = pw;
-		}
-		protected PasswordAuthentication getPasswordAuthentication() {
-			return new PasswordAuthentication(id, pw);
-		}
-	}
-	
-	/* 비밀번호 변경 =================================================================
-	1. 로그인한 사용자의 비밀번호 변경만 가능 => 로그인 부분 검증
-	   로그아웃 상태 : 로그인 하세요 메세지 출력 후
-	   				 opener 창을 loginForm 페이지로 이동. 현재 페이지 닫기
-	   				 =>  passwordLoginCheck() 메서드 기능
-	2. 파라미터 저장 (pass, chgpass)
-	3. 비밀번호 검증 : 현재 비밀번호로 비교
-	   비밀번호 오류 : 비밀번호 오류 메세지 출력 후 현재 페이지를 passwordForm로 이동
-	4. db에 비밀번호 수정
-		boolen MemberDao.updatePass(id, 변경 비밀번호)
-		- 수정성공 : 성공 메세지 출력 후 opener 페이지 info로 이동. 현재페이지 닫기
-		- 수정실패 : 수정실패 메세지 출력 후 현재 페이지 닫기 
-	*/	
-	
-	/* 아이디 중복체크
-	1. id 파라미터
-	2. id를 이용하여 db에서 조회.
-	3. DB에서 조회가 안되는 경우 : 사용한 아이디 입니다. 초록색으로 화면 출력
-       DB에서 조회가 되는 경우 : 사용 중인 아이디 입니다. 빨간색 화면 출력
-    4. 닫기 버튼 클릭되면 화면 닫기   
-	*/
-	@RequestMapping("idchk")
-	public String idchk(HttpServletRequest request, HttpServletResponse response) {
-		String id = request.getParameter("id");
-		Member mem = dao.selectOne(id);
-		String msg = null;
-		boolean able = true;
-		if(mem == null) {
-			msg = "사용가능한 아이디 입니다.";
-		} else {
-			msg = "사용 중인 아이디 입니다.";
-			able = false;
-		}
-		request.setAttribute("msg", msg);
-		request.setAttribute("able", able);
-		return "member/idchk";
-	}
-	
-	@RequestMapping("picture")
-	public String picture (HttpServletRequest request,
-			HttpServletResponse response) {
-		String path = request.getServletContext().getRealPath("")+"picture/";
-		String fname = null;
-		File f = new File(path); //업로드되는 폴더 정보
-		if(!f.exists()) f.mkdirs(); //폴더 생성
-		MultipartRequest multi = null;
-		try {
-				multi = new MultipartRequest(request,path, 10*1024*1024, "utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		fname = multi.getFilesystemName("picture"); //선택된 파일의 이름
-		request.setAttribute("fname", fname);
-		return "member/picture";
-	}
 }

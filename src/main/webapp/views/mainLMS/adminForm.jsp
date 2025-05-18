@@ -69,10 +69,10 @@
                     <td>${users.email}</td>
                     <td>${users.tel}</td>
                     <td>
-                        <a href="updateUserForm?id=${users.user_no}" class="btn btn-sm btn-outline-primary">수정</a>
+                        <a href="updateUserForm?user_no=${users.user_no}" class="btn btn-sm btn-outline-primary">수정</a>
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-outline-danger" onclick="deleteConfirm('${user.user_no}', '${user.user_name}')">삭제</a>
+                        <a href ="deleteuser" class="btn btn-sm btn-outline-danger" >삭제</a>
                     </td>
                 </tr>
             </c:forEach>
@@ -84,36 +84,5 @@
         <a href="addUserForm" class="btn btn-dark">사용자 추가</a>
     </div>
 </div>
-<script type="text/javascript">
-<script>
-function deleteConfirm(userNo, userName) {
-    if (confirm("사용자 [" + userName + "] 계정을 삭제하시겠습니까?")) {
-        const password = prompt("비밀번호를 입력하세요");
-
-        if (password) {
-            // 폼 생성 후 submit 방식으로 비밀번호, user_no 전송
-            const form = document.createElement("form");
-            form.method = "post";
-            form.action = "deleteuser";
-
-            const userField = document.createElement("input");
-            userField.type = "hidden";
-            userField.name = "user_no";
-            userField.value = user_no;
-
-            const pwField = document.createElement("input");
-            pwField.type = "hidden";
-            pwField.name = "password";
-            pwField.value = password;
-
-            form.appendChild(userField);
-            form.appendChild(pwField);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
-}
-</script>
-
 </body>
 </html>
