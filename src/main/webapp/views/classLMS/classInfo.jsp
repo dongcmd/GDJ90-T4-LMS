@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- 오예록 --%>
+<%-- 원동인 --%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -12,38 +12,37 @@
        <table class="table table-bordered">
        		<tr>
        			<th style="background-color: #eee;">과목코드</th>
-       			<td>${class_no}</td>
+       			<td>123456</td>
        			<th style="background-color: #eee;">과목명</th>
-       			<td>${class_name}</td>
+       			<td>자바스크립트</td>
        			<th style="background-color: #eee;">강의 시간</th>
-       			<td>${s_time} ~ ${e_time}교시</td>
+       			<td>월 09:00 ~ 12:00</td>
        			<th style="background-color: #eee;">담당교수</th>
-       			<td></td>
+       			<td>홍길동</td>
        		</tr>
        		
        		<tr>
        			<th style="background-color: #eee;">학과</th>
-       			<td>${major_no}</td>
+       			<td>컴퓨터공학과</td>
        			<th style="background-color: #eee;">학년</th>
-       			<td>${class_grade}</td>
+       			<td>1</td>
        			<th style="background-color: #eee;">구분</th>
-       			<td></td>
+       			<td>전공</td>
        			<th style="background-color: #eee;">강의실</th>
-       			<td>${classroom}</td>
+       			<td>101</td>
        		</tr>
 		</table>
 		
-		<h3 class="mb-4">강의 계획서</h3>
-		<table class="table table-bordered">
-       		<tr>
-       			<th style="background-color: #eee;">파일</th>
-       			<td>${file}</td>
-       		</tr>
-       	</table>
-       	
-   		<input type="text" name="file" value="${file}">
-		<a class="btn btn-dark" href="${pageContext.request.contextPath}/download?id=${file.id}">
-			다운로드
-		</a>
+		<h3 class="my-4">강의 계획서</h3>
+		<div class="d-flex mb-4" style="gap:10px">
+			<table class="table table-bordered col-sm-4 mb-0">
+	       		<tr>
+	       			<th style="background-color: #eee;">파일</th>
+	       			<td>중간고사.pdf</td>
+	       		</tr>
+       		</table>
+			<button type="button" class="btn btn-dark">다운로드</button>
+		</div>
+		<textarea class="form-control" style=" resize: none; " rows="20">형 변환 문제를 통한 자료형의 이해, 출력 알고림즘 문제를 이용하여 공부합니다.</textarea>
 	</body>
 </html>

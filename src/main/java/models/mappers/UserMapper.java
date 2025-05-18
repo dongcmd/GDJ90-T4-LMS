@@ -9,14 +9,15 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import models.users.Member;
 import models.users.User;
 
 /* model/mapper/UsersMapper.java - 김기흔 */
 
 public interface UserMapper {
 
-	@Insert("insert into member (id,pass,name,gender,tel,email,picture)"
-				 + " values (#{id},#{pass},#{name},#{gender},#{tel},#{email},#{picture})")
+	@Insert("INSERT INTO users (user_no, password, role, email, tel, user_name, gender, grade, major_no) " +
+	        "VALUES (#{user_no}, #{password}, #{role}, #{email}, #{tel}, #{user_name}, #{gender}, #{grade}, #{major_no})")
 	int insert(User user);
 	
 	//로그인
@@ -36,21 +37,22 @@ public interface UserMapper {
 	int pwReset(@Param("user_no") String user_no, @Param("randpw") String randpw);
 	
 	//내 정보 수정
-	@Update("update users set user_name=#{user_name},gender=#{gender},tel=#{tel},email=#{email},"
-				+ "grade=#{grade}, major_no=#{major_no} where user_no=#{user_no}")
+	@Update("update users set user_name=#{user_name}, gender=#{gender}, tel=#{tel}, email=#{email},"
+				+ " grade=#{grade}, major_no=#{major_no} where user_no=#{user_no}")
 	int update(User user);
 	
 	//비밀번호 재설정
-	@Update("update users set password=#{n_pass1} where user_no=#{login}")
-	int updatePass(@Param("login") String login, @Param("n_pass1") String n_pass1);
-
-	//모든 정보 불러오기
+	@Update("update users set password=#{n_pass1} where user_no=#{user_no}")
+	int updatePass(@Param("user_no") String user_no, @Param("n_pass1") String n_pass1);
+	
+	// 사용자 삭제
+	@Delete("delete from users where user_no=#{value}")
+	int delete(String user_no);
+	
 	@Select("select * from users")
-	List<User> getAllUsers();
+	List<User> selectAll();
 	
 	
-	@Delete("delete from member where id=#{id}")
-	int delete(String id);
 	
 	
 	@Select("select pass from member where id=#{id} and email=#{email} and tel =#{tel}")
@@ -59,6 +61,11 @@ public interface UserMapper {
 
 	@Delete("select * from users where #{type}=#{keyword}")
 	List<User> searchUsers(@Param("type") String type, @Param("keyword") String keyword);
+
+	@Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	int pwCheck(Map<String, Object> map);
+
+
 
 
 

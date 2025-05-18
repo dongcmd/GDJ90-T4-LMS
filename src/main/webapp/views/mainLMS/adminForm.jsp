@@ -22,7 +22,7 @@
             <option value="email">이메일</option>
         </select>
         <input type="text" name="keyword" class="form-control mr-2" placeholder="검색어를 입력하세요">
-        <button type="submit" class="btn btn-primary">검색</button>
+        <button type="submit" class="btn btn-dark"">검색</button>
     </form>
 
     <!-- 사용자 테이블 -->
@@ -43,40 +43,46 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="user" items="${users}" varStatus="status">
+            <c:forEach var="users" items="${users}" varStatus="status">
                 <tr>
                     <td>${status.index + 1}</td>
-                    <td>${user.user_name}</td>
-                    <td>${user.user_no}</td>
+                    <td>${users.user_no}</td>
+                    <td>${users.user_name}</td>
                     <td>
                         <c:choose>
-                            <c:when test="${user.role == 1}">학생</c:when>
-                            <c:when test="${user.role == 2}">교수</c:when>
+                            <c:when test="${users.role == 1}">학생</c:when>
+                            <c:when test="${users.role == 2}">교수</c:when>
                             <c:otherwise>관리자</c:otherwise>
                         </c:choose>
                     </td>
-                    <td>${user.gender == 1 ? '남' : '여'}</td>
-                    <td>${user.major_no}</td>
-                    <td>${user.grade}</td>
-                    <td>${user.email}</td>
-                    <td>${user.tel}</td>
+                    <td>${users.gender == 1 ? '남' : '여'}</td>
+                    <td>${users.major_no}</td>
+                    
                     <td>
-                        <a href="updateaccountForm?id=${user.user_no}" class="btn btn-sm btn-outline-primary">수정</a>
+                    <c:if test="${users.grade == 0}">
+                    ""
+                    </c:if>
+                    <c:if test="${users.grade != 0}">
+                    ${users.grade}
+                    </c:if>
+                    </td>
+                    <td>${users.email}</td>
+                    <td>${users.tel}</td>
+                    <td>
+                        <a href="updateUserForm?user_no=${users.user_no}" class="btn btn-sm btn-outline-primary">수정</a>
                     </td>
                     <td>
-                        <a href="deleteaccount" class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                        <a href ="deleteuser" class="btn btn-sm btn-outline-danger" >삭제</a>
                     </td>
                 </tr>
             </c:forEach>
         </tbody>
     </table>
 
-    <!-- ➕ 사용자 추가 버튼 -->
+    <!--사용자 추가 버튼 -->
     <div class="d-flex justify-content-end">
-        <a href="addUserForm" class="btn btn-success">사용자 추가</a>
+        <a href="addUserForm" class="btn btn-dark">사용자 추가</a>
     </div>
-
 </div>
-
 </body>
 </html>
