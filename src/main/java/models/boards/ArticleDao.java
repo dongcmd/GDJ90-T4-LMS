@@ -69,7 +69,7 @@ public class ArticleDao {
 		return false;
 	}
 
-	public String getBoard_id(String arti_no) {
+	public String getBoard_id(int arti_no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
 			return session.getMapper(cls).getBoard_id(arti_no);
@@ -81,7 +81,7 @@ public class ArticleDao {
 		return null;
 	}
 
-	public boolean delete(String arti_no) {
+	public boolean delete(int arti_no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
 			return session.getMapper(cls).delete(arti_no) > 0;

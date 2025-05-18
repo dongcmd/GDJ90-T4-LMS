@@ -60,9 +60,13 @@ public class MainLMSController extends MskimRequestMapping{
 	@RequestMapping("main")
 	@MSLogin("loginIdCheck")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
-		String user_no = request.getParameter("user_no");
 		User login = (User)request.getSession().getAttribute("login");
-		return null;
+		if(login == null) {
+			request.setAttribute("msg", "로그인 하세요");
+			request.setAttribute("url","../users/loginForm");
+			return "alert";
+		}
+		return null; // 정상인 경우
 	}
 
 	// 사용자 관리 폼(관리자 외 접근권한 없음)=================================================

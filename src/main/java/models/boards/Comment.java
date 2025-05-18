@@ -8,7 +8,7 @@ public class Comment {
     private String user_no;
     private String comm_content;
     private Date comm_date;
-    private String user_name;
+    private String user_name; // 추가-댓글 작성자명
 
     public String getUser_name() {
 		return user_name;
