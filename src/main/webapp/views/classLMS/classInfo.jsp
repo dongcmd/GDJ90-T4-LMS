@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	</head>
 	<body>
-       <table class="table table-bordered">
+       <table class="table table-bordered" >
        		<tr>
        			<th style="background-color: #eee;">과목코드</th>
        			<td>123456</td>
