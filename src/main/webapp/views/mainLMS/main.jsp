@@ -54,7 +54,9 @@
 
         <div class="main_list col-sm-5 px-4 py-5">
             <h3 class="mb-4 fw_b">캘린더 
-            	<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
+            	<c:if test="${login.role == 3}">
+            		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
+            	</c:if>
             </h3>
         </div>
 
