@@ -1,5 +1,7 @@
 package models.classes;
 
+import java.util.List;
+
 //오예록
 public class Class1 {
 	private String class_no; // 강의코드
@@ -18,16 +20,16 @@ public class Class1 {
 	private String c_plan; // 강의계획
 	private String file; // 첨부파일
 	private String prof; // 교수명
+	private List<Integer> days;
 
-	
 	public String getProf() {
 		return prof;
 	}
-	
+
 	public void setProf(String prof) {
 		this.prof = prof;
 	}
-	
+
 	public String getClass_no() {
 		return class_no;
 	}
@@ -148,12 +150,20 @@ public class Class1 {
 		this.file = file;
 	}
 
+	public List<Integer> getDays() {
+		return days;
+	}
+
+	public void setDays(List<Integer> days) {
+		this.days = days;
+	}
+
 	@Override
 	public String toString() {
 		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
 				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
 				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
-				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", prof=" + prof + "]";
+				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + "]";
 	}
 
 }
