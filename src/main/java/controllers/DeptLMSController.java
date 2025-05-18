@@ -2,7 +2,6 @@ package controllers;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,7 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.Class1;
 import models.classes.Class1Dao;
+import models.users.User;
 
 @WebServlet(urlPatterns = { "/deptLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class DeptLMSController extends MskimRequestMapping {
@@ -23,6 +23,11 @@ public class DeptLMSController extends MskimRequestMapping {
 	@RequestMapping("addClass1")
 	public String addClass(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();
+		
+		User login = (User) request.getSession().getAttribute("login");
+		cls.setMajor_no(login.getMajor_no());
+	    cls.setUser_no (login.getUser_no());
+		
 	    Calendar cal = Calendar.getInstance();
 	    int year  = cal.get(Calendar.YEAR);
 	    int month = cal.get(Calendar.MONTH) + 1;
@@ -33,8 +38,6 @@ public class DeptLMSController extends MskimRequestMapping {
 		cls.setClass_name(request.getParameter("className"));
 		cls.setClass_no(request.getParameter("classNo"));
 		cls.setBan(request.getParameter("classBan"));
-		cls.setMajor_no(request.getParameter("major_no"));
-		cls.setMajor_no(request.getParameter("user_no"));
 		cls.setClass_grade(Integer.parseInt(request.getParameter("classGrade")));
 		cls.setCredit(Integer.parseInt(request.getParameter("credit")));
 		cls.setMax_p(Integer.parseInt(request.getParameter("maxP")));
@@ -54,10 +57,10 @@ public class DeptLMSController extends MskimRequestMapping {
 		// 3) DAO 호출 및 결과 처리
 		if (dao.insert(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 추가되었습니다.");
-			request.setAttribute("url", "list");
+			request.setAttribute("url", "addClass");
 		} else {
 			request.setAttribute("msg", "강의 추가 중 오류가 발생했습니다.");
-			request.setAttribute("url", "addForm");
+			request.setAttribute("url", "addClass");
 		}
 		return "alert";
 	}
