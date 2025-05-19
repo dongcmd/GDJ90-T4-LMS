@@ -26,6 +26,7 @@ import models.users.UserDao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
+import models.others.NotificationDao;
 
 
 @WebServlet(urlPatterns = {"/mainLMS/*"},
@@ -76,7 +77,6 @@ public class MainLMSController extends MskimRequestMapping{
 		// 원동인(캘린더)
 		List<Event> event_main = eventDao.eventList();
 		request.setAttribute("event_main", event_main);
-
 		LocalDate now = LocalDate.now();
 		int year = now.getYear();
 		int month = now.getMonthValue(); // 1~12
@@ -270,8 +270,8 @@ public class MainLMSController extends MskimRequestMapping{
 	}
 	
 	// 원동인
-	private EventDao eventDao = new EventDao();
-	private Notification NotifiDao = new Notification();
+	private EventDao eventDao = new EventDao();	
+	private NotificationDao NotifiDao = new NotificationDao();
 	
 	// 학사일정(관리자 권한)
 	@RequestMapping("event")
@@ -322,5 +322,14 @@ public class MainLMSController extends MskimRequestMapping{
 	    // 리스트
 	    request.setAttribute("eventList", eventDao.eventList());
 	    return "mainLMS/event";
-	}	
+	}
+	
+	// 알림창
+	@RequestMapping("Notification")
+	public String notifications(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("테스트+++++++++++++++++++++");
+		List<Notification> notificationsList = NotifiDao.notifList();
+		request.setAttribute("notificationsList", notificationsList);
+		return "mainLMS/main";
+	}
 }

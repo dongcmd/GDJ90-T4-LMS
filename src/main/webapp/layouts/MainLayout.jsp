@@ -102,28 +102,29 @@
                 </div>
                 <div class="modal-body">
 
-                    <table class="table">
+                    <table class="table thead-light">
                         <thead>
                             <tr>
-                                <th class="checkbox-column border-top-0">
+                                <th class="checkbox-column border-top-0 fw_b">
                                     <input type="checkbox" name="alchk" onchange="allchkbox(this)"> 고정
                                 </th>
-                                <th class="border-top-0" scope="col">No</th>
-                                <th class="border-top-0" scope="col">알림내용</th>
-                                <th class="border-top-0" scope="col">알림시간</th>
-                                <th class="border-top-0" scope="col">삭제</th>
+                                <th class="border-top-0 fw_b" scope="col">No</th>
+                                <th class="border-top-0 fw_b" scope="col">알림내용</th>
+                                <th class="border-top-0 fw_b" scope="col">알림시간</th>
+                                <th class="border-top-0 fw_b" scope="col">삭제</th>
                             </tr>
                         </thead>
-                        <tr>
-                            <td class="checkbox-column">
-                                <input type="checkbox" name="idchks" class="idchk" value="">
-                                ${sessionScope.is_pinned}
-                            </td>
-                            <td>${sessionScope.notif_no}</td>
-                            <td>${sessionScope.notif_content}</td>
-                            <td>${sessionScope.notif_date}</td>
-                            <td><a href="#" class="btn btn-dark">삭제</a></td>
-                        </tr>
+                        
+                        <c:forEach var="noti" items="${notificationsList}">
+					        <tr>
+					            <td class="text-center">${noti.notif_no}</td>
+					            <td class="text-center">${noti.notif_content}</td>
+					            <td class="text-center">${noti.notif_date}></td>
+			            		<td class="text-center">
+			            			<a class="btn btn-outline-danger" href="event?delete=${noti.notif_no}">알림삭제</a>
+			            		</td>
+					        </tr>
+					    </c:forEach>
                     </table>
                 </div>
               </div>
@@ -145,7 +146,7 @@
 	                    <a href="../deptLMS/deptMain" target="_blank">학과 LMS</a>
 	                </li>
 
-					<c:if test="${login.role == 2}">
+					<c:if test="${login.role == 1}">
 		                <li class="nav-item">
 		                    <a href="../mainLMS/signUpClass">수강신청</a>
 		                </li>

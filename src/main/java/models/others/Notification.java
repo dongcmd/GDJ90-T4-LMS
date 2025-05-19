@@ -3,17 +3,18 @@ package models.others;
 import java.util.Date;
 
 public class Notification {
-    private String notif_no;  // 알림번호
+    private int notif_no;  // 알림번호
     private String user_no; // 유저번호
     private String notif_content; // 알림내용
     private Date notif_date_; // 알림 작성시간
     private Boolean is_pinned; // 알림 고정
     private Boolean is_read; // 알림 여부
     
-	public String getNotif_no() {
+    
+	public int getNotif_no() {
 		return notif_no;
 	}
-	public void setNotif_no(String notif_no) {
+	public void setNotif_no(int notif_no) {
 		this.notif_no = notif_no;
 	}
 	public String getUser_no() {
