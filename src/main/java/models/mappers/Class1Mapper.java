@@ -8,6 +8,7 @@ import models.classes.Class1;
 
 public interface Class1Mapper {
 
+
 	@Select("SELECT * " + "FROM classes "
 			+ "WHERE class_no = #{class_no} " + "AND ban = #{ban} " + "AND year = #{year} " + "AND term = #{term}")
 	Class1 selectOne(Class1 class1);
@@ -15,6 +16,7 @@ public interface Class1Mapper {
 	@Select("SELECT days " + "FROM class_days " + "WHERE class_no = #{class_no} " + "AND ban = #{ban} "
 			+ "AND year = #{year} " + "AND term = #{term}")
 	List<Integer> selectDaysByClass(Class1 class1);
+
 
 	@Select("SELECT * " + "FROM classes " + "WHERE user_no = #{user_no}")
 	List<Class1> selectByProfessor(@Param("user_no") String userNo);
@@ -24,7 +26,9 @@ public interface Class1Mapper {
 			+ "(#{class_no}, #{ban}, #{year}, #{term}, #{major_no}, #{user_no}, "
 			+ "#{class_name}, #{class_grade}, #{credit}, #{classroom}, "
 			+ "#{s_time}, #{e_time}, #{max_p}, #{c_plan}, #{file})")
+
 	int insertClass(Class1 class1);
+
 
 	@Insert("INSERT INTO class_days " + "(class_no, ban, year, term, days) " + "VALUES "
 			+ "(#{class1.class_no}, #{class1.ban}, #{class1.year}, #{class1.term}, #{day})")
@@ -54,4 +58,5 @@ public interface Class1Mapper {
 	@Insert("INSERT INTO registered_classes(user_no, class_no, ban, year, term, status) "
 			+ "VALUES (#{user_no}, #{class_no}, #{ban}, #{year}, #{term}, 0)")
 	boolean insertRegisteredClass(Class1 cls);
+
 }

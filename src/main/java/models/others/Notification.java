@@ -10,7 +10,6 @@ public class Notification {
     private Boolean is_pinned; // 알림 고정
     private Boolean is_read; // 알림 여부
     
-    
 	public int getNotif_no() {
 		return notif_no;
 	}

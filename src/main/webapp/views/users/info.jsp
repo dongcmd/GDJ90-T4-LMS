@@ -30,21 +30,21 @@
                 기본 정보
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>아이디(학번):</strong> ${login.user_no}</li>
-                <li class="list-group-item"><strong>이름:</strong> ${login.user_name}</li>
-                <li class="list-group-item"><strong>성별:</strong> ${login.gender == 1 ? "남" : "여"}</li>
-                <c:if test="${login.role == 1}">
-                    <li class="list-group-item"><strong>학년:</strong> ${login.grade}</li>
+                <li class="list-group-item"><strong>아이디(학번):</strong> ${user.user_no}</li>
+                <li class="list-group-item"><strong>이름:</strong> ${user.user_name}</li>
+                <li class="list-group-item"><strong>성별:</strong> ${user.gender == 1 ? "남" : "여"}</li>
+                <c:if test="${user.role == 1}">
+                    <li class="list-group-item"><strong>학년:</strong> ${user.grade}</li>
                 </c:if>
-                <c:if test="${login.role == 1 || login.role == 2}">
-                <li class="list-group-item"><strong>학과:</strong> ${login.major_no}</li>
+                <c:if test="${user.role != 3}">
+                <li class="list-group-item"><strong>학과:</strong> ${user.major_no}</li>
                 </c:if>
-                <c:set var="tel1" value="${fn:substring(login.tel, 0, 3)}" />
-                <c:set var="tel2" value="${fn:substring(login.tel, 3, 7)}" />
-                <c:set var="tel3" value="${fn:substring(login.tel, 7, 11)}" />
+                <c:set var="tel1" value="${fn:substring(user.tel, 0, 3)}" />
+                <c:set var="tel2" value="${fn:substring(user.tel, 3, 7)}" />
+                <c:set var="tel3" value="${fn:substring(user.tel, 7, 11)}" />
                 <li class="list-group-item"><strong>전화번호:</strong> ${tel1}-${tel2}-${tel3}</li>
 
-                <li class="list-group-item"><strong>이메일:</strong> ${login.email}</li>
+                <li class="list-group-item"><strong>이메일:</strong> ${user.email}</li>
             </ul>
         </div>
 

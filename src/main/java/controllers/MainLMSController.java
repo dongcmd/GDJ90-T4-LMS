@@ -4,8 +4,10 @@ import java.util.List;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
+
 import java.util.Map;
 
 import java.util.ArrayList;
@@ -22,15 +24,20 @@ import javax.servlet.http.HttpServletResponse;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
-
 import models.users.User;
 import models.users.UserDao;
+
+
+import models.others.Event;
+import models.others.EventDao;
+import models.others.Notification;
 import models.classes.Class1;
 import models.classes.Class1Dao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
 import models.others.NotificationDao;
+
 
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
@@ -39,19 +46,15 @@ public class MainLMSController extends MskimRequestMapping {
 	private Notification NotifiDao = new Notification();
 
 	// 로그인 아이디 체크 =================================================================
-	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-		String user_no = request.getParameter("user_no");
-		User login = (User) request.getSession().getAttribute("login");
-		if (login == null) {
-			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "../users/loginForm");
-			return "alert";
-		} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
-			request.setAttribute("msg", "본인만 조회 가능합니다");
-			request.setAttribute("url", "main");
-			return "alert";
-		}
-		return null; // 정상인 경우
+
+		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
+			User login = (User)request.getSession().getAttribute("login");
+			if(login == null) {
+				request.setAttribute("msg", "로그인 하세요");
+				request.setAttribute("url", "../users/loginForm");
+				return "alert";
+			}
+			return null; // 정상인 경우
 	}
 
 	//관리자 검증
@@ -337,6 +340,61 @@ public class MainLMSController extends MskimRequestMapping {
 	}
 
 	
+
+	// 원동인
+	private EventDao eventDao = new EventDao();
+	private Notification NotifiDao = new Notification();
+	
+	// 학사일정(관리자 권한)
+	@RequestMapping("event")
+	@MSLogin("loginAdminCheck")
+	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    // 삭제
+	    String deleteNo = request.getParameter("delete");
+	    if (deleteNo != null) {
+	        int no = Integer.parseInt(deleteNo);
+	        if (eventDao.delete(no)) {
+	            request.setAttribute("msg", "삭제 완료");
+	            request.setAttribute("url", "mainLMS/event");
+	        } else {
+	            request.setAttribute("msg", "삭제 실패");
+	            request.setAttribute("url", "mainLMS/event");
+	        }
+	        return "alert";
+	    }
+
+	    String event_name = request.getParameter("event_name");
+	    String s_date = request.getParameter("even_s_date");
+	    String e_date = request.getParameter("even_e_date");
+
+	    if (event_name != null && s_date != null && e_date != null) {
+	        Event event = new Event();
+	        event.setEvent_name(event_name);
+	        event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
+	        event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
+
+	        String noStr = request.getParameter("event_no");
+	        boolean result;
+	        // 등록/수정
+	        if (noStr != null && !noStr.equals("")) {
+	            event.setEvent_no(Integer.parseInt(noStr));
+	            result = eventDao.update(event);
+	        } else {
+	            result = eventDao.insert(event);
+	        }
+	        
+	        if (result) {
+	            request.setAttribute("msg", "처리 성공");
+	        } else {
+	            request.setAttribute("msg", "처리 실패");
+	        }
+	        return "alert";
+	    }
+	    // 리스트
+	    request.setAttribute("eventList", eventDao.eventList());
+	    return "mainLMS/event";
+
 	// 알림창
 	@RequestMapping("Notification")
 	public String notifications(HttpServletRequest request, HttpServletResponse response) {
@@ -391,4 +449,14 @@ public class MainLMSController extends MskimRequestMapping {
 	    request.setAttribute("url", "signUpClass");
 	    return "alert";
 	}
+	
+	// 메인 캘린더
+	@RequestMapping("main")
+	public String eventPage(HttpServletRequest request) {
+		List<Event> event_main = eventDao.eventList();
+	    request.setAttribute("eventList", event_main);
+
+	    return "mainLMS/main";  // JSP 경로
+	}
+	
 }

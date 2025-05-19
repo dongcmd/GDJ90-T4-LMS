@@ -84,7 +84,7 @@
                   <a class="nav-link" onclick="win_open('../users/info')"><span>${login.user_name}</span> 님 반갑습니다.</a> <!-- 기흔 수정 -->
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
+                    <button type="submit" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
                 </li>
                 <li class="nav-item">
                     <a href="../users/logout" class="btn btn-dark" role="button">로그아웃</a> <!-- 기흔 수정 -->

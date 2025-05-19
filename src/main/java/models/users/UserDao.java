@@ -116,6 +116,7 @@ public class UserDao {
 		return false;
 	}
 
+
 	public String pwSearch(String id, String email, String tel) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
@@ -127,7 +128,7 @@ public class UserDao {
 		}
 		return null;
 	}
-
+  
 	// 비밀번호 재설정
 	public boolean updatePass(String user_no, String n_pass1) {
 		SqlSession session = MyBatisConnection.getConnection();

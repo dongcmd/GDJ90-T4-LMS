@@ -9,10 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import models.users.Member;
 import models.users.User;
 
-/* model/mapper/UsersMapper.java - 김기흔 */
+/* model/mappers/UsersMapper.java - 김기흔 */
 
 public interface UserMapper {
 
@@ -54,18 +53,21 @@ public interface UserMapper {
 	@Select("select * from users")
 	List<User> selectAll();
 
-    @Select("select * from users where user_no like #{keyword} order by user_no")
+    //사용자 검색========================================================================
+	@Select("select * from users where user_no like #{keyword} order by user_no")
     List<User> searchByUserNo(@Param("keyword") String keyword);
     
     @Select("select * from users where user_name like #{keyword} order by user_no")
     List<User> searchByUserName(@Param("keyword") String keyword);
 
-	 @Select("select user_no from users where user_no = #{user_no} and password = #{password}")
-	 Integer pwCheck(Map<String, Object> map);
-
-
     @Select("select * from users where role = #{keyword} order by user_no")
     List<User> searchByRole(@Param("keyword") String keyword);
+	//==============================================================================
+    
+    @Select("select user_no from users where user_no = #{user_no} and password = #{password}")
+	Integer pwCheck(Map<String, Object> map);
+
+
 
 
 

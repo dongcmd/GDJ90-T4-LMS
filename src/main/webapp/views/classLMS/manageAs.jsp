@@ -4,6 +4,9 @@
 이전 파일명
 manageassignment
  --%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -13,6 +16,11 @@ manageassignment
 	</head>
 	<body>
 		<h3 class="my-4">컴퓨터 공학과 과제관리</h3>
+        <input type="hidden" name="class_no" value="${class_no}">
+        <input type="hidden" name="ban" value="${ban}">
+        <input type="hidden" name="year" value="${year}">
+        <input type="hidden" name="term" value="${term}">
+        		
 		<table class="table table-bordered">
        		<tr>
        			<th style="background-color: #eee;">과목코드</th>
@@ -50,20 +58,24 @@ manageassignment
 				</tr>
 			</thead>
 			
-			<%-- <c:forEach var="classesList" items="${classesList}"></c:forEach> --%>
+
+			<c:forEach var="aslist" items="${asList}">
 			<tbody>
 				<tr>
-					<td style="text-align: center">형변환</td>
-					<td>2025-03-01 ~ 2025-05-10</td>
-					<td style="text-align: center">형변환 연습문제 1~10번까지 풀기</td>
+					<td style="text-align: center"><a href="stuAsListForm">${aslist.as_name}</a></td>
+					<td><fmt:formatDate value="${aslist.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
+						~ <fmt:formatDate value="${aslist.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
+					<td style="text-align: center">${aslist.as_content }</td>
 					<td style="text-align: center">3 / 10</td>
-					<td><a href="updateAssignmentForm" class="btn btn-dark" role="button" style="align-items: center">과제수정
-						<a href="deleteAssignmentForm" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a>
+					<td class="d-flex justify-content-center" style="gap: 10px;">
+						<a href="updateAssignmentForm?as_no=${aslist.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
+						<a href="deleteAssignmentForm?as_no=${aslist.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a></td>
 				</tr>
 			</tbody>
+			</c:forEach>
 		</table>
 		
-		<div class="m-5">
+		<div class="m-5 d-flex justify-content-end" style="gap: 10px;">
 			<a href="addAssignmentForm" class="btn btn-dark" role="button">과제추가</a>
 			<a href="#" class="btn btn-dark" role="button">과제 다운로드</a>
 			<a href="#" class="btn btn-dark" role="button">파일2 다운로드 csv</a>
