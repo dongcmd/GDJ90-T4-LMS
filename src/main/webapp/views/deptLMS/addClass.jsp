@@ -6,10 +6,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>강의 추가</title>
+<title>강의 개설</title>
 </head>
 <body>
-		<h2>강의 추가</h2>
+		<h2>강의 개설</h2>
 		<form action="addClass1" name="f" method="post" onsubmit="return input_check(this)">
 				<table class="table">
 						<tr>
@@ -105,7 +105,7 @@
 						</tr>
 						<tr>
 								<td colspan="5"><textarea class="form-control" name="courseSyllabus" style="resize: none; width: 600px;"></textarea></td>
-								<td style="text-align: right;"><button type="submit" class="btn btn-dark">추가</button></td>
+								<td style="text-align: right;"><button type="submit" class="btn btn-dark">개설</button></td>
 						</tr>
 				</table>
 		</form>
@@ -134,6 +134,13 @@
 			if(type == 0)document.querySelector("#startPeriod").innerHTML = period[index];
 			if(type == 1)document.querySelector("#endPeriod").innerHTML = period[index];	
 		}
+		window.onload = function(){
+			if(input.value >= 1 || input.value <= 9){
+				input.value = '';
+				if(type == 0)document.querySelector("#startPeriod").innerHTML = period[index];
+				if(type == 1)document.querySelector("#endPeriod").innerHTML = period[index];
+			}
+		}
 		function input_check(f) {
 		    var e = f.elements;
 		    if (!e['className'].value.trim()){ alert("과목명을 입력하세요"); e['className'].focus(); return false; }
@@ -156,4 +163,4 @@
 	</script>
 </body>
 </html>
-ㅇ
+
