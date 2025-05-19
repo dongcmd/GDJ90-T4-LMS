@@ -60,12 +60,12 @@
 		<c:if test="${user.role == 1 }">
         <div class="form-group">
             <label>학년</label>
-            <select name="grade" class="form-control">
+            <select name="user_grade" class="form-control">
                 <option value="">-- 선택하세요 --</option>
-                <option value="1" ${user.grade == 1 ? 'selected' : ''}>1학년</option>
-                <option value="2" ${user.grade == 2 ? 'selected' : ''}>2학년</option>
-                <option value="3" ${user.grade == 3 ? 'selected' : ''}>3학년</option>
-                <option value="4" ${user.grade == 4 ? 'selected' : ''}>4학년</option>
+                <option value="1" ${user.user_grade == 1 ? 'selected' : ''}>1학년</option>
+                <option value="2" ${user.user_grade == 2 ? 'selected' : ''}>2학년</option>
+                <option value="3" ${user.user_grade == 3 ? 'selected' : ''}>3학년</option>
+                <option value="4" ${user.user_grade == 4 ? 'selected' : ''}>4학년</option>
             </select>
         </div>
         </c:if>

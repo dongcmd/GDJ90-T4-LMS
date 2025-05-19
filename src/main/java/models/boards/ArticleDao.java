@@ -92,4 +92,16 @@ public class ArticleDao {
 		}
 		return false;
 	}
+
+	public boolean update(Article arti) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).update(arti);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
 }

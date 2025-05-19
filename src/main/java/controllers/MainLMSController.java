@@ -38,97 +38,61 @@ import models.others.EventDao;
 import models.others.Notification;
 import models.others.NotificationDao;
 
-
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
   
+  @RequestMapping("main")
+	public String main(HttpServletRequest request, HttpServletResponse response) {
+		return uc.loginIdCheck(request, response);
+  }
   private EventDao eventDao = new EventDao();
 	private Notification NotifiDao = new Notification();
+  private Class1Dao clsdao = new Class1Dao();
+  
+  // 원동인(캘린더)
+  List<Event> event_main = eventDao.eventList();
+  request.setAttribute("event_main", event_main);
+  LocalDate now = LocalDate.now();
+  int year = now.getYear();
+  int month = now.getMonthValue(); // 1~12
 
-	// 로그인 아이디 체크 =================================================================
+  LocalDate firstDay = LocalDate.of(year, month, 1);
+  int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
+  int lastDate = firstDay.lengthOfMonth();
 
-		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-			User login = (User)request.getSession().getAttribute("login");
-			if(login == null) {
-				request.setAttribute("msg", "로그인 하세요");
-				request.setAttribute("url", "../users/loginForm");
-				return "alert";
-			}
-			return null; // 정상인 경우
-	}
+  // 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
+  List<Map<String, Object>> calendarCells = new ArrayList<>();
+  for (int i = 0; i < 42; i++) {
+      Map<String, Object> cell = new HashMap<>();
+      int dateNum = i - startDayOfWeek + 1;
+      if (dateNum > 0 && dateNum <= lastDate) {
+          LocalDate currentDate = LocalDate.of(year, month, dateNum);
+          cell.put("date", dateNum);
+          cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
+          // 일정 있는 날짜 선택
+          List<Event> dayEvents = new ArrayList<>();
+          for (Event event : event_main ) {
+              LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+              LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+              if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
+                  dayEvents.add(event);
+              }
+          }
+          cell.put("events", dayEvents);
+      } else {
+          cell.put("date", null); // 빈칸
+      }
+      calendarCells.add(cell);
+  }
+  request.setAttribute("year", year);
+  request.setAttribute("month", month);
+  request.setAttribute("calendarCells", calendarCells);
 
-	//관리자 검증
-	public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
-		User login = (User) request.getSession().getAttribute("login");
-		if (login == null) {
-			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "../users/loginForm");
-			return "alert";
-		} else if (!login.getUser_no().equals("999")) {
-			request.setAttribute("msg", "관리자만 가능한 업무입니다.");
-			request.setAttribute("url", "main");
-			return "alert";
-		}
-		return null;
-	}
-
-	// 메인페이지 로그인검증 =================================================================
-	@RequestMapping("main")
-	@MSLogin("loginIdCheck")
-
-	public String main(HttpServletRequest request, HttpServletResponse response) {
-		User login = (User) request.getSession().getAttribute("login");
-		if (login == null) {
-			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "../users/loginForm");
-			return "alert";
-		}
-		
-		// 원동인(캘린더)
-		List<Event> event_main = eventDao.eventList();
-		request.setAttribute("event_main", event_main);
-		LocalDate now = LocalDate.now();
-		int year = now.getYear();
-		int month = now.getMonthValue(); // 1~12
-		
-		LocalDate firstDay = LocalDate.of(year, month, 1);
-		int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
-		int lastDate = firstDay.lengthOfMonth();
-
-		// 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
-		List<Map<String, Object>> calendarCells = new ArrayList<>();
-		for (int i = 0; i < 42; i++) {
-		    Map<String, Object> cell = new HashMap<>();
-		    int dateNum = i - startDayOfWeek + 1;
-		    if (dateNum > 0 && dateNum <= lastDate) {
-		        LocalDate currentDate = LocalDate.of(year, month, dateNum);
-		        cell.put("date", dateNum);
-		        cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
-		        // 일정 있는 날짜 선택
-		        List<Event> dayEvents = new ArrayList<>();
-		        for (Event event : event_main ) {
-		            LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		            LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		            if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
-		                dayEvents.add(event);
-		            }
-		        }
-		        cell.put("events", dayEvents);
-		    } else {
-		        cell.put("date", null); // 빈칸
-		    }
-		    calendarCells.add(cell);
-		}
-		request.setAttribute("year", year);
-		request.setAttribute("month", month);
-		request.setAttribute("calendarCells", calendarCells);
-		
-		return null; // 정상인 경우
+  return null; // 정상인 경우
 	}
 
 	// 사용자 관리 폼(관리자 외 접근권한 없음)=================================================
 	@RequestMapping("adminForm")
-	@MSLogin("loginAdminCheck")
 	public String adminForm(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User) request.getSession().getAttribute("login");
 		UserDao dao = new UserDao();
@@ -139,15 +103,12 @@ public class MainLMSController extends MskimRequestMapping {
 
 	// 사용자 추가 폼 =================================================================
 	@RequestMapping("addUserForm")
-	@MSLogin("loginAdminCheck")
 	public String addUserForm(HttpServletRequest request, HttpServletResponse response) {
-		;
 		return "mainLMS/addUserForm";
 	}
 
 	//사용자 추가 ====================================================================
 	@RequestMapping("adduser")
-	@MSLogin("loginAdminCheck")
 	public String addUser(HttpServletRequest request, HttpServletResponse response) {
 		UserDao dao = new UserDao();
 		User user = new User();
@@ -173,9 +134,7 @@ public class MainLMSController extends MskimRequestMapping {
 
 	// 사용자 수정 폼 =====================================================
 	@RequestMapping("updateUserForm")
-	@MSLogin("loginAdminCheck")
 	public String updateUserForm(HttpServletRequest request, HttpServletResponse response) {
-		;
 		UserDao dao = new UserDao();
 		String user_no = request.getParameter("user_no");
 		User user = dao.selectOne(user_no);
@@ -185,7 +144,6 @@ public class MainLMSController extends MskimRequestMapping {
 
 	// 사용자 정보 수정(관리자권한)============================================
 	@RequestMapping("updateuser")
-	@MSLogin("loginAdminCheck")
 	public String updateuser(HttpServletRequest request, HttpServletResponse response) {
 		UserDao dao = new UserDao();
 		User user = new User();
@@ -216,17 +174,15 @@ public class MainLMSController extends MskimRequestMapping {
 	}
 
 	//사용자 삭제폼(관리자 권한) ========================================================
-	@RequestMapping("deleteUserForm")
+	
 	@MSLogin("loginAdminCheck")
 	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {
-		;
 		UserDao dao = new UserDao();
 		String user_no = request.getParameter("user_no");
 		User user = dao.selectOne(user_no);
 		request.setAttribute("user", user);
 		return "mainLMS/deleteUserForm";
 	}
-
 	//사용자 삭제(관리자 권한) ========================================================
 	@RequestMapping("deleteuser")
 	public String deleteuser(HttpServletRequest request, HttpServletResponse response) {
@@ -252,7 +208,6 @@ public class MainLMSController extends MskimRequestMapping {
 
 	// 사용자 검색 ========================================
 	@RequestMapping("searchusers")
-	@MSLogin("loginAdminCheck")
 	public String searchusers(HttpServletRequest request, HttpServletResponse response) {
 		String type = request.getParameter("type"); // user_name, user_no, email
 		String keyword = request.getParameter("keyword"); // 검색어
@@ -347,7 +302,6 @@ public class MainLMSController extends MskimRequestMapping {
 	
 	// 학사일정(관리자 권한)
 	@RequestMapping("event")
-	@MSLogin("loginAdminCheck")
 	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    // 삭제
@@ -403,19 +357,6 @@ public class MainLMSController extends MskimRequestMapping {
 		request.setAttribute("notificationsList", notificationsList);
 		return "mainLMS/main";
 	}
-
-
-	// 메인 캘린더
-	@RequestMapping("main")
-	public String eventPage(HttpServletRequest request) {
-		List<Event> event_main = eventDao.eventList();
-		request.setAttribute("eventList", event_main);
-
-		return "mainLMS/main"; // JSP 경로
-	}
-
-	private Class1Dao clsdao = new Class1Dao();
-
 	// 수강신청
 	// 오예록
 	@RequestMapping("signUpClass")
@@ -448,15 +389,5 @@ public class MainLMSController extends MskimRequestMapping {
 	    }
 	    request.setAttribute("url", "signUpClass");
 	    return "alert";
-	}
-	
-	// 메인 캘린더
-	@RequestMapping("main")
-	public String eventPage(HttpServletRequest request) {
-		List<Event> event_main = eventDao.eventList();
-	    request.setAttribute("eventList", event_main);
-
-	    return "mainLMS/main";  // JSP 경로
-	}
-	
+  }
 }
