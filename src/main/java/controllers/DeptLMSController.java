@@ -2,7 +2,6 @@ package controllers;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,26 +14,30 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.Class1;
 import models.classes.Class1Dao;
+import models.users.User;
 
 @WebServlet(urlPatterns = { "/deptLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class DeptLMSController extends MskimRequestMapping {
 	private Class1Dao dao = new Class1Dao();
-
+	
 	@RequestMapping("addClass1")
 	public String addClass(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();
-	    Calendar cal = Calendar.getInstance();
-	    int year  = cal.get(Calendar.YEAR);
-	    int month = cal.get(Calendar.MONTH) + 1;
-	    int term  = (month >= 3 && month <= 8) ? 1 : 2;
-	    cls.setYear(year);
-	    cls.setTerm(term);
-	    
+		User login = (User) request.getSession().getAttribute("login");
+
+		cls.setMajor_no(login.getMajor_no());
+		cls.setUser_no(login.getUser_no());
+
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int term = (month >= 3 && month <= 8) ? 1 : 2;
+		cls.setYear(year);
+		cls.setTerm(term);
+
 		cls.setClass_name(request.getParameter("className"));
 		cls.setClass_no(request.getParameter("classNo"));
 		cls.setBan(request.getParameter("classBan"));
-		cls.setMajor_no(request.getParameter("major_no"));
-		cls.setMajor_no(request.getParameter("user_no"));
 		cls.setClass_grade(Integer.parseInt(request.getParameter("classGrade")));
 		cls.setCredit(Integer.parseInt(request.getParameter("credit")));
 		cls.setMax_p(Integer.parseInt(request.getParameter("maxP")));
@@ -54,11 +57,82 @@ public class DeptLMSController extends MskimRequestMapping {
 		// 3) DAO 호출 및 결과 처리
 		if (dao.insert(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 추가되었습니다.");
-			request.setAttribute("url", "list");
+			request.setAttribute("url", "myClass");
 		} else {
 			request.setAttribute("msg", "강의 추가 중 오류가 발생했습니다.");
-			request.setAttribute("url", "addForm");
+			request.setAttribute("url", "addClass");
 		}
 		return "alert";
+	}
+
+	@RequestMapping("myClass")
+	public String myClasses(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		String userNo = login.getUser_no();
+		List<Class1> classesList = dao.selectByProfessor(userNo);
+
+		request.setAttribute("classesList", classesList);
+		return "deptLMS/myClass";
+	}
+
+	@RequestMapping("updateClass")
+	public String showUpdateForm(HttpServletRequest request, HttpServletResponse response) {
+	    Class1 key = new Class1();
+	    key.setClass_no(request.getParameter("no"));
+	    key.setBan(request.getParameter("ban"));
+	    key.setYear(Integer.parseInt(request.getParameter("year")));
+	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+
+	    Class1 cls = dao.selectOne(key);
+	    request.setAttribute("cls", cls);
+	    return "deptLMS/updateClass";
+	}
+
+	@RequestMapping("updateClass1")
+	public String updateClass1(HttpServletRequest request, HttpServletResponse response) {
+		Class1 cls = new Class1();
+		cls.setClass_name(request.getParameter("className"));
+		cls.setClass_no(request.getParameter("classNo"));
+		cls.setBan(request.getParameter("classBan"));
+		cls.setYear(Integer.parseInt(request.getParameter("year")));
+		cls.setTerm(Integer.parseInt(request.getParameter("term")));
+		cls.setCredit(Integer.parseInt(request.getParameter("credit")));
+		cls.setMax_p(Integer.parseInt(request.getParameter("maxP")));
+		cls.setClassroom(request.getParameter("classRoom"));
+		cls.setS_time(Integer.parseInt(request.getParameter("sTime")));
+		cls.setE_time(Integer.parseInt(request.getParameter("eTime")));
+		cls.setC_plan(request.getParameter("courseSyllabus"));
+		cls.setFile(request.getParameter("file1"));
+
+		String[] daysArr = request.getParameterValues("days");
+		if (daysArr != null) {
+			List<Integer> days = Arrays.stream(daysArr).map(Integer::valueOf).collect(Collectors.toList());
+			cls.setDays(days);
+		}
+
+		if (dao.update(cls)) {
+			request.setAttribute("msg", "강의가 정상적으로 수정 성공하였습니다..");
+			request.setAttribute("url", "myClass");
+		} else {
+			request.setAttribute("msg", "강의를 수정 실패하였습니다.");
+			request.setAttribute("url", "updateClass");
+		}
+		return "alert";
+	}
+	@RequestMapping("deleteClass")
+	public String deleteClass(HttpServletRequest request, HttpServletResponse response) {
+	    Class1 key = new Class1();
+	    key.setClass_no(request.getParameter("no"));
+	    key.setBan(request.getParameter("ban"));
+	    key.setYear(Integer.parseInt(request.getParameter("year")));
+	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+
+	    if (dao.delete(key)) {
+	        request.setAttribute("msg", "강의가 정상적으로 삭제되었습니다.");
+	    } else {
+	        request.setAttribute("msg", "강의 삭제에 실패했습니다.");
+	    }
+	    request.setAttribute("url", "myClass");
+	    return "alert";
 	}
 }

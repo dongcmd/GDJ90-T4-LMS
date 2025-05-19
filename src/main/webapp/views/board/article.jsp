@@ -60,7 +60,7 @@
 		    const width = 500;
 		    const height = 500;
 		    const left = (window.screen.width - width) / 2;
-		    const top = (window.screen.height - height) / 3;  // 여기를 꼭 수정
+		    const top = (window.screen.height - height) / 3;
 	
 		    open(page, "popup", `width=${width},height=${height},left=${left},top=${top}`);
 		}

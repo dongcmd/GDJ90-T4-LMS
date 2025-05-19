@@ -13,6 +13,10 @@
     <h4 class="mb-4">과제 추가</h4>
 
     <form action="addAssignment" method="post" class="bg-white p-4 rounded shadow-sm">
+        <input type="hidden" name="class_no" value="${class_no}">
+        <input type="hidden" name="ban" value="${ban}">
+        <input type="hidden" name="year" value="${year}">
+        <input type="hidden" name="term" value="${term}">
         
         <div class="form-group">
             <label>과제명</label>
@@ -43,29 +47,25 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>강의 코드</label>
-                <input type="text" name="class_no" class="form-control" placeholder="예: C101" required>
+                <input type="text" name="class_no" class="form-control" value="${cls[0].class_no}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>반</label>
-                <input type="text" name="ban" class="form-control" placeholder="예: A" required>
+                <input type="text" name="ban" class="form-control" value="${cls[0].ban}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>년도</label>
-                <input type="number" name="year" class="form-control" placeholder="예: 2025" required>
+                <input type="number" name="year" class="form-control" value="${cls[0].year}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>학기</label>
-                <select name="term" class="form-control" required>
-                    <option value="">-- 선택하세요 --</option>
-                    <option value="1">1학기</option>
-                    <option value="2">2학기</option>
-                </select>
+                <input name="term" class="form-control" value="${cls[0].term}" required readonly>
             </div>
         </div>
 
         <div class="text-right">
             <button type="submit" class="btn btn-dark">과제 등록</button>
-            <a href="manageassignment" class="btn btn-outline-secondary">취소</a>
+            <a href="manageAs" class="btn btn-outline-secondary">취소</a>
         </div>
     </form>
 </div>

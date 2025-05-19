@@ -19,14 +19,14 @@ public interface ArtiMapper {
 	int count(Map<String, Object> map);
 
 	@Select("<script>"
-			+ "select a.*, u.user_name, count(c.comm_no) commCount from articles a "
+			+ "select a.*, u.user_name writer, count(c.comm_no) commCount from articles a "
 			+ " join users u on a.user_no = u.user_no "
 			+ " left join comments c on a.arti_no = c.arti_no "
 			+ " where board_id = #{board_id} "
-			+ " group by a.arti_no"
 			+ " <if test='column != null'> " 
 			+ " and ${column} like concat('%',#{keyword},'%') "
 			+ " </if>"
+			+ " group by a.arti_no"
 			+ " order by arti_no desc limit #{start}, #{limit}</script>")
 	List<Article> list(Map<String, Object> map);
 
