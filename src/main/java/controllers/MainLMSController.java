@@ -33,22 +33,20 @@ import models.others.EventDao;
 import models.others.Notification;
 import models.classes.Class1;
 import models.classes.Class1Dao;
-import models.others.Event;
-import models.others.EventDao;
-import models.others.Notification;
 import models.others.NotificationDao;
 
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
 	UserController uc = new UserController();
 	private EventDao eventDao = new EventDao();
-	private Notification NotifiDao = new Notification();
+	private NotificationDao NotificationDao = new NotificationDao();
 	private Class1Dao clsdao = new Class1Dao();
   
 	@RequestMapping("main")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+		
 		// 원동인(캘린더)
 		List<Event> event_main = eventDao.eventList();
 		request.setAttribute("event_main", event_main);
@@ -285,6 +283,16 @@ public class MainLMSController extends MskimRequestMapping {
 		// 리스트
 		request.setAttribute("eventList", eventDao.eventList());
 		return "mainLMS/event";
+	}
+	
+	// 원동인 (알림)
+	
+	@RequestMapping("notificationForm")
+	public String notification(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+		User login = (User) request.getSession().getAttribute("login");
+	    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
+	    request.setAttribute("notificationsList", notificationsList);
+		return "mainLMS/notificationForm";
 	}
 
 	// 수강신청
