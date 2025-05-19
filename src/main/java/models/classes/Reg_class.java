@@ -15,7 +15,14 @@ public class Reg_class {
     private String class_name;
     private String prof;
     private String mark;
-
+    
+    public void setKey(Class1 class1) {
+    	this.user_no = class1.getUser_no();
+    	this.class_no = class1.getClass_no();
+    	this.ban = class1.getBan();
+    	this.year = class1.getYear();
+    }
+    
 	public String getUser_no() {
 	    return user_no;
 	}

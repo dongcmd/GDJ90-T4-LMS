@@ -64,10 +64,8 @@ public class BoardController extends MskimRequestMapping {
 		if(!board_id.equals(login.getMajor_no())) {
 			boolean check = false;
 			if(class1 != null) {
-				for(Student st : class1.getStudents()) {
-					if(st.USER_NO.equals(login.getUser_no())) {
-						check = true; break;
-					}
+				if(class1.getStudents().get(login.getUser_no()) != null) {
+					check = true;
 				}
 			} else if(!check) {
 				req.setAttribute("msg", "접근 권한 없음");

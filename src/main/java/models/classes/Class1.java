@@ -1,7 +1,8 @@
 package models.classes;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 //오예록
 public class Class1 {
@@ -21,9 +22,12 @@ public class Class1 {
 	private int max_p; // 정원
 	private String c_plan; // 강의계획
 	private String file; // 첨부파일
+	private Date s_date; // 개강일 
+	private Date e_date; // 종강일
 	private String prof; // 교수명
 	private List<Integer> days;
-	private Set<Student> students; // 소속 학생들-이동원
+	private Map<String ,Student> students; // 소속 학생들-이동원
+	private Map<String, Assignment> assignments; // 과제-이동원
 
 	public String getClass_no() {
 		return class_no;
@@ -178,12 +182,36 @@ public class Class1 {
 				+ ", days=" + days + "]";
 	}
 
-	public Set<Student> getStudents() {
+	public Map<String, Student> getStudents() {
 		return students;
 	}
 
-	public void setStudents(Set<Student> students) {
+	public void setStudents(Map<String, Student> students) {
 		this.students = students;
+	}
+
+	public Map<String, Assignment> getAssignments() {
+		return assignments;
+	}
+
+	public void setAssignments(Map<String, Assignment> assignments) {
+		this.assignments = assignments;
+	}
+
+	public Date getS_date() {
+		return s_date;
+	}
+
+	public void setS_date(Date s_date) {
+		this.s_date = s_date;
+	}
+
+	public Date getE_date() {
+		return e_date;
+	}
+
+	public void setE_date(Date e_date) {
+		this.e_date = e_date;
 	}
 
 }
