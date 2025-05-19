@@ -7,7 +7,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Map;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import java.util.Date;
 import java.util.HashMap;
 
@@ -22,55 +25,59 @@ import gdu.mskim.RequestMapping;
 
 import models.users.User;
 import models.users.UserDao;
-
+import models.classes.Class1;
+import models.classes.Class1Dao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
 import models.others.NotificationDao;
 
+@WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
+public class MainLMSController extends MskimRequestMapping {
+  
+  private EventDao eventDao = new EventDao();
+	private Notification NotifiDao = new Notification();
 
-@WebServlet(urlPatterns = {"/mainLMS/*"},
-initParams = {@WebInitParam(name="view",value="/views/")})
-public class MainLMSController extends MskimRequestMapping{
-	
 	// 로그인 아이디 체크 =================================================================
-		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-			String user_no = request.getParameter("user_no");
-			User login = (User)request.getSession().getAttribute("login");
-			if(login == null) {
-				request.setAttribute("msg", "로그인 하세요");
-				request.setAttribute("url", "../users/loginForm");
-				return "alert";
-			} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
-				request.setAttribute("msg", "본인만 조회 가능합니다");
-				request.setAttribute("url", "main");
-				return "alert";
-			}
-			return null; // 정상인 경우
+	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
+		String user_no = request.getParameter("user_no");
+		User login = (User) request.getSession().getAttribute("login");
+		if (login == null) {
+			request.setAttribute("msg", "로그인 하세요");
+			request.setAttribute("url", "../users/loginForm");
+			return "alert";
+		} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
+			request.setAttribute("msg", "본인만 조회 가능합니다");
+			request.setAttribute("url", "main");
+			return "alert";
 		}
+		return null; // 정상인 경우
+	}
+
 	//관리자 검증
-		public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
-			User login = (User) request.getSession().getAttribute("login");
-			if(login == null) {
-				request.setAttribute("msg", "로그인 하세요");
-				request.setAttribute("url", "../users/loginForm");
-				return "alert";
-			} else if (!login.getUser_no().equals("999")) {
-				request.setAttribute("msg", "관리자만 가능한 업무입니다.");
-				request.setAttribute("url", "main");
-				return "alert";
-			}
-			return null;
+	public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		if (login == null) {
+			request.setAttribute("msg", "로그인 하세요");
+			request.setAttribute("url", "../users/loginForm");
+			return "alert";
+		} else if (!login.getUser_no().equals("999")) {
+			request.setAttribute("msg", "관리자만 가능한 업무입니다.");
+			request.setAttribute("url", "main");
+			return "alert";
 		}
+		return null;
+	}
 
 	// 메인페이지 로그인검증 =================================================================
 	@RequestMapping("main")
 	@MSLogin("loginIdCheck")
-	public String main(HttpServletRequest request, HttpServletResponse response) {	    
-		User login = (User)request.getSession().getAttribute("login");
-		if(login == null) {
+
+	public String main(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		if (login == null) {
 			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url","../users/loginForm");
+			request.setAttribute("url", "../users/loginForm");
 			return "alert";
 		}
 		
@@ -130,27 +137,29 @@ public class MainLMSController extends MskimRequestMapping{
 	// 사용자 추가 폼 =================================================================
 	@RequestMapping("addUserForm")
 	@MSLogin("loginAdminCheck")
-	public String addUserForm(HttpServletRequest request, HttpServletResponse response) {;
+	public String addUserForm(HttpServletRequest request, HttpServletResponse response) {
+		;
 		return "mainLMS/addUserForm";
-	}	
+	}
+
 	//사용자 추가 ====================================================================
 	@RequestMapping("adduser")
 	@MSLogin("loginAdminCheck")
 	public String addUser(HttpServletRequest request, HttpServletResponse response) {
-		UserDao dao = new UserDao();	    
+		UserDao dao = new UserDao();
 		User user = new User();
-	    user.setUser_no(request.getParameter("user_no"));
-	    user.setUser_name(request.getParameter("user_name"));
-	    user.setPassword(request.getParameter("password"));
-	    user.setRole(request.getParameter("role"));
-	    user.setGender(Integer.parseInt(request.getParameter("gender")));
-	    user.setMajor_no(request.getParameter("major_no"));
-	    String grade = request.getParameter("grade");
-	    user.setGrade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
-	    user.setEmail(request.getParameter("email"));
-	    user.setTel(request.getParameter("tel"));
-		if(dao.insert(user)) {
-			request.setAttribute("msg", user.getUser_name()+"님을 사용자로 추가하였습니다.");
+		user.setUser_no(request.getParameter("user_no"));
+		user.setUser_name(request.getParameter("user_name"));
+		user.setPassword(request.getParameter("password"));
+		user.setRole(request.getParameter("role"));
+		user.setGender(Integer.parseInt(request.getParameter("gender")));
+		user.setMajor_no(request.getParameter("major_no"));
+		String grade = request.getParameter("grade");
+		user.setGrade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
+		user.setEmail(request.getParameter("email"));
+		user.setTel(request.getParameter("tel"));
+		if (dao.insert(user)) {
+			request.setAttribute("msg", user.getUser_name() + "님을 사용자로 추가하였습니다.");
 			request.setAttribute("url", "adminForm");
 		} else {
 			request.setAttribute("msg", "오류 발생");
@@ -158,125 +167,127 @@ public class MainLMSController extends MskimRequestMapping{
 		}
 		return "alert";
 	}
+
 	// 사용자 수정 폼 =====================================================
 	@RequestMapping("updateUserForm")
 	@MSLogin("loginAdminCheck")
-	public String updateUserForm(HttpServletRequest request, HttpServletResponse response) {;
-	UserDao dao = new UserDao();
-	String user_no = request.getParameter("user_no");
-	User user = dao.selectOne(user_no);
-	request.setAttribute("user", user);
-	return "mainLMS/updateUserForm";
+	public String updateUserForm(HttpServletRequest request, HttpServletResponse response) {
+		;
+		UserDao dao = new UserDao();
+		String user_no = request.getParameter("user_no");
+		User user = dao.selectOne(user_no);
+		request.setAttribute("user", user);
+		return "mainLMS/updateUserForm";
 	}
+
 	// 사용자 정보 수정(관리자권한)============================================
 	@RequestMapping("updateuser")
 	@MSLogin("loginAdminCheck")
 	public String updateuser(HttpServletRequest request, HttpServletResponse response) {
-	UserDao dao = new UserDao();
-	User user = new User();
-	user.setUser_no(request.getParameter("user_no"));
-	user.setUser_name(request.getParameter("user_name"));
-	user.setGender(Integer.parseInt(request.getParameter("gender")));
-	user.setTel(request.getParameter("tel"));
-	user.setEmail(request.getParameter("email"));
-	user.setGrade(Integer.parseInt(request.getParameter("grade")));
-	user.setMajor_no(request.getParameter("major_no"));
-	user.setPassword(request.getParameter("password"));
-	// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
-	User login = (User)request.getSession().getAttribute("login");	
-	String msg = "비밀번호가 틀립니다.";
-	String url = "users/updateForm";
-	// 비밀번호 같을시
-	if(user.getPassword().equals(login.getPassword())) {
-		if(dao.update(user)) {
-			msg = "회원정보 수정완료";
-			url = "adminForm";
-		} else {
-			msg = "회원정보 수정실패";
+		UserDao dao = new UserDao();
+		User user = new User();
+		user.setUser_no(request.getParameter("user_no"));
+		user.setUser_name(request.getParameter("user_name"));
+		user.setGender(Integer.parseInt(request.getParameter("gender")));
+		user.setTel(request.getParameter("tel"));
+		user.setEmail(request.getParameter("email"));
+		user.setGrade(Integer.parseInt(request.getParameter("grade")));
+		user.setMajor_no(request.getParameter("major_no"));
+		user.setPassword(request.getParameter("password"));
+		// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
+		User login = (User) request.getSession().getAttribute("login");
+		String msg = "비밀번호가 틀립니다.";
+		String url = "users/updateForm";
+		// 비밀번호 같을시
+		if (user.getPassword().equals(login.getPassword())) {
+			if (dao.update(user)) {
+				msg = "회원정보 수정완료";
+				url = "adminForm";
+			} else {
+				msg = "회원정보 수정실패";
+			}
 		}
+		request.setAttribute("msg", msg);
+		request.setAttribute("url", url);
+		return "alert";
 	}
-	request.setAttribute("msg", msg);
-	request.setAttribute("url", url);
-	return "alert";
-	}
+
 	//사용자 삭제폼(관리자 권한) ========================================================
 	@RequestMapping("deleteUserForm")
 	@MSLogin("loginAdminCheck")
-	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {;
-	UserDao dao = new UserDao();
-	String user_no = request.getParameter("user_no");
-	User user = dao.selectOne(user_no);
-	request.setAttribute("user", user);
-	return "mainLMS/deleteUserForm";
-	}	
-	
-	//사용자 삭제(관리자 권한) ========================================================
-	@RequestMapping("deleteuser")
-	public String deleteuser(HttpServletRequest request , HttpServletResponse response) {
+	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {
+		;
 		UserDao dao = new UserDao();
 		String user_no = request.getParameter("user_no");
-	    String password = request.getParameter("password");
-	    User login = (User) request.getSession().getAttribute("login");
-	    String msg = "비밀번호가 맞지 않습니다.";
-	    String url = "deleteUserForm";
-	    if (password != null && login.getPassword().equals(password)) {
-	        boolean result = dao.deleteuser(user_no);
-	        if (result) {
-	            msg = "사용자 삭제 완료";
-	            url = "adminForm";
-	        } else {
-	            msg = "사용자 삭제 실패";
-	        }
-	    }
-	    request.setAttribute("msg", msg);
-	    request.setAttribute("url", url);
-	    return "alert";
+		User user = dao.selectOne(user_no);
+		request.setAttribute("user", user);
+		return "mainLMS/deleteUserForm";
+	}
+
+	//사용자 삭제(관리자 권한) ========================================================
+	@RequestMapping("deleteuser")
+	public String deleteuser(HttpServletRequest request, HttpServletResponse response) {
+		UserDao dao = new UserDao();
+		String user_no = request.getParameter("user_no");
+		String password = request.getParameter("password");
+		User login = (User) request.getSession().getAttribute("login");
+		String msg = "비밀번호가 맞지 않습니다.";
+		String url = "deleteUserForm";
+		if (password != null && login.getPassword().equals(password)) {
+			boolean result = dao.deleteuser(user_no);
+			if (result) {
+				msg = "사용자 삭제 완료";
+				url = "adminForm";
+			} else {
+				msg = "사용자 삭제 실패";
+			}
+		}
+		request.setAttribute("msg", msg);
+		request.setAttribute("url", url);
+		return "alert";
 	}
 
 	// 사용자 검색 ========================================
 	@RequestMapping("searchusers")
 	@MSLogin("loginAdminCheck")
 	public String searchusers(HttpServletRequest request, HttpServletResponse response) {
-	    String type = request.getParameter("type");       // user_name, user_no, email
-	    String keyword = request.getParameter("keyword"); // 검색어
-	    if(type.equals("role")) {
-	    	if(keyword.equals("학생")) {
-	    		keyword = "1";
-	    	}
-	    	if(keyword.equals("교수")) {
-	    		keyword = "2";
-	    	}
-	    }
-	    UserDao dao = new UserDao();
-	    if (type == null || type.isEmpty()) {
-	        request.setAttribute("msg", "검색 기준을 선택해주세요");
-	        request.setAttribute("url", "adminForm");
-	        return "alert";
-	    }
-	    if (keyword == null || keyword.isEmpty()) {
-	        request.setAttribute("msg", "검색어를 입력해주세요");
-	        request.setAttribute("url", "adminForm");
-	        return "alert";
-	    }
+		String type = request.getParameter("type"); // user_name, user_no, email
+		String keyword = request.getParameter("keyword"); // 검색어
+		if (type.equals("role")) {
+			if (keyword.equals("학생")) {
+				keyword = "1";
+			}
+			if (keyword.equals("교수")) {
+				keyword = "2";
+			}
+		}
+		UserDao dao = new UserDao();
+		if (type == null || type.isEmpty()) {
+			request.setAttribute("msg", "검색 기준을 선택해주세요");
+			request.setAttribute("url", "adminForm");
+			return "alert";
+		}
+		if (keyword == null || keyword.isEmpty()) {
+			request.setAttribute("msg", "검색어를 입력해주세요");
+			request.setAttribute("url", "adminForm");
+			return "alert";
+		}
 
-	    List<User> users = dao.searchUsers(type, keyword);
-	    if (users == null || users.isEmpty()) {
-	        request.setAttribute("msg", "검색 결과가 없습니다.");
-	        request.setAttribute("url", "adminForm");
-	        return "alert";
-	    }
-	    request.setAttribute("users", users);
-	    return "mainLMS/adminForm";
+		List<User> users = dao.searchUsers(type, keyword);
+		if (users == null || users.isEmpty()) {
+			request.setAttribute("msg", "검색 결과가 없습니다.");
+			request.setAttribute("url", "adminForm");
+			return "alert";
+		}
+		request.setAttribute("users", users);
+		return "mainLMS/adminForm";
 	}
-	
-	// 원동인
-	private EventDao eventDao = new EventDao();	
-	private NotificationDao NotifiDao = new NotificationDao();
-	
-	// 학사일정(관리자 권한)
+
+	// 원동인 학사일정(관리자 권한)
 	@RequestMapping("event")
 	@MSLogin("loginAdminCheck")
 	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    // 삭제
 	    String deleteNo = request.getParameter("delete");
@@ -292,37 +303,39 @@ public class MainLMSController extends MskimRequestMapping{
 	        return "alert";
 	    }
 
-	    String event_name = request.getParameter("event_name");
-	    String s_date = request.getParameter("even_s_date");
-	    String e_date = request.getParameter("even_e_date");
 
-	    if (event_name != null && s_date != null && e_date != null) {
-	        Event event = new Event();
-	        event.setEvent_name(event_name);
-	        event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
-	        event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
+		String event_name = request.getParameter("event_name");
+		String s_date = request.getParameter("even_s_date");
+		String e_date = request.getParameter("even_e_date");
 
-	        String noStr = request.getParameter("event_no");
-	        boolean result;
-	        // 등록/수정
-	        if (noStr != null && !noStr.equals("")) {
-	            event.setEvent_no(Integer.parseInt(noStr));
-	            result = eventDao.update(event);
-	        } else {
-	            result = eventDao.insert(event);
-	        }
-	        
-	        if (result) {
-	            request.setAttribute("msg", "처리 성공");
-	        } else {
-	            request.setAttribute("msg", "처리 실패");
-	        }
-	        return "alert";
-	    }
-	    // 리스트
-	    request.setAttribute("eventList", eventDao.eventList());
-	    return "mainLMS/event";
+		if (event_name != null && s_date != null && e_date != null) {
+			Event event = new Event();
+			event.setEvent_name(event_name);
+			event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
+			event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
+
+			String noStr = request.getParameter("event_no");
+			boolean result;
+			// 등록/수정
+			if (noStr != null && !noStr.equals("")) {
+				event.setEvent_no(Integer.parseInt(noStr));
+				result = eventDao.update(event);
+			} else {
+				result = eventDao.insert(event);
+			}
+
+			if (result) {
+				request.setAttribute("msg", "처리 성공");
+			} else {
+				request.setAttribute("msg", "처리 실패");
+			}
+			return "alert";
+		}
+		// 리스트
+		request.setAttribute("eventList", eventDao.eventList());
+		return "mainLMS/event";
 	}
+
 	
 	// 알림창
 	@RequestMapping("Notification")
@@ -331,5 +344,51 @@ public class MainLMSController extends MskimRequestMapping{
 		List<Notification> notificationsList = NotifiDao.notifList();
 		request.setAttribute("notificationsList", notificationsList);
 		return "mainLMS/main";
+	}
+
+
+	// 메인 캘린더
+	@RequestMapping("main")
+	public String eventPage(HttpServletRequest request) {
+		List<Event> event_main = eventDao.eventList();
+		request.setAttribute("eventList", event_main);
+
+		return "mainLMS/main"; // JSP 경로
+	}
+
+	private Class1Dao clsdao = new Class1Dao();
+
+	// 수강신청
+	// 오예록
+	@RequestMapping("signUpClass")
+	public String signUpClass(HttpServletRequest request, HttpServletResponse response) {
+		Class1 cls = new Class1();
+		Calendar cal = Calendar.getInstance();
+		User login = (User) request.getSession().getAttribute("login");
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int term = (month >= 3 && month <= 8) ? 1 : 2;
+		cls.setYear(year);
+		cls.setTerm(term);
+		List<Class1> classesList = clsdao.selectClassesByYearTerm(cls, login.getUser_no());
+		request.setAttribute("classesList", classesList);
+
+		return "mainLMS/signUpClass";
+	}
+	@RequestMapping("signUpCls")
+	public String signUpCls(HttpServletRequest request, HttpServletResponse response) {
+		Class1 key = new Class1();
+		key.setUser_no(request.getParameter("user_no"));
+	    key.setClass_no(request.getParameter("cls_no"));
+	    key.setBan(request.getParameter("ban"));
+	    key.setYear(Integer.parseInt(request.getParameter("year")));
+	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+		if (clsdao.insertRegisteredClass(key)) {
+	        request.setAttribute("msg", "수강 신청을 성공 했습니다.");
+	    } else {
+	        request.setAttribute("msg", "수강 신청을 실패했습니다.");
+	    }
+	    request.setAttribute("url", "signUpClass");
+	    return "alert";
 	}
 }

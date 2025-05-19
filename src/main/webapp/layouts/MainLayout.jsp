@@ -138,7 +138,7 @@
     		<%-- mainLMS 메뉴 --%>
     		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">      
-	            	<li class="nav-item"> <%-- 이동원 --%>
+	            	  <li class="nav-item"> <%-- 이동원 --%>
 	                    <a href="../board/board?board_id=9999">공지게시판</a>
 	                </li>
 
@@ -146,7 +146,7 @@
 	                    <a href="../deptLMS/deptMain" target="_blank">학과 LMS</a>
 	                </li>
 
-					<c:if test="${login.role == 1}">
+					        <c:if test="${login.role == 1}">
 		                <li class="nav-item">
 		                    <a href="../mainLMS/signUpClass">수강신청</a>
 		                </li>
@@ -166,6 +166,7 @@
 
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
+
 		        	<c:if test="${empty login.major_no}">
 		                <li class="nav-item">
 			            	<a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
@@ -183,7 +184,7 @@
 		                    <a href="../deptLMS/classList">수강 조회</a>
 		                </li>
 	                </c:if>
-		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
+		            	<c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a href="../deptLMS/myClass">강의 조회</a>
 		                </li>
