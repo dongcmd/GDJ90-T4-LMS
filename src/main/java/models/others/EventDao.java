@@ -39,10 +39,10 @@ public class EventDao {
 		return false;
 	}
 	// 학사일정 삭제
-	public boolean delete(int event_no) {
+	public boolean delete(int no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
-			return session.getMapper(cls).delete(event_no) > 0;
+			return session.getMapper(cls).delete(no) > 0;
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -50,11 +50,12 @@ public class EventDao {
 		}
 		return false;
 	}
+	
 	// 학사일정 리스트
-	public List<Event> evnetList() {
+	public List<Event> eventList() {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
-			return session.getMapper(cls).evnetList();
+			return session.getMapper(cls).eventList();
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -62,20 +63,4 @@ public class EventDao {
 		}
 		return null;
 	}
-	
-	//학사일정 번호
-	public Event selectByNo(int event_no) {
-		SqlSession session = MyBatisConnection.getConnection();
-		try {
-			return session.getMapper(cls).selectByNo(event_no);
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			MyBatisConnection.close(session);
-		}
-		return null;
-	}
-	
-	
-
 }

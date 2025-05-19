@@ -229,64 +229,64 @@ public class MainLMSController extends MskimRequestMapping{
 	private EventDao eventDao = new EventDao();
 	private Notification NotifiDao = new Notification();
 	
+	// 학사일정(관리자 권한)
 	@RequestMapping("event")
 	@MSLogin("loginAdminCheck")
-    public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    // 삭제
+	    String deleteNo = request.getParameter("delete");
+	    if (deleteNo != null) {
+	        int no = Integer.parseInt(deleteNo);
+	        if (eventDao.delete(no)) {
+	            request.setAttribute("msg", "삭제 완료");
+	            request.setAttribute("url", "mainLMS/event");
+	        } else {
+	            request.setAttribute("msg", "삭제 실패");
+	            request.setAttribute("url", "mainLMS/event");
+	        }
+	        return "alert";
+	    }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String event_name = request.getParameter("event_name");
+	    String s_date = request.getParameter("even_s_date");
+	    String e_date = request.getParameter("even_e_date");
 
-        // 삭제 처리
-        String deleteNo = request.getParameter("delete");
-        if (deleteNo != null) {
-            int no = Integer.parseInt(deleteNo);
-            boolean result = eventDao.delete(no);
-            request.setAttribute("msg", result ? "삭제 완료" : "삭제 실패");
-            request.setAttribute("url", "event");
-            return "alert";
-        }
+	    if (event_name != null && s_date != null && e_date != null) {
+	        Event event = new Event();
+	        event.setEvent_name(event_name);
+	        event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
+	        event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
 
-        // 수정 폼 요청
-        String editNo = request.getParameter("edit");
-        if (editNo != null) {
-            int no = Integer.parseInt(editNo);
-            Event event = eventDao.selectByNo(no);
-            request.setAttribute("event", event);
-            return "mainLMS/updateEventForm"; // 팝업
-        }
+	        String noStr = request.getParameter("event_no");
+	        boolean result;
+	        // 등록/수정
+	        if (noStr != null && !noStr.equals("")) {
+	            event.setEvent_no(Integer.parseInt(noStr));
+	            result = eventDao.update(event);
+	        } else {
+	            result = eventDao.insert(event);
+	        }
+	        
+	        if (result) {
+	            request.setAttribute("msg", "처리 성공");
+	        } else {
+	            request.setAttribute("msg", "처리 실패");
+	        }
+	        return "alert";
+	    }
+	    // 리스트
+	    request.setAttribute("eventList", eventDao.eventList());
+	    return "mainLMS/event";
+	}
+	
+	// 메인 캘린더
+	@RequestMapping("main")
+	public String eventPage(HttpServletRequest request) {
+		List<Event> event_main = eventDao.eventList();
+	    request.setAttribute("eventList", event_main);
 
-        // 등록 / 수정 처리
-        String event_name = request.getParameter("event_name");
-        String s_date = request.getParameter("even_s_date");
-        String e_date = request.getParameter("even_e_date");
-
-        if (event_name != null && s_date != null && e_date != null) {
-            Event event = new Event();
-            event.setEvent_name(event_name);
-            event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
-            event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
-
-            String noStr = request.getParameter("event_no");
-            boolean result;
-
-            if (noStr != null && !noStr.isEmpty()) {
-                event.setEvent_no(Integer.parseInt(noStr));
-                result = eventDao.update(event);
-
-                request.setAttribute("msg", result ? "수정 성공" : "수정 실패");
-                request.setAttribute("url", "mainLMS/event"); 
-                return "openeralert"; // 팝업 수정 후 닫기
-            } else {
-                result = eventDao.insert(event);
-
-                request.setAttribute("msg", result ? "등록 성공" : "등록 실패");
-                request.setAttribute("url", "mainLMS/event");
-                return "alert"; 
-            }
-        }
-
-        // 학사일정 목록 출력
-        List<Event> eventList = eventDao.evnetList();
-        request.setAttribute("eventList", eventList);
-        return "mainLMS/event";
-    }
+	    return "mainLMS/main";  // JSP 경로
+	}
+	
 }

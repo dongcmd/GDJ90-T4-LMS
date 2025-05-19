@@ -12,49 +12,76 @@
 	<body>
 		<!-- 등록 Form -->
 		<h3 class="mb-4 fw_b">학사 일정 등록</h3>
-		<form action="event" method="post" name="f" onsubmit="return date_check(this)" >
+		<form action="event" method="post" name="f" onsubmit="return date_check(this)" class="mb-4" >
 		  	<table class="table">
 			    <tr>
-			      <th>제목</th>
-			      <td><input type="text" name="event_name" required></td>
+			      <th class="col-xl-8 fw_b">일정 제목</th>
+			      <td class="col-xl-4"><input class="form-control" type="text" name="event_name" required></td>
 			    </tr>
 			    <tr>
-			      <th>시작일</th>
-			      <td><input type="date" name="even_s_date" required></td>
+			      <th class="fw_b">일정 시작일</th>
+			      <td><input class="form-control" type="date" name="even_s_date" required></td>
 			    </tr>
 			    <tr>
-			      <th>종료일</th>
-			      <td><input type="date" name="even_e_date" required></td>
+			      <th class="fw_b">일정 종료일</th>
+			      <td><input class="form-control" type="date" name="even_e_date" required></td>
 			    </tr>
 		  	</table>
 		
-		  	<button class="btn btn-dark" type="submit">등록</button>
+		  	<button class="btn btn-dark" type="submit" style="width:100%">일정 등록</button>
 		</form>
 		
 		<!-- 이벤트 목록 -->
 		<h3 class="mb-4 fw_b">학사 일정 목록</h3>
+
 		<table class="table">
-		    <tr>
-		        <th>번호</th><th>제목</th><th>시작일</th><th>종료일</th><th>수정</th><th>삭제</th>
-		    </tr>
+			<thead class="thead-light">
+				<tr>
+		        	<th class="fw_b text-center">제목</th>
+		        	<th class="fw_b text-center">시작일</th>
+		        	<th class="fw_b text-center">종료일</th>
+		        	<th class="fw_b text-center">수정</th>
+		        	<th class="fw_b text-center">삭제</th>
+		    	</tr>
+			</thead>
+
 		    <c:forEach var="e" items="${eventList}">
 		        <tr>
-		            <td>${e.event_no}</td>
-		            <td>${e.event_name}</td>
-		            <td><fmt:formatDate value="${e.even_s_date}" pattern="yyyy-MM-dd" /></td>
-		            <td><fmt:formatDate value="${e.even_e_date}" pattern="yyyy-MM-dd" /></td>
-		            <td>
-		               <button class="btn btn-dark" type="button" onclick="win_open('event?edit=${e.event_no}')">수정</button>
-		            </td>
-		            <td><a class="btn btn-dark" href="event?delete=${e.event_no}">삭제</a></td>
+		            <td class="text-center">${e.event_name}</td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_s_date}" pattern="yyyy-MM-dd" /></td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_e_date}" pattern="yyyy-MM-dd" /></td>
+		           	<td class="text-center">
+                		<button class="btn btn-light btn-outline-secondary" type="button" onclick="openEditModal('${e.event_no}', '${e.event_name}', '${e.even_s_date}', '${e.even_e_date}')">수정</button>
+            		</td>
+            		<td class="text-center">
+            			<a class="btn btn-outline-danger" href="event?delete=${e.event_no}">삭제</a>
+            		</td>
 		        </tr>
 		    </c:forEach>
 		</table>
 		
-		<script type="text/javascript">
+		<!-- 수정 모달 -->
+		<div id="editModal" style="display:none; position:fixed; top:20%; left:30%; background:white; border:1px solid black; padding:20px;">
+		    <form action="event" method="post">
+		        <input type="hidden" name="event_no" id="edit_event_no">
+		        제목: <input type="text" name="event_name" id="edit_event_name" required><br>
+		        시작일: <input type="date" name="even_s_date" id="edit_even_s_date" required><br>
+		        종료일: <input type="date" name="even_e_date" id="edit_even_e_date" required><br>
+		        <button type="submit">수정완료</button>
+		        <button type="button" onclick="closeEditModal()">닫기</button>
+		    </form>
+		</div>
 		
-			function win_open(page){ 
-				open(page,"","width=500, height=350, left=50, top=150");
+		<script type="text/javascript">
+			function openEditModal(no, name, sDate, eDate) {
+			    document.getElementById('edit_event_no').value = no;
+			    document.getElementById('edit_event_name').value = name;
+			    document.getElementById('edit_even_s_date').value = sDate.substring(0, 10);
+			    document.getElementById('edit_even_e_date').value = eDate.substring(0, 10);
+			    document.getElementById('editModal').style.display = 'block';
+			}
+			function closeEditModal() {
+			    document.getElementById('editModal').style.display = 'none';
 			}
 			// 날짜 비교 함수
 			function date_check(form) {

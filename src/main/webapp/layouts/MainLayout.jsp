@@ -116,6 +116,7 @@
     	<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
     	
     		<%-- mainLMS 메뉴 --%>
+
     		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
 	                <li class="nav-item">
@@ -138,6 +139,7 @@
 	            </ul>
             </c:if>
 	        <%-- deptLMS 메뉴 --%>
+
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
