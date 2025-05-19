@@ -14,7 +14,7 @@
     <style>
 	    li{list-style: none;}
 	    .di_btn{text-align: center;padding-top: 2px;color: #fff;width: 50px;border-radius: 100px;background-color: #343a40;font-size: 12px;}
-	    .main_list{min-width:600px; height: 400px; background-color: #fff; border:1px solid #eee; border-radius: 10px;}
+	    .main_list{height: 400px; background-color: #fff; border:1px solid #eee; border-radius: 10px;}
 	    .main_list .list-group-item{border: none; border-bottom: 1px solid #eee;}
 	    .main_list .list-group-item:last-child{border: none;}
     </style>
@@ -60,38 +60,21 @@
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
             	</c:if>
             </h3>
-			<h2>${year}년 ${month}월</h2>
-			<table class="table">
-			    <thead>
-			        <tr>
-			            <th>일</th>
-			            <th>월</th>
-			            <th>화</th>
-			            <th>수</th>
-			            <th>목</th>
-			            <th>금</th>
-			            <th>토</th>
-			        </tr>
-			    </thead>
-			    <tbody>
-			        <c:forEach var="cell" items="${calendarCells}" varStatus="status">
-			            <c:if test="${status.index % 7 == 0}">
-			                <tr>
-			            </c:if>
-			            <td>
-			                <c:if test="${cell.date != null}">
-			                    <div>${cell.date}</div>
-			                    <c:forEach var="event" items="${cell.events}">
-			                        <div>${event.event_name}</div>
-			                    </c:forEach>
-			                </c:if>
-			            </td>
-			            <c:if test="${status.index % 7 == 6}">
-			                </tr>
-			            </c:if>
-			        </c:forEach>
-			    </tbody>
-			</table>
+			<h2>${year}년 ${month + 1}월</h2>
+			
+			<c:forEach var="e" items="${eventList}">
+		        <tr>
+		            <td class="text-center">${e.event_name}</td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_s_date}" pattern="yyyy-MM-dd" /></td>
+		            <td class="text-center"><fmt:formatDate value="${e.even_e_date}" pattern="yyyy-MM-dd" /></td>
+		           	<td class="text-center">
+                		<button class="btn btn-light btn-outline-secondary" type="button" onclick="openEditModal('${e.event_no}', '${e.event_name}', '${e.even_s_date}', '${e.even_e_date}')">수정</button>
+            		</td>
+            		<td class="text-center">
+            			<a class="btn btn-outline-danger" href="event?delete=${e.event_no}">삭제</a>
+            		</td>
+		        </tr>
+		    </c:forEach>
         </div>
 
         <div class="main_list col-sm-5 px-4 py-5">

@@ -47,6 +47,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		cls.setC_plan(request.getParameter("courseSyllabus"));
 		cls.setFile(request.getParameter("file1"));
 
+		// 2) 체크된 요일(0=월…4=금) → List<Integer>로 변환
 		String[] dayArr = request.getParameterValues("days");
 		if (dayArr != null) {
 			List<Integer> days = Arrays.stream(dayArr).map(Integer::valueOf).collect(Collectors.toList());
@@ -54,7 +55,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 
 		// 3) DAO 호출 및 결과 처리
-		if (dao.insertClass(cls)) {
+		if (dao.insert(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 추가되었습니다.");
 			request.setAttribute("url", "myClass");
 		} else {
