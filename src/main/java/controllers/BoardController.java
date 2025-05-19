@@ -213,7 +213,7 @@ public class BoardController extends MskimRequestMapping {
 	@RequestMapping("updateForm")
 	public String updateForm(HttpServletRequest req,
 			HttpServletResponse res) {
-		int arti_no = Integer.parseInt(req.getParameter("board_id"));
+		int arti_no = Integer.parseInt(req.getParameter("arti_no"));
 		Article arti = artiDao.selectOne(arti_no);
 		setLMS(req, arti.getBoard_id());
 		req.setAttribute("arti", arti);

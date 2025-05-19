@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%-- 원동인 --%>
+<%-- 이동원
+기존 파일명
+assignmentList
+ --%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -9,7 +13,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	</head>
 	<body>
-		<h3 class="my-4">과제 추가</h3>
+		<h3 class="my-4">과제 제출</h3>
 	
 		<table class="table table-bordered"> 
 			<thead class="thead-light">

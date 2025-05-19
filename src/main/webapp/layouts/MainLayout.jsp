@@ -44,14 +44,17 @@
                 </a>
             </h1>
             <%-- 메인 타이틀 --%>
-            <c:if test="${fn:startsWith(relativeURI, '/mainLMS/')}">
+            <%-- 이동원: lms 별 차이가 없으면 if문 생략?
+            아니면 login(User 객체)에 major_name을 넣던가.
+             --%>
+            <c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
             	<a href="../mainLMS/main"><h2 class="m-0 fw_b" style="flex: 2;">구디 대학교 학사관리 시스템</h2></a>
             </c:if>
-            <c:if test="${fn:startsWith(relativeURI, '/deptLMS/')}">
-            	<h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2>
+            <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
+            	<a href="../board/board?board_id=${login.major_no}"><h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2></a>
             </c:if>
-            <c:if test="${fn:startsWith(relativeURI, '/classLMS/')}">
-            	<h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2>
+            <c:if test="${fn:startsWith(relativeURI, '/classLMS/') or lms == 'class'}">
+            	<a href="../classLMS/classInfo"><h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2></a>
             </c:if>
             
             <ul class="nav d-flex justify-content-end align-items-center" style="flex: 1; gap: 10px; flex-wrap:nowrap;">
@@ -113,16 +116,17 @@
     	<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
     	
     		<%-- mainLMS 메뉴 --%>
-    		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}}">
+
+    		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
 	                <li class="nav-item">
 	                    <a href="../mainLMS/signUpClass">수강신청</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a href="#">학과 LMS</a>
+	                    <a href="../deptLMS/deptMain" target="_blank">학과 LMS</a>
 	                </li>
 	                <li class="nav-item">
-	                    <a href="#">학점조회</a>
+	                    <a href="../mainLMS/markList">학점조회</a>
 	                </li>
 	                <li class="nav-item"> <%-- 이동원 --%>
 	                    <a href="../board/board?board_id=9999">공지게시판</a>
@@ -135,19 +139,29 @@
 	            </ul>
             </c:if>
 	        <%-- deptLMS 메뉴 --%>
-	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}}">
+
+	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 	                <li class="nav-item">
-	                    <a href="#">학과 게시판</a>
+	                <c:if test="${empty login.major_no}">
+	                    <a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
+	                    <a href="../board/board?board_id=2000">전기공학과 게시판</a>
+	                    <a href="../board/board?board_id=3000">건축공학과 게시판</a>
+	                </c:if>
 	                </li>
+	                <c:if test="${!empty login.major_no}">
+	                <li>
+	                    <a href="../board/board?board_id=${login.major_no}">학과 게시판</a>
+                  </li>
+                  </c:if>
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="#">수강 조회</a>
+		                    <a href="../deptLMS/classList">수강 조회</a>
 		                </li>
 	                </c:if>
-		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
+		            	<c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="#">강의 조회</a>
+		                    <a href="../deptLMS/myClass">강의 조회</a>
 		                </li>
 	                </c:if>
 	            </ul>
@@ -159,24 +173,27 @@
 	                <li class="nav-item">
 	                    <a href="#">자바 프로그래밍</a>
 	                </li>
+	                <%-- 이동원
+	                강의명 지우고, 중앙에 표 형식으로 강의정보 표시하기
+	                 --%>
 	                <li class="nav-item">
-	                    <a href="#">질문 게시판</a>
+	                    <a href="../board/board_id?board_id${class1.class_no}">질문 게시판</a>
 	                </li> 
 
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="#">출결 관리</a>
+		                    <a href="#">입실/퇴실</a>
 		                </li>
 		                <li class="nav-item">
-		                    <a href="#">과제 제출</a>
+		                    <a href="../classLMS/submitAs">과제 제출</a>
 		                </li>
 	                </c:if>
 		            <c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="#">과제 관리</a>
+		                    <a href="../classLMS/manageAs">과제 관리</a>
 		                </li>
 		                <li class="nav-item">
-		                    <a href="#">학점 관리</a>
+		                    <a href="../classLMS/manageScore">학점 관리</a>
 		                </li>
 		                <li class="nav-item">
 		                    <a href="#">출결 관리</a>
