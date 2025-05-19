@@ -45,6 +45,7 @@ public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
 	private MajorDao majorDao = new MajorDao();
 	/*
+		상단에 꼭 선언해야 함. 필요한 것에 따라 2줄 모두 가져가야 함.
 		private UserController uc = new UserController();
 		
 		String loginCheck = uc.loginIdCheck(request, response); 
@@ -61,7 +62,6 @@ public class UserController extends MskimRequestMapping{
 		
 		String classCheck = uc.classCheck(request, response);
 		if(classCheck != null) { return classCheck; } // 강의 확인
-		return null;
 	*/
 	
 	// 로그인 =================================================================

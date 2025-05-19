@@ -40,56 +40,50 @@ import models.others.NotificationDao;
 
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
-  
-  @RequestMapping("main")
-	public String main(HttpServletRequest request, HttpServletResponse response) {
-		return uc.loginIdCheck(request, response);
-  }
-  private EventDao eventDao = new EventDao();
+	UserController uc = new UserController();
+	private EventDao eventDao = new EventDao();
 	private Notification NotifiDao = new Notification();
-  private Class1Dao clsdao = new Class1Dao();
+	private Class1Dao clsdao = new Class1Dao();
   
-  // 원동인(캘린더)
-  List<Event> event_main = eventDao.eventList();
-  request.setAttribute("event_main", event_main);
-  LocalDate now = LocalDate.now();
-  int year = now.getYear();
-  int month = now.getMonthValue(); // 1~12
-
-  LocalDate firstDay = LocalDate.of(year, month, 1);
-  int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
-  int lastDate = firstDay.lengthOfMonth();
-
-  // 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
-  List<Map<String, Object>> calendarCells = new ArrayList<>();
-  for (int i = 0; i < 42; i++) {
-      Map<String, Object> cell = new HashMap<>();
-      int dateNum = i - startDayOfWeek + 1;
-      if (dateNum > 0 && dateNum <= lastDate) {
-          LocalDate currentDate = LocalDate.of(year, month, dateNum);
-          cell.put("date", dateNum);
-          cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
-          // 일정 있는 날짜 선택
-          List<Event> dayEvents = new ArrayList<>();
-          for (Event event : event_main ) {
-              LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-              LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-              if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
-                  dayEvents.add(event);
-              }
-          }
-          cell.put("events", dayEvents);
-      } else {
-          cell.put("date", null); // 빈칸
-      }
-      calendarCells.add(cell);
+	@RequestMapping("main")
+	public String main(HttpServletRequest request, HttpServletResponse response) {
+		String loginCheck = uc.loginIdCheck(request, response); 
+		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+		// 원동인(캘린더)
+		List<Event> event_main = eventDao.eventList();
+		request.setAttribute("event_main", event_main);
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		int month = now.getMonthValue(); // 1~12
+		
+		LocalDate firstDay = LocalDate.of(year, month, 1);
+		int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
+		int lastDate = firstDay.lengthOfMonth();
+	
+		// 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
+		List<Map<String, Object>> calendarCells = new ArrayList<>();
+		for (int i = 0; i < 42; i++) {
+	    Map<String, Object> cell = new HashMap<>();
+	    int dateNum = i - startDayOfWeek + 1;
+	    if (dateNum > 0 && dateNum <= lastDate) {		LocalDate currentDate = LocalDate.of(year, month, dateNum);		cell.put("date", dateNum);		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"		// 일정 있는 날짜 선택		List<Event> dayEvents = new ArrayList<>();		for (Event event : event_main ) {
+		LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
+		dayEvents.add(event);
+		}
+		}
+		cell.put("events", dayEvents);
+		} else {
+		cell.put("date", null); // 빈칸
+		}
+		calendarCells.add(cell);
+		}
+		request.setAttribute("year", year);
+		request.setAttribute("month", month);
+		request.setAttribute("calendarCells", calendarCells);
+		
+		return null; // 정상인 경우
   }
-  request.setAttribute("year", year);
-  request.setAttribute("month", month);
-  request.setAttribute("calendarCells", calendarCells);
-
-  return null; // 정상인 경우
-	}
 
 	// 사용자 관리 폼(관리자 외 접근권한 없음)=================================================
 	@RequestMapping("adminForm")
@@ -119,7 +113,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setMajor_no(request.getParameter("major_no"));
 		String grade = request.getParameter("grade");
-		user.setGrade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
+		user.setUser_grade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
 		user.setEmail(request.getParameter("email"));
 		user.setTel(request.getParameter("tel"));
 		if (dao.insert(user)) {
@@ -152,7 +146,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setTel(request.getParameter("tel"));
 		user.setEmail(request.getParameter("email"));
-		user.setGrade(Integer.parseInt(request.getParameter("grade")));
+		user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
 		user.setMajor_no(request.getParameter("major_no"));
 		user.setPassword(request.getParameter("password"));
 		// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
@@ -243,7 +237,6 @@ public class MainLMSController extends MskimRequestMapping {
 
 	// 원동인 학사일정(관리자 권한)
 	@RequestMapping("event")
-	@MSLogin("loginAdminCheck")
 	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
 
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -294,69 +287,6 @@ public class MainLMSController extends MskimRequestMapping {
 		return "mainLMS/event";
 	}
 
-	
-
-	// 원동인
-	private EventDao eventDao = new EventDao();
-	private Notification NotifiDao = new Notification();
-	
-	// 학사일정(관리자 권한)
-	@RequestMapping("event")
-	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    // 삭제
-	    String deleteNo = request.getParameter("delete");
-	    if (deleteNo != null) {
-	        int no = Integer.parseInt(deleteNo);
-	        if (eventDao.delete(no)) {
-	            request.setAttribute("msg", "삭제 완료");
-	            request.setAttribute("url", "mainLMS/event");
-	        } else {
-	            request.setAttribute("msg", "삭제 실패");
-	            request.setAttribute("url", "mainLMS/event");
-	        }
-	        return "alert";
-	    }
-
-	    String event_name = request.getParameter("event_name");
-	    String s_date = request.getParameter("even_s_date");
-	    String e_date = request.getParameter("even_e_date");
-
-	    if (event_name != null && s_date != null && e_date != null) {
-	        Event event = new Event();
-	        event.setEvent_name(event_name);
-	        event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
-	        event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
-
-	        String noStr = request.getParameter("event_no");
-	        boolean result;
-	        // 등록/수정
-	        if (noStr != null && !noStr.equals("")) {
-	            event.setEvent_no(Integer.parseInt(noStr));
-	            result = eventDao.update(event);
-	        } else {
-	            result = eventDao.insert(event);
-	        }
-	        
-	        if (result) {
-	            request.setAttribute("msg", "처리 성공");
-	        } else {
-	            request.setAttribute("msg", "처리 실패");
-	        }
-	        return "alert";
-	    }
-	    // 리스트
-	    request.setAttribute("eventList", eventDao.eventList());
-	    return "mainLMS/event";
-
-	// 알림창
-	@RequestMapping("Notification")
-	public String notifications(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("테스트+++++++++++++++++++++");
-		List<Notification> notificationsList = NotifiDao.notifList();
-		request.setAttribute("notificationsList", notificationsList);
-		return "mainLMS/main";
-	}
 	// 수강신청
 	// 오예록
 	@RequestMapping("signUpClass")
