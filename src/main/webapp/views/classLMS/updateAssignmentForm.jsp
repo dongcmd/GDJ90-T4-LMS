@@ -10,52 +10,52 @@
 <body class="bg-light p-4">
 <div class="container">
     <h4 class="mb-4">과제 수정</h4>
-    <form action="updateassignment" method="post" class="bg-white p-4 rounded shadow-sm">
-        <input type="hidden" name="as_no" value="${assignment.as_no}">
+    <form action="updateAssignment" method="post" class="bg-white p-4 rounded shadow-sm">
+        <input type="hidden" name="as_no" value="${as1.as_no}">
 
         <div class="form-group">
             <label>과제명</label>
-            <input type="text" name="as_name" class="form-control" value="${assignment.as_name}" required>
+            <input type="text" name="as_name" class="form-control" value="${as1.as_name}" required>
         </div>
 
         <div class="form-group">
             <label>과제내용</label>
-            <textarea name="as_content" class="form-control" rows="4" required>${assignment.as_content}</textarea>
+            <textarea name="as_content" class="form-control" rows="4" required>${as1.as_content}</textarea>
         </div>
 
         <div class="form-group">
             <label>제출 시작 기한</label>
-            <input type="datetime-local" name="as_s_date" class="form-control" value="${assignment.as_s_date}">
+            <input type="datetime-local" name="as_s_date" class="form-control" value="${as_s_date}">
         </div>
 
         <div class="form-group">
             <label>제출 마감 기한</label>
-            <input type="datetime-local" name="as_e_date" class="form-control" value="${assignment.as_e_date}">
+            <input type="datetime-local" name="as_e_date" class="form-control" value="${as_e_date}">
         </div>
 
         <div class="form-group">
             <label>과제 배점</label>
-            <input type="number" name="as_point" class="form-control" value="${assignment.as_point}" required>
+            <input type="number" name="as_point" class="form-control" value="${as1.as_point}" required>
         </div>
 
         <div class="form-group">
             <label>강의코드</label>
-            <input type="text" name="class_no" class="form-control" value="${assignment.class_no}" required>
+            <input type="text" name="class_no" class="form-control" value="${as1.class_no}" required readonly>
         </div>
 
         <div class="form-group">
             <label>반</label>
-            <input type="text" name="ban" class="form-control" value="${assignment.ban}" required>
+            <input type="text" name="ban" class="form-control" value="${as1.ban}" required readonly>
         </div>
 
         <div class="form-group">
             <label>년도</label>
-            <input type="number" name="year" class="form-control" value="${assignment.year}" required>
+            <input type="number" name="year" class="form-control" value="${as1.year}" required readonly>
         </div>
 
         <div class="form-group">
             <label>학기</label>
-            <select name="term" class="form-control">
+            <select name="term" class="form-control" readonly>
                 <option value="1" ${assignment.term == 1 ? 'selected' : ''}>1학기</option>
                 <option value="2" ${assignment.term == 2 ? 'selected' : ''}>2학기</option>
             </select>
@@ -63,7 +63,7 @@
 
         <div class="text-right">
             <button type="submit" class="btn btn-dark">수정 완료</button>
-            <a href="manageassignment" class="btn btn-outline-secondary">취소</a>
+            <a href="manageAs" class="btn btn-outline-secondary">취소</a>
         </div>
     </form>
 </div>

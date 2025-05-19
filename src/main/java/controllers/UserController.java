@@ -238,6 +238,9 @@ public class UserController extends MskimRequestMapping{
 	@RequestMapping("info")
 	@MSLogin("loginIdCheckPopup")
 	public String info(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		User user = dao.selectOne(login.getUser_no());
+		request.setAttribute("user", user);
 		return "users/info";
 	}
 	// 회원정보 수정 페이지 ====================================================================
@@ -261,7 +264,7 @@ public class UserController extends MskimRequestMapping{
 			user.setMajor_no(request.getParameter("major_no"));
 			user.setPassword(request.getParameter("password"));
 			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
-			User login = (User)request.getSession().getAttribute("user_no");	
+			User login = (User)request.getSession().getAttribute("login");	
 			String msg = "비밀번호가 틀립니다.";
 			String url = "users/updateForm";
 			// 비밀번호 같을시
@@ -273,6 +276,7 @@ public class UserController extends MskimRequestMapping{
 					msg = "회원정보 수정실패";
 				}
 			}
+			
 			request.setAttribute("msg", msg);
 			request.setAttribute("url", url);
 			return "alert";
@@ -291,7 +295,7 @@ public class UserController extends MskimRequestMapping{
 			String password = request.getParameter("password");
 			String n_pass1 = request.getParameter("new_password1");
 			String n_pass2 = request.getParameter("new_password2");
-			User login = (User) request.getSession().getAttribute("user_no");		
+			User login = (User) request.getSession().getAttribute("login");		
 			
 			if(password.equals(login.getPassword())){
 		    	 if(!n_pass1.equals("") && !n_pass2.equals("") && n_pass1.equals(n_pass2)) {
