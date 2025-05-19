@@ -17,8 +17,8 @@ import models.users.User;
 public interface UserMapper {
 
 	//사용자 추가
-	@Insert("INSERT INTO users (user_no, password, role, email, tel, user_name, gender, grade, major_no) " +
-	        "VALUES (#{user_no}, #{password}, #{role}, #{email}, #{tel}, #{user_name}, #{gender}, #{grade}, #{major_no})")
+	@Insert("INSERT INTO users (user_no, password, role, email, tel, user_name, gender, user_grade, major_no) " +
+	        "VALUES (#{user_no}, #{password}, #{role}, #{email}, #{tel}, #{user_name}, #{gender}, #{user_grade}, #{major_no})")
 	int insert(User user);
 	
 	//로그인
@@ -39,7 +39,7 @@ public interface UserMapper {
 	
 	//내 정보 수정
 	@Update("update users set user_name=#{user_name}, gender=#{gender}, tel=#{tel}, email=#{email},"
-				+ " grade=#{grade}, major_no=#{major_no} where user_no=#{user_no}")
+				+ " user_grade=#{user_grade}, major_no=#{major_no} where user_no=#{user_no}")
 	int update(User user);
 	
 	//비밀번호 재설정
@@ -61,7 +61,7 @@ public interface UserMapper {
     List<User> searchByUserName(@Param("keyword") String keyword);
 
 	 @Select("select user_no from users where user_no = #{user_no} and password = #{password}")
-	 Integer pwCheck(Map<String, Object> map);
+	 int pwCheck(Map<String, Object> map);
 
 
     @Select("select * from users where role = #{keyword} order by user_no")

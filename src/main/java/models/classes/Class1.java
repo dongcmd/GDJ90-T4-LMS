@@ -1,6 +1,7 @@
 package models.classes;
 
 import java.util.List;
+import java.util.Set;
 
 //오예록
 public class Class1 {
@@ -21,6 +22,7 @@ public class Class1 {
 	private String file; // 첨부파일
 	private String prof; // 교수명
 	private List<Integer> days;
+	private Set<Student> students; // 소속 학생들-이동원
 
 	public String getProf() {
 		return prof;
@@ -164,6 +166,14 @@ public class Class1 {
 				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
 				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
 				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + "]";
+	}
+
+	public Set<Student> getStudents() {
+		return students;
+	}
+
+	public void setStudents(Set<Student> students) {
+		this.students = students;
 	}
 
 }

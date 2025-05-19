@@ -60,11 +60,11 @@
                     <td>${users.major_no}</td>
                     
                     <td>
-                    <c:if test="${users.grade == 0}">
+                    <c:if test="${users.user_grade == 0}">
                     -
                     </c:if>
-                    <c:if test="${users.grade != 0}">
-                    ${users.grade}
+                    <c:if test="${users.user_grade != 0}">
+                    ${users.user_grade}
                     </c:if>
                     </td>
                     <td>${users.email}</td>

@@ -30,6 +30,10 @@ import com.oreilly.servlet.MultipartRequest;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import models.classes.Class1;
+import models.classes.Student;
+import models.others.Major;
+import models.others.MajorDao;
 import models.users.User;
 import models.users.UserDao;
 /*
@@ -39,7 +43,27 @@ import models.users.UserDao;
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
+	private MajorDao majorDao = new MajorDao();
+	/*
+		private UserController uc = new UserController();
 		
+		String loginCheck = uc.loginIdCheck(request, response); 
+		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+
+		String adminCheck = uc.adminCheck(request, response);
+		if(adminCheck != null) { return adminCheck; } // 관리자 확인
+
+		String user_noCheck = uc.user_noCheck(request, response);
+		if(user_noCheck != null) { return user_noCheck; } // 유저번호 확인
+
+		String majorCheck = uc.majorCheck(request, response);
+		if(majorCheck != null) { return majorCheck; } // 소속학과 확인
+		
+		String classCheck = uc.classCheck(request, response);
+		if(classCheck != null) { return classCheck; } // 강의 확인
+		return null;
+	*/
+	
 	// 로그인 =================================================================
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) {			
@@ -128,17 +152,12 @@ public class UserController extends MskimRequestMapping{
 		return "alert";
 	}
 	
-	// 로그인 아이디 체크 =================================================================
+	// 로그인 체크 =================================================================
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-		String user_no = request.getParameter("user_no");
 		User login = (User)request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url", "loginForm");
-			return "alert";
-		} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
-			request.setAttribute("msg", "본인만 조회 가능합니다");
-			request.setAttribute("url", "main");
+			request.setAttribute("url", "../users/loginForm");
 			return "alert";
 		}
 		return null; // 정상인 경우
@@ -152,6 +171,68 @@ public class UserController extends MskimRequestMapping{
 			return "alert";
 		}
 		return null; // 정상인 경우
+	}
+	// 이동원
+	// 관리자 체크 ===================================
+	public String adminCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		if(login.getRole().equals("3")) {
+			return null;
+		}
+		request.setAttribute("msg", "관리자가 아닙니다.");
+		request.setAttribute("url", "../mainLMS/main");
+		return "alert";
+	}
+	// 이동원
+	// 유저번호 체크 ===================================
+	public String user_noCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		String target = request.getParameter("user_no");
+		if(target == null || login.getRole().equals("3")
+				|| login.getUser_no().equals(target)) {
+			// 관리자 or 내 정보일 경우(정상접근)
+			return null;
+		}
+		request.setAttribute("msg", "자신의 정보만 볼 수 있습니다.");
+		request.setAttribute("url", "../mainLMS/main");
+		return "alert";
+	}
+	// 이동원
+	// 소속학과 체크 ===================================
+	public String majorCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		String target = request.getParameter("major_no");
+		if(login.getRole().equals("3")
+				|| login.getMajor_no().equals(target)) {
+			// 관리자 or 내가 속한 학과일 경우(정상접근)
+			System.out.println(login.getMajor_no());
+			System.out.println(target);
+			return null;
+		}
+		request.setAttribute("msg", "자신이 속한 학과가 아닙니다.");
+		request.setAttribute("url", "../board/board?board_id"+login.getMajor_no());
+		return "alert";
+	}
+	// 이동원
+	// 강의 체크 ===================================
+	public String classCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		Class1 target = (Class1)request.getSession().getAttribute("class1");
+		if(login.getRole().equals("3")) { // login이 관리자 일 때
+			return null;
+		} else if(login.getRole().equals("2")) { // login이 교수일 경우
+			if(login.getUser_no().equals(target.getUser_no())) { // 자신의 강의일 경우
+				return null; }
+			request.setAttribute("msg", "자신이 진행하는 강의가 아닙니다.");
+		} else if(login.getRole().equals("1")) { // login이 학생일 경우
+			for(Student st : target.getStudents()) {
+				if(st.USER_NO.equals(login.getUser_no())) { // 소속학생일 경우
+					return null; }
+			}
+			request.setAttribute("msg", "수강 중인 강의가 아닙니다.");	
+		}
+		request.setAttribute("url", "../board/board?board_id"+login.getMajor_no());
+		return "alert";
 	}
 	/* 회원정보(DB 에서 가져오기) =================================================================*/
 	@RequestMapping("info")
@@ -176,7 +257,7 @@ public class UserController extends MskimRequestMapping{
 			user.setGender(Integer.parseInt(request.getParameter("gender")));
 			user.setTel(request.getParameter("tel"));
 			user.setEmail(request.getParameter("email"));
-			user.setGrade(Integer.parseInt(request.getParameter("grade")));
+			user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
 			user.setMajor_no(request.getParameter("major_no"));
 			user.setPassword(request.getParameter("password"));
 			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기

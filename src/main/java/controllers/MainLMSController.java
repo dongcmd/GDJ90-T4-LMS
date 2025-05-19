@@ -23,58 +23,20 @@ import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
 
-
+// 김기흔
 @WebServlet(urlPatterns = {"/mainLMS/*"},
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class MainLMSController extends MskimRequestMapping{
-
+	UserController uc = new UserController();
 	
-	// 로그인 아이디 체크 =================================================================
-		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-			String user_no = request.getParameter("user_no");
-			User login = (User)request.getSession().getAttribute("login");
-			if(login == null) {
-				request.setAttribute("msg", "로그인 하세요");
-				request.setAttribute("url", "../users/loginForm");
-				return "alert";
-			} else if (!login.getUser_no().equals("999") && !user_no.equals(login.getUser_no())) {
-				request.setAttribute("msg", "본인만 조회 가능합니다");
-				request.setAttribute("url", "main");
-				return "alert";
-			}
-			return null; // 정상인 경우
-		}
-	//관리자 검증
-		public String loginAdminCheck(HttpServletRequest request, HttpServletResponse response) {
-			User login = (User) request.getSession().getAttribute("login");
-			if(login == null) {
-				request.setAttribute("msg", "로그인 하세요");
-				request.setAttribute("url", "../users/loginForm");
-				return "alert";
-			} else if (!login.getUser_no().equals("999")) {
-				request.setAttribute("msg", "관리자만 가능한 업무입니다.");
-				request.setAttribute("url", "main");
-				return "alert";
-			}
-			return null;
-		}
-
 	// 메인페이지 로그인검증 =================================================================
 	@RequestMapping("main")
-	@MSLogin("loginIdCheck")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
-		User login = (User)request.getSession().getAttribute("login");
-		if(login == null) {
-			request.setAttribute("msg", "로그인 하세요");
-			request.setAttribute("url","../users/loginForm");
-			return "alert";
-		}
-		return null; // 정상인 경우
+		return uc.loginIdCheck(request, response);
 	}
 
 	// 사용자 관리 폼(관리자 외 접근권한 없음)=================================================
 	@RequestMapping("adminForm")
-	@MSLogin("loginAdminCheck")
 	public String adminForm(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User) request.getSession().getAttribute("login");
 		UserDao dao = new UserDao();
@@ -85,13 +47,11 @@ public class MainLMSController extends MskimRequestMapping{
 
 	// 사용자 추가 폼 =================================================================
 	@RequestMapping("addUserForm")
-	@MSLogin("loginAdminCheck")
 	public String addUserForm(HttpServletRequest request, HttpServletResponse response) {;
 		return "mainLMS/addUserForm";
 	}	
 	//사용자 추가 ====================================================================
 	@RequestMapping("adduser")
-	@MSLogin("loginAdminCheck")
 	public String addUser(HttpServletRequest request, HttpServletResponse response) {
 		UserDao dao = new UserDao();	    
 		User user = new User();
@@ -102,7 +62,7 @@ public class MainLMSController extends MskimRequestMapping{
 	    user.setGender(Integer.parseInt(request.getParameter("gender")));
 	    user.setMajor_no(request.getParameter("major_no"));
 	    String grade = request.getParameter("grade");
-	    user.setGrade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
+	    user.setUser_grade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
 	    user.setEmail(request.getParameter("email"));
 	    user.setTel(request.getParameter("tel"));
 		if(dao.insert(user)) {
@@ -116,7 +76,6 @@ public class MainLMSController extends MskimRequestMapping{
 	}
 	// 사용자 수정 폼 =====================================================
 	@RequestMapping("updateUserForm")
-	@MSLogin("loginAdminCheck")
 	public String updateUserForm(HttpServletRequest request, HttpServletResponse response) {;
 	UserDao dao = new UserDao();
 	String user_no = request.getParameter("user_no");
@@ -126,7 +85,6 @@ public class MainLMSController extends MskimRequestMapping{
 	}
 	// 사용자 정보 수정(관리자권한)============================================
 	@RequestMapping("updateuser")
-	@MSLogin("loginAdminCheck")
 	public String updateuser(HttpServletRequest request, HttpServletResponse response) {
 	UserDao dao = new UserDao();
 	User user = new User();
@@ -135,7 +93,7 @@ public class MainLMSController extends MskimRequestMapping{
 	user.setGender(Integer.parseInt(request.getParameter("gender")));
 	user.setTel(request.getParameter("tel"));
 	user.setEmail(request.getParameter("email"));
-	user.setGrade(Integer.parseInt(request.getParameter("grade")));
+	user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
 	user.setMajor_no(request.getParameter("major_no"));
 	user.setPassword(request.getParameter("password"));
 	// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
@@ -157,7 +115,6 @@ public class MainLMSController extends MskimRequestMapping{
 	}
 	//사용자 삭제폼(관리자 권한) ========================================================
 	@RequestMapping("deleteUserForm")
-	@MSLogin("loginAdminCheck")
 	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {;
 	UserDao dao = new UserDao();
 	String user_no = request.getParameter("user_no");
@@ -191,7 +148,6 @@ public class MainLMSController extends MskimRequestMapping{
 
 	// 사용자 검색 ========================================
 	@RequestMapping("searchusers")
-	@MSLogin("loginAdminCheck")
 	public String searchusers(HttpServletRequest request, HttpServletResponse response) {
 	    String type = request.getParameter("type");       // user_name, user_no, email
 	    String keyword = request.getParameter("keyword"); // 검색어
@@ -231,7 +187,6 @@ public class MainLMSController extends MskimRequestMapping{
 	
 	// 학사일정(관리자 권한)
 	@RequestMapping("event")
-	@MSLogin("loginAdminCheck")
 	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    // 삭제

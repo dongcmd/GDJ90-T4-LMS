@@ -177,7 +177,7 @@
 	                강의명 지우고, 중앙에 표 형식으로 강의정보 표시하기
 	                 --%>
 	                <li class="nav-item">
-	                    <a href="../board/board_id?board_id${class1.class_no}">질문 게시판</a>
+	                    <a href="../board/board?board_id=${class1.class_no}">질문 게시판</a>
 	                </li> 
 
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->

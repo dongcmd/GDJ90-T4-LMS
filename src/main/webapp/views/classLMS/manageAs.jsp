@@ -70,6 +70,13 @@ manageassignment
 			<a href="#" class="btn btn-dark" role="button">파일업로드 csv</a>
 		</div>
 
+	<a href="download_asXLSX" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
+	<form method="post" action="upload_asCSV" enctype="multipart/form-data">
+	  <input type="file" name="csvfile" accept=".csv" required />
+	  <button type="submit">양식 업로드 csv</button>
+	</form>
+
+
 		<table class="table table-bordered"> 
 			<thead class="thead-light">
 				<tr>

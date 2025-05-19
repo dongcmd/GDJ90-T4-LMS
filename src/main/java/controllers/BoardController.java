@@ -18,7 +18,10 @@ import models.boards.ArticleDao;
 import models.boards.BoardDao;
 import models.boards.Comment;
 import models.boards.CommentDao;
+import models.classes.Class1;
+import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
+import models.classes.Student;
 import models.users.User;
 import models.users.UserDao;
 
@@ -31,6 +34,7 @@ public class BoardController extends MskimRequestMapping {
 	private ArticleDao artiDao = new ArticleDao();
 	private CommentDao commDao = new CommentDao();
 	private UserDao userDao = new UserDao();
+	private UserController uc = new UserController();
 	
 	public void setLMS(HttpServletRequest req, String board_id) {
 		if(board_id.equals("9999")) {
@@ -43,16 +47,38 @@ public class BoardController extends MskimRequestMapping {
 			req.setAttribute("lms", "class");
 		}
 	}
+	
 	@RequestMapping("board")
 	public String board(HttpServletRequest req,
 			HttpServletResponse res) {
+		String loginCheck = uc.loginIdCheck(req, res); 
+		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+		
+		User login = (User)req.getSession().getAttribute("login");
+		String board_id = req.getParameter("board_id");
+		Class1 class1 = (Class1)req.getSession().getAttribute("class1");
+		
+		if(board_id == null || board_id.trim().equals("")) {
+			board_id = "9999"; }
+		
+		if(!board_id.equals(login.getMajor_no())) {
+			boolean check = false;
+			if(class1 != null) {
+				for(Student st : class1.getStudents()) {
+					if(st.USER_NO.equals(login.getUser_no())) {
+						check = true; break;
+					}
+				}
+			} else if(!check) {
+				req.setAttribute("msg", "접근 권한 없음");
+				req.setAttribute("url", "../mainLMS/main");
+				return "alert";
+			}
+		}
+		
 		int pageNum = 1;
 		try { pageNum = Integer.parseInt(req.getParameter("pageNum"));
 		} catch ( NumberFormatException e) {}
-		
-		String board_id = req.getParameter("board_id");
-		if(board_id == null || board_id.trim().equals("")) {
-			board_id = "9999"; }
 		
 		String column = req.getParameter("column");
 		String keyword = req.getParameter("keyword");
@@ -105,9 +131,10 @@ public class BoardController extends MskimRequestMapping {
 	@RequestMapping("writeComment")
 	public String writeComment(HttpServletRequest req,
 			HttpServletResponse res) {
+		User login = (User)req.getSession().getAttribute("login");
 		Comment comm = new Comment();
 		comm.setArti_no(Integer.parseInt(req.getParameter("arti_no")));
-		comm.setUser_no((String)req.getSession().getAttribute("user_no"));
+		comm.setUser_no(login.getUser_no());
 		comm.setComm_content((String)req.getParameter("comm_content"));
 		
 		if(commDao.insert(comm)) {
@@ -188,7 +215,7 @@ public class BoardController extends MskimRequestMapping {
 		String inputPass = req.getParameter("password");
 		int arti_no;
 		if(userDao.pwCheck(login.getUser_no(), inputPass)) {
-			if(paramComm_no != null) {
+			if(paramComm_no != null && !paramComm_no.trim().equals("")) {
 				int comm_no = Integer.parseInt(paramComm_no);
 				Comment comm = commDao.selectOne(comm_no);
 				if(commDao.delete(comm_no)) {
@@ -231,22 +258,26 @@ public class BoardController extends MskimRequestMapping {
 		try { multi = new MultipartRequest(req, path, size, "utf-8");
 		} catch(IOException e) { e.printStackTrace(); }
 		
-		Article arti = new Article();
-		String board_id = multi.getParameter("board_id");
+		int arti_no = Integer.parseInt(multi.getParameter("arti_no"));
+		Article arti = artiDao.selectOne(arti_no);
 		String arti_title = multi.getParameter("title");
 		String arti_content = multi.getParameter("content");
-		User login = (User)req.getSession().getAttribute("login");
+		//첨부파일 수정. 
+		arti.setFile(multi.getFilesystemName("file1"));
+		//첨부파일 수정 안됨
+		if(arti.getFile()==null || arti.getFile().equals("")) {
+		//이전 첨부 파일을 유지
+			arti.setFile(multi.getParameter("file2"));
+		}
 		
-		arti.setBoard_id(board_id);
 		arti.setArti_title(arti_title);
 		arti.setArti_content(arti_content);
-		arti.setUser_no(login.getUser_no());
 		
-		if(artiDao.insert(arti)) {
-			return "redirect:board?board_id="+board_id;
+		if(artiDao.update(arti)) {
+			return "redirect:board?board_id="+arti.getBoard_id();
 		}
 		req.setAttribute("msg", "게시물 등록 실패");
-		req.setAttribute("url", "writeForm?board_id="+board_id);
+		req.setAttribute("url", "writeForm?board_id="+arti.getBoard_id());
 		return "alert";
 	}
 }
