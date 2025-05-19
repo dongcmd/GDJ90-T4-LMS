@@ -4,7 +4,10 @@ import java.util.List;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+
 import models.users.User;
 import models.users.UserDao;
 
@@ -27,7 +31,6 @@ import models.others.Notification;
 @WebServlet(urlPatterns = {"/mainLMS/*"},
 initParams = {@WebInitParam(name="view",value="/views/")})
 public class MainLMSController extends MskimRequestMapping{
-
 	
 	// 로그인 아이디 체크 =================================================================
 		public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -62,13 +65,54 @@ public class MainLMSController extends MskimRequestMapping{
 	// 메인페이지 로그인검증 =================================================================
 	@RequestMapping("main")
 	@MSLogin("loginIdCheck")
-	public String main(HttpServletRequest request, HttpServletResponse response) {
+	public String main(HttpServletRequest request, HttpServletResponse response) {	    
 		User login = (User)request.getSession().getAttribute("login");
 		if(login == null) {
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url","../users/loginForm");
 			return "alert";
 		}
+		
+		// 원동인(캘린더)
+		List<Event> event_main = eventDao.eventList();
+		request.setAttribute("event_main", event_main);
+
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		int month = now.getMonthValue(); // 1~12
+		
+		LocalDate firstDay = LocalDate.of(year, month, 1);
+		int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
+		int lastDate = firstDay.lengthOfMonth();
+
+		// 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
+		List<Map<String, Object>> calendarCells = new ArrayList<>();
+		for (int i = 0; i < 42; i++) {
+		    Map<String, Object> cell = new HashMap<>();
+		    int dateNum = i - startDayOfWeek + 1;
+		    if (dateNum > 0 && dateNum <= lastDate) {
+		        LocalDate currentDate = LocalDate.of(year, month, dateNum);
+		        cell.put("date", dateNum);
+		        cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
+		        // 일정 있는 날짜 선택
+		        List<Event> dayEvents = new ArrayList<>();
+		        for (Event event : event_main ) {
+		            LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
+		                dayEvents.add(event);
+		            }
+		        }
+		        cell.put("events", dayEvents);
+		    } else {
+		        cell.put("date", null); // 빈칸
+		    }
+		    calendarCells.add(cell);
+		}
+		request.setAttribute("year", year);
+		request.setAttribute("month", month);
+		request.setAttribute("calendarCells", calendarCells);
+		
 		return null; // 정상인 경우
 	}
 
@@ -240,10 +284,10 @@ public class MainLMSController extends MskimRequestMapping{
 	        int no = Integer.parseInt(deleteNo);
 	        if (eventDao.delete(no)) {
 	            request.setAttribute("msg", "삭제 완료");
-	            request.setAttribute("url", "mainLMS/event");
+	            request.setAttribute("url", "event");
 	        } else {
 	            request.setAttribute("msg", "삭제 실패");
-	            request.setAttribute("url", "mainLMS/event");
+	            request.setAttribute("url", "event");
 	        }
 	        return "alert";
 	    }
@@ -278,15 +322,5 @@ public class MainLMSController extends MskimRequestMapping{
 	    // 리스트
 	    request.setAttribute("eventList", eventDao.eventList());
 	    return "mainLMS/event";
-	}
-	
-	// 메인 캘린더
-	@RequestMapping("main")
-	public String eventPage(HttpServletRequest request) {
-		List<Event> event_main = eventDao.eventList();
-	    request.setAttribute("eventList", event_main);
-
-	    return "mainLMS/main";  // JSP 경로
-	}
-	
+	}	
 }
