@@ -10,7 +10,7 @@ public class User {
 	private String tel;
 	private String user_name;
 	private int gender;
-	private int grade;
+	private int user_grade;
 	private String major_no;
 	
 	public String getUser_no() {
@@ -55,11 +55,11 @@ public class User {
 	public void setGender(int gender) {
 		this.gender = gender;
 	}
-	public int getGrade() {
-		return grade;
+	public int getUser_grade() {
+		return user_grade;
 	}
-	public void setGrade(int grade) {
-		this.grade = grade;
+	public void setUser_grade(int user_grade) {
+		this.user_grade = user_grade;
 	}
 	public String getMajor_no() {
 		return major_no;
@@ -70,7 +70,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "Users [user_no=" + user_no + ", password=" + password + ", role=" + role + ", email=" + email + ", tel="
-				+ tel + ", name=" + user_name + ", gender=" + gender + ", grade=" + grade + ", major_no=" + major_no + "]";
+				+ tel + ", name=" + user_name + ", gender=" + gender + ", user_grade=" + user_grade + ", major_no=" + major_no + "]";
 	}
 	
 	

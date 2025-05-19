@@ -6,12 +6,14 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import models.boards.Article;
 
 public interface ArtiMapper {
 	
-	@Select("<script>select count(arti_no) from articles "
+	@Select("<script>select count(arti_no) from articles a"
+			+ " join users u on a.user_no = u.user_no "
 			+ " where board_id = #{board_id} "
 			+ " <if test='column != null'> " 
 			+ " and ${column} like concat('%',#{keyword},'%') "
@@ -19,7 +21,7 @@ public interface ArtiMapper {
 	int count(Map<String, Object> map);
 
 	@Select("<script>"
-			+ "select a.*, u.user_name writer, count(c.comm_no) commCount from articles a "
+			+ "select a.*, u.user_name, count(c.comm_no) commCount from articles a "
 			+ " join users u on a.user_no = u.user_no "
 			+ " left join comments c on a.arti_no = c.arti_no "
 			+ " where board_id = #{board_id} "
@@ -44,5 +46,9 @@ public interface ArtiMapper {
 
 	@Delete("delete from articles where arti_no = #{arti_no}")
 	int delete(int arti_no);
+
+	@Update("update articles set arti_title = #{arti_title}, arti_content = #{arti_content}, file = #{file} "
+			+ " where arti_no = #{arti_no}")
+	boolean update(Article arti);
 
 }

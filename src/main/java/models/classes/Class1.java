@@ -1,6 +1,7 @@
 package models.classes;
 
 import java.util.List;
+import java.util.Set;
 
 //오예록
 public class Class1 {
@@ -16,19 +17,13 @@ public class Class1 {
 	private String classroom; // 강의실
 	private int s_time; // 시작교시
 	private int e_time; // 종료교시
+	private int now_p; // 현재인원
 	private int max_p; // 정원
 	private String c_plan; // 강의계획
 	private String file; // 첨부파일
 	private String prof; // 교수명
 	private List<Integer> days;
-
-	public String getProf() {
-		return prof;
-	}
-
-	public void setProf(String prof) {
-		this.prof = prof;
-	}
+	private Set<Student> students; // 소속 학생들-이동원
 
 	public String getClass_no() {
 		return class_no;
@@ -126,6 +121,14 @@ public class Class1 {
 		this.e_time = e_time;
 	}
 
+	public int getNow_p() {
+		return now_p;
+	}
+
+	public void setNow_p(int now_p) {
+		this.now_p = now_p;
+	}
+
 	public int getMax_p() {
 		return max_p;
 	}
@@ -150,6 +153,14 @@ public class Class1 {
 		this.file = file;
 	}
 
+	public String getProf() {
+		return prof;
+	}
+
+	public void setProf(String prof) {
+		this.prof = prof;
+	}
+
 	public List<Integer> getDays() {
 		return days;
 	}
@@ -163,7 +174,16 @@ public class Class1 {
 		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
 				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
 				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
-				+ ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + "]";
+				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", prof=" + prof
+				+ ", days=" + days + "]";
+	}
+
+	public Set<Student> getStudents() {
+		return students;
+	}
+
+	public void setStudents(Set<Student> students) {
+		this.students = students;
 	}
 
 }

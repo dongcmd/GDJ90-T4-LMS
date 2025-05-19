@@ -35,7 +35,7 @@
 		<input type="hidden" name="board_id" value="${board_id}">
 		<select name="column">
 			<option value="arti_title">제목</option>
-			<option value="writer">작성자</option>
+			<option value="u.user_name">작성자</option>
 			<option value="arti_content">내용</option>
 		</select>
 		<c:if test="${!empty param.column}">

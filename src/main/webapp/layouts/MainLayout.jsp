@@ -51,12 +51,33 @@
             	<a href="../mainLMS/main"><h2 class="m-0 fw_b" style="flex: 2;">구디 대학교 학사관리 시스템</h2></a>
             </c:if>
             <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
-            	<a href="../board/board?board_id=${login.major_no}"><h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2></a>
+            	<a href="../board/board?board_id=${login.major_no}"><h2 class="m-0 fw_b" style="flex: 2;">
+	            	<c:if test="${login.major_no == 1000 }">
+            			컴퓨터공학과
+            		</c:if>
+            		<c:if test="${login.major_no == 2000 }">
+            			기계공학과
+            		</c:if>
+            		<c:if test="${login.major_no == 3000 }">
+            			건축공학과
+            		</c:if>
+            		학사관리 시스템</h2>
+            	</a>
             </c:if>
             <c:if test="${fn:startsWith(relativeURI, '/classLMS/') or lms == 'class'}">
-            	<a href="../classLMS/classInfo"><h2 class="m-0 fw_b" style="flex: 2;"><span>${sessionScope.major_name}</span>학과 학사관리 시스템</h2></a>
+            	<a href="../classLMS/classInfo"><h2 class="m-0 fw_b" style="flex: 2;">
+            		<c:if test="${login.major_no == 1000 }">
+            			컴퓨터공학과
+            		</c:if>
+            		<c:if test="${login.major_no == 2000 }">
+            			기계공학과
+            		</c:if>
+            		<c:if test="${login.major_no == 3000 }">
+            			건축공학과
+            		</c:if>
+            		학사관리 시스템</h2>
+            	</a>
             </c:if>
-            
             <ul class="nav d-flex justify-content-end align-items-center" style="flex: 1; gap: 10px; flex-wrap:nowrap;">
                 <li class="nav-item">
 
@@ -66,11 +87,11 @@
                     <button type="submit" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
                 </li>
                 <li class="nav-item">
-
                     <a href="../users/logout" class="btn btn-dark" role="button">로그아웃</a> <!-- 기흔 수정 -->
                 </li>
             </ul>
         </div>
+        
         <%-- 알림모달 --%>
         <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-m">
@@ -81,28 +102,29 @@
                 </div>
                 <div class="modal-body">
 
-                    <table class="table">
+                    <table class="table thead-light">
                         <thead>
                             <tr>
-                                <th class="checkbox-column border-top-0">
+                                <th class="checkbox-column border-top-0 fw_b">
                                     <input type="checkbox" name="alchk" onchange="allchkbox(this)"> 고정
                                 </th>
-                                <th class="border-top-0" scope="col">No</th>
-                                <th class="border-top-0" scope="col">알림내용</th>
-                                <th class="border-top-0" scope="col">알림시간</th>
-                                <th class="border-top-0" scope="col">삭제</th>
+                                <th class="border-top-0 fw_b" scope="col">No</th>
+                                <th class="border-top-0 fw_b" scope="col">알림내용</th>
+                                <th class="border-top-0 fw_b" scope="col">알림시간</th>
+                                <th class="border-top-0 fw_b" scope="col">삭제</th>
                             </tr>
                         </thead>
-                        <tr>
-                            <td class="checkbox-column">
-                                <input type="checkbox" name="idchks" class="idchk" value="">
-                                ${sessionScope.is_pinned}
-                            </td>
-                            <td>${sessionScope.notif_no}</td>
-                            <td>${sessionScope.notif_content}</td>
-                            <td>${sessionScope.notif_date}</td>
-                            <td><a href="#" class="btn btn-dark">삭제</a></td>
-                        </tr>
+                        
+                        <c:forEach var="noti" items="${notificationsList}">
+					        <tr>
+					            <td class="text-center">${noti.notif_no}</td>
+					            <td class="text-center">${noti.notif_content}</td>
+					            <td class="text-center">${noti.notif_date}></td>
+			            		<td class="text-center">
+			            			<a class="btn btn-outline-danger" href="event?delete=${noti.notif_no}">알림삭제</a>
+			            		</td>
+					        </tr>
+					    </c:forEach>
                     </table>
                 </div>
               </div>
@@ -112,29 +134,31 @@
 
 	<%-- 메인 레이아웃 --%>
     <div class="d-flex bg-light" style="min-height: 800px; overflow:hidden;">
-
     	<nav class="col-sm-2 navbar align-items-start  p-0" style="background-color: #fff; box-shadow:4px 4px 10px 0px #eee;">
-    	
     		<%-- mainLMS 메뉴 --%>
-
     		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
-	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
-	                <li class="nav-item">
-	                    <a href="../mainLMS/signUpClass">수강신청</a>
+	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">      
+	            	  <li class="nav-item"> <%-- 이동원 --%>
+	                    <a href="../board/board?board_id=9999">공지게시판</a>
 	                </li>
+
 	                <li class="nav-item">
 	                    <a href="../deptLMS/deptMain" target="_blank">학과 LMS</a>
 	                </li>
-	                <li class="nav-item">
-	                    <a href="../mainLMS/markList">학점조회</a>
-	                </li>
-	                <li class="nav-item"> <%-- 이동원 --%>
-	                    <a href="../board/board?board_id=9999">공지게시판</a>
-	                </li>
+
+					        <c:if test="${login.role == 1}">
+		                <li class="nav-item">
+		                    <a href="../mainLMS/signUpClass">수강신청</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a href="../mainLMS/markList">학점조회</a>
+		                </li>
+	                </c:if>
+	                
 	                <c:if test="${login.role == 3}"> <%-- 기흔 수정 --%>
-	                <li class="nav-item">
-	                    <a href="../mainLMS/adminForm">사용자관리</a>
-	                </li>
+		                <li class="nav-item">
+		                    <a href="../mainLMS/adminForm">사용자관리</a>
+		                </li>
 	                </c:if>
 	            </ul>
             </c:if>
@@ -142,18 +166,19 @@
 
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
-	                <li class="nav-item">
-	                <c:if test="${empty login.major_no}">
-	                    <a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
-	                    <a href="../board/board?board_id=2000">전기공학과 게시판</a>
-	                    <a href="../board/board?board_id=3000">건축공학과 게시판</a>
-	                </c:if>
-	                </li>
+
+		        	<c:if test="${empty login.major_no}">
+		                <li class="nav-item">
+			            	<a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
+			                <a href="../board/board?board_id=2000">전기공학과 게시판</a>
+			                <a href="../board/board?board_id=3000">건축공학과 게시판</a>
+		                </li>
+		            </c:if>
 	                <c:if test="${!empty login.major_no}">
-	                <li>
-	                    <a href="../board/board?board_id=${login.major_no}">학과 게시판</a>
-                  </li>
-                  </c:if>
+		                <li>
+		                    <a href="../board/board?board_id=${login.major_no}">학과 게시판</a>
+	                  	</li>
+                  	</c:if>
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a href="../deptLMS/classList">수강 조회</a>
@@ -170,14 +195,11 @@
 	        <%-- classLMS 메뉴 --%>
 	        <c:if test="${fn:startsWith(relativeURI, '/classLMS/') or lms == 'class'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
-	                <li class="nav-item">
-	                    <a href="#">자바 프로그래밍</a>
-	                </li>
 	                <%-- 이동원
 	                강의명 지우고, 중앙에 표 형식으로 강의정보 표시하기
 	                 --%>
 	                <li class="nav-item">
-	                    <a href="../board/board_id?board_id${class1.class_no}">질문 게시판</a>
+	                    <a href="../board/board?board_id=${class1.class_no}">질문 게시판</a>
 	                </li> 
 
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
