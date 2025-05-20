@@ -1,8 +1,11 @@
 package controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.MultipartRequest;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
@@ -318,7 +322,15 @@ public class ClassLMSController extends MskimRequestMapping {
 		return "alert";
 	}
 	
-	
+	@RequestMapping("manageScore")
+	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
+		String profCheck = uc.profCheck(request, response);
+		if(profCheck != null) { return profCheck; }
+		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
+		Collection<Student> studentList = noClass.getStudents().values();
+		request.setAttribute("reg_users", studentList);
+		return "classLMS/manageScore";
+	}
 	
 	
 	
