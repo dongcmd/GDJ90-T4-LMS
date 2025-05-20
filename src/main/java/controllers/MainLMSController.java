@@ -37,7 +37,7 @@ import models.others.NotificationDao;
 
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
-	UserController uc = new UserController();
+	private UserController uc = new UserController();
 	private EventDao eventDao = new EventDao();
 	private Class1Dao clsdao = new Class1Dao();
   
@@ -336,7 +336,7 @@ public class MainLMSController extends MskimRequestMapping {
 	    	request.setAttribute("url", "signUpClass");
 		    return "alert";
 	    }
-	    if (clsdao.countRegistered(key) > 6) {
+	    if (clsdao.countRegistered(key) >= 6) {
 	    	request.setAttribute("msg", "6개 이상 신청이 불가합니다.");
 	    	request.setAttribute("url", "signUpClass");
 		    return "alert";
