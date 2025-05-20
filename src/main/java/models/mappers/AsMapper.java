@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Update;
 
 import models.classes.Assignment;
 import models.classes.Class1;
+import models.classes.Submitted_Assignments;
+
 
 public interface AsMapper {
 	
@@ -39,6 +41,8 @@ public interface AsMapper {
 		+ " where user_no = #{user_no} and as_no = #{as_no}")
 	Integer scores(Map<String, Object> map);
 	
-	
+	@Insert("insert into submitted_assignments (user_no, as_no, file)"
+			+ "	values(#{user_no}, #{as_no}, #{file})")
+	int insertAs(Submitted_Assignments as);
 	
 }

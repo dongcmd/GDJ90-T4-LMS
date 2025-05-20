@@ -60,6 +60,9 @@ public class UserController extends MskimRequestMapping{
 		String adminCheck = uc.adminCheck(request, response);
 		if(adminCheck != null) { return adminCheck; } // 관리자 확인
 
+		String studentCheck = uc.studentCheck(request, response);
+		if(student != null) { return studentCheck; } // 학생 확인
+		
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; } // 교수 확인
 
@@ -187,6 +190,8 @@ public class UserController extends MskimRequestMapping{
 	// 관리자 체크 ===================================
 	public String adminCheck(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
+		String loginCheck = loginIdCheck(request, response); 
+		if(loginCheck != null) { return loginCheck; }
 		if(login.getRole().equals("3")) {
 			return null;
 		}
@@ -194,10 +199,25 @@ public class UserController extends MskimRequestMapping{
 		request.setAttribute("url", "../mainLMS/main");
 		return "alert";
 	}
+	// 오예록
+	// 학생 체크 ===================================
+	public String studentCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		String loginCheck = loginIdCheck(request, response); 
+		if(loginCheck != null) { return loginCheck; }
+		if(login.getRole().equals("1")) {
+			return null;
+		}
+		request.setAttribute("msg", "학생이 아닙니다.");
+		request.setAttribute("url", "../mainLMS/main");
+		return "alert";
+	}
 	// 이동원
 	// 교수 체크 ===================================
 	public String profCheck(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
+		String loginCheck = loginIdCheck(request, response); 
+		if(loginCheck != null) { return loginCheck; }
 		if(login.getRole().equals("2")) {
 			return null;
 		}
@@ -353,6 +373,16 @@ public class UserController extends MskimRequestMapping{
 			User login = (User) request.getSession().getAttribute("login");
 		    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
 		    request.setAttribute("notificationsList", notificationsList);
+		    String deleteNo = request.getParameter("delete");
+			if (deleteNo != null) {
+			    int no = Integer.parseInt(deleteNo);
+			    if (NotificationDao.delete(no)) {
+			        request.setAttribute("msg", "삭제 완료");
+			    } else {
+			        request.setAttribute("msg", "삭제 실패");
+			    }
+			    return "alert";
+			}
 			return "users/notificationForm";
 		}
 }

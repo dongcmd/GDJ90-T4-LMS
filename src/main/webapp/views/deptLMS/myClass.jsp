@@ -11,7 +11,7 @@
 <%!private static String[] s_period = { "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00" };
 	private static String[] e_period = { "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" };%>
 <body>
-	<h2>나의 강의</h2>
+	<h2>강의 관리</h2>
 	<table class="table table-bordered">
 		<thead class="thead-light" style="text-align: center;">
 			<tr>

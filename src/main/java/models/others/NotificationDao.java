@@ -1,5 +1,6 @@
 package models.others;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,28 @@ public class NotificationDao {
 		}
 		return null;
 	}
-	
 
-
-
+	// 알림 대상자
+	public void notificationInsert(Notification notif) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			session.getMapper(cls).notificationInsert(notif);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+	}
+	// 알림 개인삭제
+	public boolean delete(int no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).delete(no) > 0;
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
 }

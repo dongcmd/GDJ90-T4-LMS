@@ -48,7 +48,7 @@
 					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
 				<td>${cls.classroom}</td>
 				<td>${cls.now_p}/${cls.max_p}</td>
-				<td><a href="dropClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">삭제</a></td>
+				<td><a href="dropClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a></td>
 			</tr>
 		</c:forEach>
 	</table>

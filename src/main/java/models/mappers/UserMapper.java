@@ -65,10 +65,14 @@ public interface UserMapper {
 
   @Select("select * from users where role = #{keyword} order by user_no")
   List<User> searchByRole(@Param("keyword") String keyword);
-	//==============================================================================
-  
+
   @Select("select user_name from users where user_no = #{user_no}")
   String selectName(String user_no);
   
+  
+
+  //원동인 학사일정알림 대상자조회(학생/교수)
+  @Select("select user_no from users where role in (1, 2)")
+  List<String> getUserNosByRole();
   
 }

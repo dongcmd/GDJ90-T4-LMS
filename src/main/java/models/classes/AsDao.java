@@ -75,6 +75,7 @@ public class AsDao {
 		}
 		return false;
 	}
+
 	// 학생별 점수 ============================
 	public Map<Student, Integer> scores(Assignment as, Class1 class1) {
 		SqlSession session = MyBatisConnection.getConnection();
@@ -95,6 +96,21 @@ public class AsDao {
 		}
 		return null;
 	}
+
+	public boolean insertAs(Submitted_Assignments as) {
+		 SqlSession conn = MyBatisConnection.getConnection();
+		 try {
+			 if(conn.getMapper(cls).insertAs(as) > 0) return true;
+			 else return false;
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(conn);
+		 }
+		 return false;
+	}
+	
+
 
 
 }

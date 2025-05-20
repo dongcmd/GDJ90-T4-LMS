@@ -1,5 +1,11 @@
 package controllers;
 
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -14,9 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+
+import com.oreilly.servlet.MultipartRequest;
+
+
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import models.boards.Article;
 import models.classes.AsDao;
 import models.classes.Assignment;
 import models.classes.Class1;
@@ -24,6 +35,7 @@ import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.classes.SubAsDao;
+import models.classes.Submitted_Assignments;
 import models.users.User;
 import models.users.UserDao;
 
@@ -46,6 +58,73 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(class1 == null) {
 			request.setAttribute("msg", "class1 세션에 저장 실패");
 			request.setAttribute("url", "mainLMS/main");
+				
+			//과제제출(학생) 메인폼 =============================================
+			@RequestMapping("submitAs")
+			public String submitAs(HttpServletRequest request , HttpServletResponse response) {				
+				User login = (User)request.getSession().getAttribute("login");
+				Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+				// 접근권한 넣어야함
+				//===========================
+				
+				Class1 class1 = new Class1();
+//				class1.setClass_no(loginclass.getClass_no());
+//				class1.setBan(loginclass.getBan());
+//				class1.setYear(loginclass.getYear());
+//				class1.setTerm(loginclass.getTerm());
+				class1.setClass_no("1001");
+				class1.setBan("A");
+				class1.setYear(2025);
+				class1.setTerm(1);
+				List<Assignment> asList = asDao.list(class1);
+				System.out.println(asList);
+				request.setAttribute("asList", asList);
+				return "classLMS/submitAs";
+			}
+			//과제제출(학생) 제출폼 =============================================
+			@RequestMapping("submitassignment")
+			public String submitassignment(HttpServletRequest request , HttpServletResponse response) {				
+				User login = (User)request.getSession().getAttribute("login");
+				Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+				// 접근권한 넣어야함 ==========================
+				int as_no = Integer.parseInt(request.getParameter("as_no"));
+				Assignment as1 = asDao.selectOne(as_no);
+				request.setAttribute("as", as1);
+				return "classLMS/submitassignment";
+			}
+	
+	/*
+	 * @RequestMapping("signUpClass") public String list(HttpServletRequest request,
+	 * HttpServletResponse response) { List<Class1> list = dao.list();
+	 * request.setAttribute("classesList", list); return "mainLMS/signUpClass"; }
+	 */
+			@RequestMapping("upload")
+			public String upload(HttpServletRequest request , HttpServletResponse response) {	
+				User login = (User)request.getSession().getAttribute("login");
+				String path = request.getServletContext().getRealPath("/") +"files/";
+				File f = new File(path);
+				if(!f.exists()) f.mkdirs();
+				int size = 5*1024*1024;
+				MultipartRequest multi = null;
+				try { multi = new MultipartRequest(request, path, size, "utf-8");
+				} catch(IOException e) { e.printStackTrace(); }
+				String asNo = multi.getParameter("as_no");
+				String fileName = multi.getOriginalFileName("file");
+				Submitted_Assignments as = new Submitted_Assignments();
+				as.setAs_no(Integer.parseInt(asNo));
+				as.setFile(fileName);
+				as.setUser_no(login.getUser_no());
+				if(asDao.insertAs(as)) {
+					request.setAttribute("msg", "과제가 제출되었습니다.");
+					request.setAttribute("url", "submitAs");
+				} else {
+					request.setAttribute("msg", "과제 제출 실패");
+					request.setAttribute("url", "submitassignment?as_no=" + asNo);
+				}
+	
+				return "alert";
+			}
+			
 			return "alert";
 		}
 		
@@ -97,7 +176,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		
 		return "classLMS/classInfo";
 	}
-	
 			// 과제관리 접근권한 설정================================================
 			@RequestMapping("manageAs")
 			public String manageAs(HttpServletRequest request, HttpServletResponse response) {

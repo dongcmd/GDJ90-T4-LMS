@@ -37,7 +37,7 @@ import models.others.NotificationDao;
 
 @WebServlet(urlPatterns = { "/mainLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class MainLMSController extends MskimRequestMapping {
-	UserController uc = new UserController();
+	private UserController uc = new UserController();
 	private EventDao eventDao = new EventDao();
 	private Class1Dao clsdao = new Class1Dao();
   
@@ -46,7 +46,6 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
-		// 원동인(캘린더)
 		List<Event> event_main = eventDao.eventList();
 		request.setAttribute("event_main", event_main);
 		LocalDate now = LocalDate.now();
@@ -62,7 +61,14 @@ public class MainLMSController extends MskimRequestMapping {
 		for (int i = 0; i < 42; i++) {
 	    Map<String, Object> cell = new HashMap<>();
 	    int dateNum = i - startDayOfWeek + 1;
-	    if (dateNum > 0 && dateNum <= lastDate) {		LocalDate currentDate = LocalDate.of(year, month, dateNum);		cell.put("date", dateNum);		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"		// 일정 있는 날짜 선택		List<Event> dayEvents = new ArrayList<>();		for (Event event : event_main ) {
+	    if (dateNum > 0 && dateNum <= lastDate) {
+		LocalDate currentDate = LocalDate.of(year, month, dateNum);
+		cell.put("date", dateNum);
+		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
+		
+		// 일정 있는 날짜 선택
+		List<Event> dayEvents = new ArrayList<>();
+		for (Event event : event_main ) {
 		LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
@@ -235,51 +241,66 @@ public class MainLMSController extends MskimRequestMapping {
 	// 원동인 학사일정(관리자 권한)
 	@RequestMapping("event")
 	public String event(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+		// 학사일정 알림 대상자 조회(학생/교수)
+		UserDao userDao = new UserDao();
+		List<String> eventUserList = userDao.getUserNosByRole(); // role이 1 또는 2인 사용자 목록
 
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    // 삭제
-	    String deleteNo = request.getParameter("delete");
-	    if (deleteNo != null) {
-	        int no = Integer.parseInt(deleteNo);
-	        if (eventDao.delete(no)) {
-	            request.setAttribute("msg", "삭제 완료");
-	            request.setAttribute("url", "event");
-	        } else {
-	            request.setAttribute("msg", "삭제 실패");
-	            request.setAttribute("url", "event");
-	        }
-	        return "alert";
-	    }
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+		// 삭제 처리
+		String deleteNo = request.getParameter("delete");
+		if (deleteNo != null) {
+		    int no = Integer.parseInt(deleteNo);
+		    if (eventDao.delete(no)) {
+		        request.setAttribute("msg", "삭제 완료");
+		        request.setAttribute("url", "event");
+		    } else {
+		        request.setAttribute("msg", "삭제 실패");
+		        request.setAttribute("url", "event");
+		    }
+		    return "alert";
+		}
 
+		// 파라미터 수신
 		String event_name = request.getParameter("event_name");
 		String s_date = request.getParameter("even_s_date");
 		String e_date = request.getParameter("even_e_date");
 
 		if (event_name != null && s_date != null && e_date != null) {
-			Event event = new Event();
-			event.setEvent_name(event_name);
-			event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
-			event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
+		    Event event = new Event();
+		    event.setEvent_name(event_name);
+		    event.setEven_s_date(formatter.parse(s_date + " 00:00:00"));
+		    event.setEven_e_date(formatter.parse(e_date + " 23:59:59"));
 
-			String noStr = request.getParameter("event_no");
-			boolean result;
-			// 등록/수정
-			if (noStr != null && !noStr.equals("")) {
-				event.setEvent_no(Integer.parseInt(noStr));
-				result = eventDao.update(event);
-			} else {
-				result = eventDao.insert(event);
-			}
+		    String noStr = request.getParameter("event_no");
+		    boolean result;
 
-			if (result) {
-				request.setAttribute("msg", "처리 성공");
-			} else {
-				request.setAttribute("msg", "처리 실패");
-			}
-			return "alert";
+		    NotificationDao notifDao = new NotificationDao();
+		    // 수정 또는 등록
+		    if (noStr != null && !noStr.equals("")) {
+		        event.setEvent_no(Integer.parseInt(noStr));
+		        result = eventDao.update(event);
+		    } else {
+		        result = eventDao.insert(event);		        
+		    }
+
+		    if (result) {
+		        // 알림 테이블에 insert 처리
+		        for (String user_no : eventUserList) {
+		            Notification notif = new Notification();
+		            notif.setUser_no(user_no);
+		            notif.setNotif_content(( "["+ event_name + "] 학사일정이 등록 되었습니다."));
+		            notif.setNotif_date(new Date());
+		            notifDao.notificationInsert(notif); 
+		        }
+
+		        request.setAttribute("msg", "등록 성공");
+		    } else {
+		        request.setAttribute("msg", "등록 실패");
+		    }
+		    return "alert";
 		}
-		// 리스트
+		// 리스트 조회
 		request.setAttribute("eventList", eventDao.eventList());
 		return "mainLMS/event";
 	}
@@ -315,7 +336,7 @@ public class MainLMSController extends MskimRequestMapping {
 	    	request.setAttribute("url", "signUpClass");
 		    return "alert";
 	    }
-	    if (clsdao.countRegistered(key) > 6) {
+	    if (clsdao.countRegistered(key) >= 6) {
 	    	request.setAttribute("msg", "6개 이상 신청이 불가합니다.");
 	    	request.setAttribute("url", "signUpClass");
 		    return "alert";
