@@ -45,25 +45,44 @@ public class ClassLMSController extends MskimRequestMapping {
 	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
 	public String chkClass1(HttpServletRequest request) {
 		if(request.getSession().getAttribute("class1") == null) {
-			return "../deptLMS/classList"; // 없음
+			request.setAttribute("msg", "강의를 선택하세요.");
+			request.setAttribute("url", "../deptLMS/classList");
+			return "alert"; // 없음
 		}
 		return null; // 있음.
 	}
 	
-	// 로그인 아이디 체크 =================================================================
-			public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-				User login = (User)request.getSession().getAttribute("login");
-				if(login == null) {
-					request.setAttribute("msg", "로그인 하세요");
-					request.setAttribute("url", "../users/loginForm");
-					return "alert";
-				}
-				return null; // 정상인 경우
-			}
+// login 체크(지울 예정) 수정필요 =================================================================
+public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
+	User login = (User)request.getSession().getAttribute("login");
+if(login == null) {
+	request.setAttribute("msg", "로그인 하세요");
+request.setAttribute("url", "../users/loginForm");
+return "alert";
+}
+return null; // 정상인 경우
+}
+	@RequestMapping("classInfo")
+	public String classInfo(HttpServletRequest request, HttpServletResponse response) {
+		String loginCheck = uc.loginIdCheck(request, response);
+		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+		
+		Class1 class1 = new Class1(request.getParameter("class_no"),
+				request.getParameter("ban"),
+				Integer.parseInt(request.getParameter("year")),
+				Integer.parseInt(request.getParameter("term")));
+		class1 = class1Dao.selectOne(class1); // class1 객체 db에서 지정
+		
+		String classCheck = uc.classCheck(request, response);
+		if(classCheck != null) { return classCheck; } // 강의 확인
+		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
+		return "classLMS/classInfo";
+	}
+			
 			// 과제관리 접근권한 설정================================================
 			@RequestMapping("manageAs")
 			public String manageAs(HttpServletRequest request, HttpServletResponse response) {
-				String loginCheck = uc.loginIdCheck(request, response); 
+				String loginCheck = uc.loginIdCheck(request, response);
 				if(loginCheck != null) { return loginCheck; } // 로그인 확인
 				String profCheck = uc.profCheck(request, response);
 				if(profCheck != null) { return profCheck; } // 교수 확인
@@ -71,14 +90,12 @@ public class ClassLMSController extends MskimRequestMapping {
 				String classCheck = uc.classCheck(request, response);
 				if(classCheck != null) { return classCheck; } // 강의 확인
 			
-//				Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-				// 임시
 				Class1 class1 = new Class1();
 				class1.setClass_no("1001");
 				class1.setBan("A");
 				class1.setYear(2025);
 				class1.setTerm(1);
-				//임시
+				
 				List<Assignment> asList = asDao.list(class1);
 				request.setAttribute("asList", asList);
 				return "classLMS/manageAS"; // 정상인 경우

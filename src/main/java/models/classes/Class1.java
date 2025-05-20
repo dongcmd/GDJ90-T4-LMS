@@ -10,6 +10,8 @@ public class Class1 {
 	private String ban; // 반
 	private int year; // 연도
 	private int term; // 학기
+	// 위 4개 집합이 기본 키 - 이동원
+	
 	private String major_no; // 학과코드
 	private String user_no; // 교수번호
 	private String class_name; // 강의명
@@ -29,6 +31,14 @@ public class Class1 {
 	private Map<String ,Student> students; // 소속 학생들-이동원
 	private Map<String, Assignment> assignments; // 과제-이동원
 
+	public Class1() {	} // 기본 생성자
+	public Class1(String class_no, String ban, int year, int term) {
+		this.class_no = class_no;
+		this.ban = ban;
+		this.year =year;
+		this.term = term;
+	} // 키를 넣는 생성자
+	
 	public String getClass_no() {
 		return class_no;
 	}

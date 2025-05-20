@@ -2,19 +2,21 @@ package controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
@@ -30,31 +32,88 @@ import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Reg_classDao;
 import models.classes.Student;
+import models.classes.SubAsDao;
 
-/**
- * Servlet implementation class CSVxlsx
- */
-@MultipartConfig
+//이동원
 @WebServlet(urlPatterns = {"/classLMS/upload_asCSV",
 		"/classLMS/download_asXLSX"})
 public class CSVxlsxServlet extends HttpServlet {
 	AsDao asDao = new AsDao();
+	SubAsDao subAsDao = new SubAsDao();
 	Reg_classDao rcDao = new Reg_classDao(); 
 	
 	@Override
-    protected void doPost(HttpServletRequest request
-    		, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getServletPath();
+		// multipart/form-data 형식인지 확인 (파일 업로드 요청인지 체크)
+	    boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	    if (!isMultipart) {
+	    	request.setAttribute("msg", "파일 형식이 올바르지 않습니다.");
+	        request.setAttribute("url", "classLMS/manageAs"); // 되돌아갈 페이지 경로
+	        request.getRequestDispatcher("alert").forward(request, response);
+	        return;
+	    }
+	    
+	    Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		Map<String, Student> students = class1.getStudents();
+		Map<String, Assignment> assignments = class1.getAssignments();
+		Assignment as = assignments.get(request.getAttribute("as_no"));
+		int as_no = as.getAs_no();
+		Map<Student, Integer> scores = as.getScores();
+		String msg, url;
+		
+	    // 파일 아이템을 생성할 때 사용할 팩토리 객체 생성 (임시 저장소 등 설정 가능)
+	    DiskFileItemFactory factory = new DiskFileItemFactory();
 
-        if ("/classLMS/upload_asCSV".equals(path)) {
-            handleCsvUpload(request, response);
-        }
+	    // 업로드된 요청을 처리할 업로더 객체 생성
+	    ServletFileUpload upload = new ServletFileUpload(factory);
+
+	    try {
+	        // 요청에서 업로드된 파일/필드를 추출해서 리스트로 받음
+	        List<FileItem> items = upload.parseRequest(request);
+
+	        for (FileItem item : items) {
+	            // 일반 폼 필드가 아니고, 파일 이름이 .csv로 끝나는 경우에만 처리
+	            if (!item.isFormField() && item.getName().endsWith(".csv")) {
+
+	                // 업로드된 파일을 한 줄씩 읽기 위해 BufferedReader 사용
+	                try (BufferedReader reader = new BufferedReader(
+	                        new InputStreamReader(item.getInputStream(), StandardCharsets.UTF_8))) {
+	                	boolean isFirstLine = true;
+	                	String line;
+	                	while ((line = reader.readLine()) != null) {
+	                	    if (isFirstLine) { isFirstLine = false; continue; }
+	                	    String[] data = line.split(",");
+	                	    if(as_no == Integer.parseInt(data[0])) {
+		                	    String user_no = data[1];
+		                	    if(data[3] == null || data[3].trim().equals("") || data.length != 4) {
+		                	    	continue;
+		                	    }
+		                	    int as_score = Integer.parseInt(data[3]);
+		                	    Student st = students.get(user_no);
+		                	    scores.put(st, as_score);
+	                	    }
+	                	} // while
+	                } // try
+	            } // if
+	        } // for
+	        int count = 0;
+	        if( (count = subAsDao.insertScores(as_no, scores)) == scores.size()) { // submitted_assignment 테이블에 점수 넣기
+	        	msg = count + "명의 성적 반영 성공\n꼭 반영여부를 확인하세요.";
+	        	url = "classLMS/manageAs?as_no=" + as_no;
+	        } else {
+	        	msg = count + "명의 성적 반영 성공\n성적 반영에 오류가 생겼으니 확인하세요.";
+	        	url = "classLMS/manageAs?as_no=" + as_no;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        msg = "오류 발생. 업로드 실패.";
+        	url = "classLMS/manageAs?as_no=" + as_no;
+	    }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request
-    		, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getServletPath();
         String as_no = request.getParameter("as_no");
@@ -67,25 +126,7 @@ public class CSVxlsxServlet extends HttpServlet {
             handleXlsxDownload(request, response);
         }
     }
-
-    private void handleCsvUpload(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Part filePart = request.getPart("csvFile");  // form name="csvFile"
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-
-        try (InputStream fileContent = filePart.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(fileContent))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // 여기서 CSV 한 줄씩 파싱하여 처리
-                System.out.println("CSV Line: " + line);
-            }
-
-            response.getWriter().write("CSV 업로드 완료");
-        }
-    }
-
+    
     private void handleXlsxDownload(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
     	 // Workbook 생성

@@ -61,17 +61,17 @@ manageassignment
 			</thead>
 			
 
-			<c:forEach var="aslist" items="${asList}">
+			<c:forEach var="as" items="${asList}">
 			<tbody>
 				<tr>
-					<td style="text-align: center"><a href="stuAsListForm">${aslist.as_name}</a></td>
-					<td><fmt:formatDate value="${aslist.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
-						~ <fmt:formatDate value="${aslist.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
-					<td style="text-align: center">${aslist.as_content }</td>
+					<td style="text-align: center"><a href="manageAs?as_no=${as.as_no}">${as.as_name}</a></td>
+					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
+						~ <fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
+					<td style="text-align: center">${as.as_content }</td>
 					<td style="text-align: center">3 / 10</td>
 					<td class="d-flex justify-content-center" style="gap: 10px;">
-						<a href="updateAssignmentForm?as_no=${aslist.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
-						<a href="deleteAssignmentForm?as_no=${aslist.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a></td>
+						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
+						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a></td>
 				</tr>
 			</tbody>
 			</c:forEach>
@@ -84,9 +84,11 @@ manageassignment
 		</div>
 
 	<a href="download_asXLSX?as_no=${as_no}" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
-	<form method="post" action="upload_asCSV" enctype="multipart/form-data">
-	  <input type="file" name="csvFile" accept=".csv" required />
-	  <button type="submit">양식 업로드 csv</button>
+	
+  <form action="upload_asCSV" method="post" enctype="multipart/form-data">
+  	<input type="hidden" name="as_no" value="${as_no}">
+  	<input type="file" name="file" accept=".csv" />
+  	<button type="submit">csv 업로드</button>
 	</form>
 
 
@@ -101,7 +103,7 @@ manageassignment
 			</thead>
 			
 			<%-- <c:forEach var="classesList" items="${classesList}"></c:forEach> --%>
-			<tbody>
+			<tbody> <%-- as_no 값 받아서 처리 ${param.as_no} --%>
 				<tr>
 					<td style="text-align: center">111</td>
 					<td style="text-align: center">1</td>
