@@ -75,6 +75,20 @@ public class AsDao {
 		}
 		return false;
 	}
+	public boolean insertAs(Submitted_Assignments as) {
+		 SqlSession conn = MyBatisConnection.getConnection();
+		 try {
+			 if(conn.getMapper(cls).insertAs(as) > 0) return true;
+			 else return false;
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(conn);
+		 }
+		 return false;
+	}
+	
+
 
 
 }

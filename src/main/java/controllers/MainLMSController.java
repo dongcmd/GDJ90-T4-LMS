@@ -46,7 +46,6 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
-		// 원동인(캘린더)	
 		List<Event> event_main = eventDao.eventList();
 		request.setAttribute("event_main", event_main);
 		LocalDate now = LocalDate.now();
@@ -62,8 +61,14 @@ public class MainLMSController extends MskimRequestMapping {
 		for (int i = 0; i < 42; i++) {
 	    Map<String, Object> cell = new HashMap<>();
 	    int dateNum = i - startDayOfWeek + 1;
-	    if (dateNum > 0 && dateNum <= lastDate) {		LocalDate currentDate = LocalDate.of(year, month, dateNum);		cell.put("date", dateNum);		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"		
-		// 일정 있는 날짜 선택		List<Event> dayEvents = new ArrayList<>();		for (Event event : event_main ) {
+	    if (dateNum > 0 && dateNum <= lastDate) {
+		LocalDate currentDate = LocalDate.of(year, month, dateNum);
+		cell.put("date", dateNum);
+		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
+		
+		// 일정 있는 날짜 선택
+		List<Event> dayEvents = new ArrayList<>();
+		for (Event event : event_main ) {
 		LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {

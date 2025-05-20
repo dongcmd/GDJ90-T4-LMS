@@ -27,6 +27,7 @@ public class NotificationDao {
 		}
 		return null;
 	}
+
 	// 알림 대상자
 	public void notificationInsert(Notification notif) {
 		SqlSession session = MyBatisConnection.getConnection();

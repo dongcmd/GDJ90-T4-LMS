@@ -91,6 +91,7 @@
         </div>
         
         <%-- 알림모달 --%>
+
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
 		  <div class="modal-dialog modal-lg" role="document">
 		    <div class="modal-content">
@@ -99,6 +100,7 @@
 		        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 		      </div>
 		      <div class="modal-body" id="modalBody">
+
 		        <!-- AJAX로 알림 테이블-->
 		      </div>
 		    </div>
@@ -224,6 +226,7 @@
 	    function win_open(page){
 	        open(page,"","width=500, height=350, left=50, top=150");
 	    }
+
 	    // 알림 리스트 Ajax 방식(불러오기)
 	    document.getElementById('btnNotification').addEventListener('click', function () {
 	        fetch('${path}/users/notificationForm')
@@ -235,6 +238,7 @@
 	                console.error('알림 로딩 중 오류 발생:', error);
 	            });
 	    });
+
 		// 알림 리스트 Ajax 방식(삭제)
 	    function deleteNotification(notifNo) {
 	        if (!confirm("정말 삭제하시겠습니까?")) return;

@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Update;
 
 import models.classes.Assignment;
 import models.classes.Class1;
+import models.classes.Submitted_Assignments;
+
 
 public interface AsMapper {
 	
@@ -34,5 +36,9 @@ public interface AsMapper {
 	
 	@Delete("delete from assignments where as_no=#{value}")
 	int deleteuser(int as_no);
+
+	@Insert("insert into submitted_assignments (user_no, as_no, file)"
+			+ "	values(#{user_no}, #{as_no}, #{file})")
+	int insertAs(Submitted_Assignments as);
 	
 }
