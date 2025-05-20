@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -24,8 +26,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import models.classes.AsDao;
 import models.classes.Assignment;
@@ -75,7 +75,6 @@ public class CSVxlsxServlet extends HttpServlet {
 	        for (FileItem item : items) {
 	            // 일반 폼 필드가 아니고, 파일 이름이 .csv로 끝나는 경우에만 처리
 	            if (!item.isFormField() && item.getName().endsWith(".csv")) {
-
 	                // 업로드된 파일을 한 줄씩 읽기 위해 BufferedReader 사용
 	                try (BufferedReader reader = new BufferedReader(
 	                        new InputStreamReader(item.getInputStream(), StandardCharsets.UTF_8))) {
@@ -84,15 +83,22 @@ public class CSVxlsxServlet extends HttpServlet {
 	                	while ((line = reader.readLine()) != null) {
 	                	    if (isFirstLine) { isFirstLine = false; continue; }
 	                	    String[] data = line.split(",");
-	                	    if(as_no == Integer.parseInt(data[0])) {
-		                	    String user_no = data[1];
-		                	    if(data[3] == null || data[3].trim().equals("") || data.length != 4) {
-		                	    	continue;
-		                	    }
-		                	    int as_score = Integer.parseInt(data[3]);
-		                	    Student st = students.get(user_no);
-		                	    scores.put(st, as_score);
-	                	    }
+	                	    try {
+		                	    if(as_no == Integer.parseInt(data[0])) {
+			                	    String user_no = data[1];
+			                	    if(data[3] == null || data[3].trim().equals("") || data.length != 4) {
+			                	    	continue;
+			                	    }
+			                	    int as_score = Integer.parseInt(data[3]);
+			                	    Student st = students.get(user_no);
+			                	    scores.put(st, as_score);
+		                	    }// if
+	                	    } catch (NumberFormatException e) { 
+	                	    	msg = "양식이 올바르지 않습니다.";
+	            	        	url = "classLMS/manageAs?as_no=" + as_no;
+	            	        	request.getRequestDispatcher("alert").forward(request, response);
+	            		        return;
+	                	    } // try
 	                	} // while
 	                } // try
 	            } // if
@@ -134,7 +140,8 @@ public class CSVxlsxServlet extends HttpServlet {
         CellStyle yellowCell = workbook.createCellStyle();
         CellStyle pinkCell = workbook.createCellStyle();
         Font font = workbook.createFont();
-        Assignment as = (Assignment)request.getAttribute("as");
+        int as_no = Integer.parseInt((String)request.getAttribute("as"));
+        Assignment as = asDao.selectOne(as_no);
         
         font.setFontHeightInPoints((short) 20);
         font.setBold(true);

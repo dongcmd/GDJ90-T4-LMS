@@ -23,6 +23,7 @@ import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.classes.SubAsDao;
+import models.classes.SubmittedStudent;
 import models.classes.Submitted_Assignments;
 import models.users.User;
 import models.users.UserDao;
@@ -103,7 +104,12 @@ public class ClassLMSController extends MskimRequestMapping {
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		List<Assignment> asList = asDao.list(class1);
+		int as_no = Integer.parseInt(request.getParameter("as_no"));
+		
+		List<SubmittedStudent> stList = subAsDao.submittedStudents(as_no);
 		request.setAttribute("asList", asList);
+		request.setAttribute("selectedAs_no", as_no);
+		request.setAttribute("stList", stList);
 		return "classLMS/manageAs"; // 정상인 경우
 	}
 	// 과제 추가 접근권한 설정============================================================

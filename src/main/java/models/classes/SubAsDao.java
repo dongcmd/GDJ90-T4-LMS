@@ -1,6 +1,7 @@
 package models.classes;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -29,6 +30,23 @@ public class SubAsDao {
 			 MyBatisConnection.close(conn);
 		 }
 		 return i;
+	}
+	public List<SubmittedStudent> submittedStudents(int as_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			List<SubmittedStudent> result = session.getMapper(cls).submittedStudents(as_no);
+			for(SubmittedStudent ss : result) {
+				if(ss.getAs_file() == null || ss.getAs_file().trim().equals("")) {
+					ss.setSubmitted(false);
+				} else { ss.setSubmitted(true); } 
+			}
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
 	}
 	
 	
