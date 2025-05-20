@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,8 @@ import models.classes.Class1;
 import models.classes.Student;
 import models.others.Major;
 import models.others.MajorDao;
+import models.others.Notification;
+import models.others.NotificationDao;
 import models.users.User;
 import models.users.UserDao;
 /*
@@ -44,6 +47,7 @@ initParams = {@WebInitParam(name="view",value="/views/")})
 public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
 	private MajorDao majorDao = new MajorDao();
+	private NotificationDao NotificationDao = new NotificationDao();
 	/*
 		C 상단에 꼭 선언해야 함.
 		private UserController uc = new UserController();
@@ -341,5 +345,14 @@ public class UserController extends MskimRequestMapping{
 				request.setAttribute("url", "pwForm");
 				return "alert";
 		    }
-		}		
+		}
+		
+		// 원동인 (알림)
+		@RequestMapping("notificationForm")
+		public String notification(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+			User login = (User) request.getSession().getAttribute("login");
+		    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
+		    request.setAttribute("notificationsList", notificationsList);
+			return "users/notificationForm";
+		}
 }

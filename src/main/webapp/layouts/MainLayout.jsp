@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="path" value="${pageContext.request.contextPath }"/>
 
 <!DOCTYPE html>
@@ -14,6 +15,7 @@
   	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
   	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   	
   	<style>
   		@font-face {font-family: 'GmarketSansMedium'; src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal;}
@@ -84,7 +86,7 @@
                   <a class="nav-link" onclick="win_open('../users/info')"><span>${login.user_name}</span> 님 반갑습니다.</a> <!-- 기흔 수정 -->
                 </li>
                 <li class="nav-item">
-                    <button type="submit" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal">알림</button>
+                    <button type="button" class="btn btn-light btn-outline-secondary" data-toggle="modal" data-target="#myModal" id="btnNotification">알림</button>
                 </li>
                 <li class="nav-item">
                     <a href="../users/logout" class="btn btn-dark" role="button">로그아웃</a> <!-- 기흔 수정 -->
@@ -93,43 +95,20 @@
         </div>
         
         <%-- 알림모달 --%>
-        <div class="modal fade" id="myModal">
-            <div class="modal-dialog modal-m">
-              <div class="modal-content" style="width: 800px;">
-                <div class="modal-header">
-                  <h4 class="modal-title">알림창</h4>
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-
-                    <table class="table thead-light">
-                        <thead>
-                            <tr>
-                                <th class="checkbox-column border-top-0 fw_b">
-                                    <input type="checkbox" name="alchk" onchange="allchkbox(this)"> 고정
-                                </th>
-                                <th class="border-top-0 fw_b" scope="col">No</th>
-                                <th class="border-top-0 fw_b" scope="col">알림내용</th>
-                                <th class="border-top-0 fw_b" scope="col">알림시간</th>
-                                <th class="border-top-0 fw_b" scope="col">삭제</th>
-                            </tr>
-                        </thead>
-                        
-                        <c:forEach var="noti" items="${notificationsList}">
-					        <tr>
-					            <td class="text-center">${noti.notif_no}</td>
-					            <td class="text-center">${noti.notif_content}</td>
-					            <td class="text-center">${noti.notif_date}></td>
-			            		<td class="text-center">
-			            			<a class="btn btn-outline-danger" href="event?delete=${noti.notif_no}">알림삭제</a>
-			            		</td>
-					        </tr>
-					    </c:forEach>
-                    </table>
-                </div>
-              </div>
-            </div>
-        </div>
+        <!-- 모달 구조 -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">알림 목록</h5>
+		        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+		      </div>
+		      <div class="modal-body" id="modalBody">
+		        <!-- AJAX로 알림 테이블이 여기에 들어옴 -->
+		      </div>
+		    </div>
+		  </div>
+		</div>
     </header>
 
 	<%-- 메인 레이아웃 --%>
@@ -246,10 +225,23 @@
         </ul>
     </footer>
     
-<script type="text/javascript">
-    function win_open(page){
-        open(page,"","width=500, height=350, left=50, top=150");
-    }
-</script>
+	<script type="text/javascript">
+	    function win_open(page){
+	        open(page,"","width=500, height=350, left=50, top=150");
+	    }
+	    
+	    document.getElementById('btnNotification').addEventListener('click', function () {
+	        fetch('${path}/users/notificationForm')
+	            .then(response => response.text())
+	            .then(html => {
+	                document.getElementById('modalBody').innerHTML = html;
+	            })
+	            .catch(error => {
+	                console.error('알림 로딩 중 오류 발생:', error);
+	            });
+	    });
+	    
+	    
+	</script>
 </body>
 </html>
