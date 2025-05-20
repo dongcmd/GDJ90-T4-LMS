@@ -1,29 +1,16 @@
 package controllers;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
@@ -32,16 +19,14 @@ import models.classes.AsDao;
 import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
-import models.classes.Reg_classDao;
 import models.users.User;
-import models.users.UserDao;
 
 @WebServlet(urlPatterns = { "/classLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class ClassLMSController extends MskimRequestMapping {
 	private UserController uc = new UserController();
 	private Class1Dao class1Dao = new Class1Dao();
 	private AsDao asDao = new AsDao();
-	
+
 	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
 	public String chkClass1(HttpServletRequest request) {
 		if(request.getSession().getAttribute("class1") == null) {
@@ -52,16 +37,16 @@ public class ClassLMSController extends MskimRequestMapping {
 		return null; // 있음.
 	}
 	
-// login 체크(지울 예정) 수정필요 =================================================================
-public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
-	User login = (User)request.getSession().getAttribute("login");
-if(login == null) {
-	request.setAttribute("msg", "로그인 하세요");
-request.setAttribute("url", "../users/loginForm");
-return "alert";
-}
-return null; // 정상인 경우
-}
+									// login 체크(지울 예정) 수정필요 =================================================================
+									public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
+										User login = (User)request.getSession().getAttribute("login");
+									if(login == null) {
+										request.setAttribute("msg", "로그인 하세요");
+									request.setAttribute("url", "../users/loginForm");
+									return "alert";
+									}
+									return null; // 정상인 경우
+									}
 	@RequestMapping("classInfo")
 	public String classInfo(HttpServletRequest request, HttpServletResponse response) {
 		String loginCheck = uc.loginIdCheck(request, response);
@@ -86,16 +71,11 @@ return null; // 정상인 경우
 				if(loginCheck != null) { return loginCheck; } // 로그인 확인
 				String profCheck = uc.profCheck(request, response);
 				if(profCheck != null) { return profCheck; } // 교수 확인
-				chkClass1(request); // class1 확인
+				if(chkClass1(request) != null) { return chkClass1(request); } // class1 확인
 				String classCheck = uc.classCheck(request, response);
 				if(classCheck != null) { return classCheck; } // 강의 확인
 			
-				Class1 class1 = new Class1();
-				class1.setClass_no("1001");
-				class1.setBan("A");
-				class1.setYear(2025);
-				class1.setTerm(1);
-				
+				Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 				List<Assignment> asList = asDao.list(class1);
 				request.setAttribute("asList", asList);
 				return "classLMS/manageAS"; // 정상인 경우
@@ -253,10 +233,4 @@ return null; // 정상인 경우
 			    request.setAttribute("url", url);
 			    return "alert";
 			}
-	
-	/*
-	 * @RequestMapping("signUpClass") public String list(HttpServletRequest request,
-	 * HttpServletResponse response) { List<Class1> list = dao.list();
-	 * request.setAttribute("classesList", list); return "mainLMS/signUpClass"; }
-	 */
 }

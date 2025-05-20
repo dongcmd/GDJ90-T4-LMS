@@ -306,9 +306,20 @@ public class MainLMSController extends MskimRequestMapping {
 		Class1 key = new Class1();
 		key.setUser_no(request.getParameter("user_no"));
 	    key.setClass_no(request.getParameter("cls_no"));
+	    key.setMax_p(Integer.parseInt(request.getParameter("max_p")));
 	    key.setBan(request.getParameter("ban"));
 	    key.setYear(Integer.parseInt(request.getParameter("year")));
 	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+	    if (clsdao.enrolledCount(key) >= key.getMax_p()) {
+	    	request.setAttribute("msg", "정원 초과");
+	    	request.setAttribute("url", "signUpClass");
+		    return "alert";
+	    }
+	    if (clsdao.countRegistered(key) > 6) {
+	    	request.setAttribute("msg", "6개 이상 신청이 불가합니다.");
+	    	request.setAttribute("url", "signUpClass");
+		    return "alert";
+	    }
 		if (clsdao.insertRegisteredClass(key)) {
 	        request.setAttribute("msg", "수강 신청을 성공 했습니다.");
 	    } else {
