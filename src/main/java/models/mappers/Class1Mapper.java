@@ -49,7 +49,7 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * " + "FROM classes WHERE year = #{class1.year} " + "AND term = #{class1.term} " + "AND class_no " + "NOT IN (SELECT class_no "
 			+ "FROM registered_classes " + "WHERE user_no = #{user_no}) ")
-	List<Class1> selectClassesByYearTerm(@Param("class1") Class1 cls, @Param("user_no") String user_no);
+	List<Class1> selectClassesByYearTerm(@Param("class1") Class1 class1, @Param("user_no") String user_no);
 
 	@Select("SELECT COUNT(*) " + "FROM registered_classes " + "WHERE class_no = #{class_no} " + "AND ban = #{ban} " + "AND year = #{year} "
 			+ "AND term = #{term}")
@@ -57,6 +57,9 @@ public interface Class1Mapper {
 
 	@Insert("INSERT INTO registered_classes(user_no, class_no, ban, year, term, status) "
 			+ "VALUES (#{user_no}, #{class_no}, #{ban}, #{year}, #{term}, 0)")
-	boolean insertRegisteredClass(Class1 cls);
+	boolean insertRegisteredClass(Class1 class1);
 	
+	@Select("SELECT COUNT(*) FROM registered_classes " +
+	        "WHERE user_no = #{user_no} AND year = #{year} AND term = #{term}")
+	int countRegistered(Class1 class1);
 }

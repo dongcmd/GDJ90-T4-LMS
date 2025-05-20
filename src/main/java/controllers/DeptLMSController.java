@@ -20,7 +20,8 @@ import models.users.User;
 public class DeptLMSController extends MskimRequestMapping {
 	private Class1Dao class1Dao = new Class1Dao();
 	private UserController uc = new UserController();
-
+	
+	// 강의 추가 - 교수
 	@RequestMapping("addClass1")
 	public String addClass(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();
@@ -64,7 +65,8 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return "alert";
 	}
-
+	
+	// 자신의 강의 목록 - 교수
 	@RequestMapping("myClass")
 	public String myClasses(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User) request.getSession().getAttribute("login");
@@ -74,7 +76,8 @@ public class DeptLMSController extends MskimRequestMapping {
 		request.setAttribute("classesList", classesList);
 		return "deptLMS/myClass";
 	}
-
+	
+	// 강의 수정 - 교수
 	@RequestMapping("updateClass")
 	public String showUpdateForm(HttpServletRequest request, HttpServletResponse response) {
 		Class1 key = new Class1();
@@ -87,7 +90,8 @@ public class DeptLMSController extends MskimRequestMapping {
 		request.setAttribute("cls", cls);
 		return "deptLMS/updateClass";
 	}
-
+	
+	// 강의 수정 기능 - 교수
 	@RequestMapping("updateClass1")
 	public String updateClass1(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();

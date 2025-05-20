@@ -185,4 +185,29 @@ public class Class1Dao {
 		}
 		return null;
 	}
+	public int enrolledCount(Class1 cls) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+	        Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+	        return clsMapper.enrolledCount(cls);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        MyBatisConnection.close(session);
+	    }
+	    return 0;
+	}
+	public int countRegistered(Class1 cls) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+	        Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+	        return clsMapper.countRegistered(cls);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        MyBatisConnection.close(session);
+	    }
+	    return 0;
+	}
+	
 }
