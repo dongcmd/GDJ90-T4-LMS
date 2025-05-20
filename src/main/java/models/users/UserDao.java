@@ -192,4 +192,17 @@ public class UserDao {
 		}
 		return false;
 	}
+	
+	// 원동인 학사일정알림 대상자조회(학생/교수)
+	public List<String> getUserNosByRole() {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).getUserNosByRole();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
 }

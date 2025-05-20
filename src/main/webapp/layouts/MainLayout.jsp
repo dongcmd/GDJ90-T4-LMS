@@ -45,10 +45,6 @@
                     <img src="${pageContext.request.contextPath}/picture/main_logo.png" alt="메인로고" title="메인 페이지">
                 </a>
             </h1>
-            <%-- 메인 타이틀 --%>
-            <%-- 이동원: lms 별 차이가 없으면 if문 생략?
-            아니면 login(User 객체)에 major_name을 넣던가.
-             --%>
             <c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
             	<a href="../mainLMS/main"><h2 class="m-0 fw_b" style="flex: 2;">구디 대학교 학사관리 시스템</h2></a>
             </c:if>
@@ -95,7 +91,6 @@
         </div>
         
         <%-- 알림모달 --%>
-        <!-- 모달 구조 -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
 		  <div class="modal-dialog modal-lg" role="document">
 		    <div class="modal-content">
@@ -104,7 +99,7 @@
 		        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 		      </div>
 		      <div class="modal-body" id="modalBody">
-		        <!-- AJAX로 알림 테이블이 여기에 들어옴 -->
+		        <!-- AJAX로 알림 테이블-->
 		      </div>
 		    </div>
 		  </div>
@@ -165,7 +160,7 @@
 	                </c:if>
 		            	<c:if test="${login.role == 2 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="../deptLMS/myClass">강의 조회</a>
+		                    <a href="../deptLMS/myClass">강의 관리</a>
 		                </li>
 	                </c:if>
 	            </ul>
@@ -229,7 +224,7 @@
 	    function win_open(page){
 	        open(page,"","width=500, height=350, left=50, top=150");
 	    }
-	    
+	    // 알림 리스트 Ajax 방식(불러오기)
 	    document.getElementById('btnNotification').addEventListener('click', function () {
 	        fetch('${path}/users/notificationForm')
 	            .then(response => response.text())
@@ -240,8 +235,25 @@
 	                console.error('알림 로딩 중 오류 발생:', error);
 	            });
 	    });
-	    
-	    
+		// 알림 리스트 Ajax 방식(삭제)
+	    function deleteNotification(notifNo) {
+	        if (!confirm("정말 삭제하시겠습니까?")) return;
+	        fetch('${pageContext.request.contextPath}/users/notificationForm', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded'
+	            },
+	            body: 'delete=' + encodeURIComponent(notifNo)
+	        })
+	        .then(response => response.text())
+	        .then(html => {
+	        	location.reload();
+	        })
+	        .catch(error => {
+	            console.error("삭제 실패:", error);
+	            alert("알림 삭제 중 오류가 발생했습니다.");
+	        });
+	    }
 	</script>
 </body>
 </html>

@@ -60,7 +60,7 @@
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
             	</c:if>
             </h3>
-			<h2>${year}년 ${month}월</h2>
+            <h2>${year}년 ${month}월</h2>			
 			<table class="table">
 			    <thead>
 			        <tr>
