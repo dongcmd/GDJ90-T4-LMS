@@ -8,7 +8,7 @@ import models.classes.Class1;
 
 public interface Class1Mapper {
 
-	@Select("SELECT * " + "FROM classes WHERE class_no = #{class_no} " + "AND ban = #{ban} " + "AND year = #{year} " + "AND term = #{term}")
+	@Select("SELECT * FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
 	Class1 selectOne(Class1 class1);
 	
 	@Select("SELECT c.* " + "FROM registered_classes rc JOIN classes c "

@@ -13,10 +13,22 @@ public class Reg_classDao {
 	private Class<Reg_classMapper> cls = Reg_classMapper.class;
 	private Map<String, Object> map = new HashMap<String, Object>();
 	
-	public List<String> students(Reg_class rc) {
+	public int studentCount(Class1 class1) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
-			 return session.getMapper(cls).students(rc);
+			 return session.getMapper(cls).studentCount(class1);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return -1;
+	}
+
+	public List<Student> studentList(Class1 class1) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).studentList(class1);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -24,6 +36,6 @@ public class Reg_classDao {
 		 }
 		 return null;
 	}
-
+	
 
 }

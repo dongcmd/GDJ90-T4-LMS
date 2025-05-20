@@ -17,11 +17,11 @@ public class Assignment {
 	private int term;
 	private Map<Student, Integer> scores;
 	// 이동원-학생별 점수 저장
+	private int submittedCount;
 	
 	public int getAs_no() {
 		return as_no;
 	}
-
 
 	public void setAs_no(int as_no) {
 		this.as_no = as_no;
@@ -154,6 +154,14 @@ public class Assignment {
 
 	public void setScores(Map<Student, Integer> scores) {
 		this.scores = scores;
+	}
+
+	public int getSubmittedCount() {
+		return submittedCount;
+	}
+
+	public void setSubmittedCount(int submittedCount) {
+		this.submittedCount = submittedCount;
 	}
 
 	
