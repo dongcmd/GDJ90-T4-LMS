@@ -353,6 +353,17 @@ public class UserController extends MskimRequestMapping{
 			User login = (User) request.getSession().getAttribute("login");
 		    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
 		    request.setAttribute("notificationsList", notificationsList);
+		    
+		    String deleteNo = request.getParameter("delete");
+			if (deleteNo != null) {
+			    int no = Integer.parseInt(deleteNo);
+			    if (NotificationDao.delete(no)) {
+			        request.setAttribute("msg", "삭제 완료");
+			    } else {
+			        request.setAttribute("msg", "삭제 실패");
+			    }
+			    return "alert";
+			}
 			return "users/notificationForm";
 		}
 }
