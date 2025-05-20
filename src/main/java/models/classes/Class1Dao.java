@@ -109,6 +109,23 @@ public class Class1Dao {
 		}
 		return false;
 	}
+	public boolean cancelClass(Class1 cls) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			if (clsMapper.cancelClass(cls) == 0) {
+				session.rollback();
+				return false;
+			}
+			session.commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
 
 	public List<Class1> selectClassesByYearTerm(Class1 cls, String user_no) {
 		SqlSession session = MyBatisConnection.getConnection();
@@ -148,5 +165,24 @@ public class Class1Dao {
 			MyBatisConnection.close(session);
 		}
 		return false;
+	}
+	public List<Class1> nowClassList(Class1 class1) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			List<Class1> list = clsMapper.nowClassList(class1);
+			for (Class1 cls : list) {
+				List<Integer> days = clsMapper.selectDaysByClass(cls);
+				int cont_p = clsMapper.enrolledCount(cls);
+				cls.setNow_p(cont_p);
+				cls.setDays(days);
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
 	}
 }
