@@ -17,6 +17,7 @@
 	    .main_list{min-width:600px; height: 400px; background-color: #fff; border:1px solid #eee; border-radius: 10px;}
 	    .main_list .list-group-item{border: none; border-bottom: 1px solid #eee;}
 	    .main_list .list-group-item:last-child{border: none;}
+	    .main_list .list-group a{color:#333;}
     </style>
 </head>
 <body>
