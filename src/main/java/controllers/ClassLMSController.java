@@ -38,8 +38,17 @@ import models.users.UserDao;
 
 @WebServlet(urlPatterns = { "/classLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class ClassLMSController extends MskimRequestMapping {
-
-	private AsDao asDao = new AsDao(); 
+	private UserController uc = new UserController();
+	private Class1Dao class1Dao = new Class1Dao();
+	private AsDao asDao = new AsDao();
+	
+	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
+	public String chkClass1(HttpServletRequest request) {
+		if(request.getSession().getAttribute("class1") == null) {
+			return "../deptLMS/classList"; // 없음
+		}
+		return null; // 있음.
+	}
 	
 	// 로그인 아이디 체크 =================================================================
 			public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -53,19 +62,26 @@ public class ClassLMSController extends MskimRequestMapping {
 			}
 			// 과제관리 접근권한 설정================================================
 			@RequestMapping("manageAs")
-			@MSLogin("loginIdCheck")
 			public String manageAs(HttpServletRequest request, HttpServletResponse response) {
-				User login = (User)request.getSession().getAttribute("login");
-				//나중에 클래스와 함께 처리
-//				Class1 class1 = c1Dao.selectOne("");
-				if(login.getRole().equals("1")) {
-					request.setAttribute("msg", "접근 권한이 없습니다.");
-					request.setAttribute("url","classInfo");
-					return "alert";
-				}				
-				List<Assignment> asList = asDao.selectAll();
+				String loginCheck = uc.loginIdCheck(request, response); 
+				if(loginCheck != null) { return loginCheck; } // 로그인 확인
+				String profCheck = uc.profCheck(request, response);
+				if(profCheck != null) { return profCheck; } // 교수 확인
+				chkClass1(request); // class1 확인
+				String classCheck = uc.classCheck(request, response);
+				if(classCheck != null) { return classCheck; } // 강의 확인
+			
+//				Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+				// 임시
+				Class1 class1 = new Class1();
+				class1.setClass_no("1001");
+				class1.setBan("A");
+				class1.setYear(2025);
+				class1.setTerm(1);
+				//임시
+				List<Assignment> asList = asDao.list(class1);
 				request.setAttribute("asList", asList);
-				return null; // 정상인 경우
+				return "classLMS/manageAS"; // 정상인 경우
 			}
 			// 과제 추가 접근권한 설정============================================================
 			@RequestMapping("addAssignmentForm")
@@ -221,39 +237,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			    return "alert";
 			}
 	
-
-	@RequestMapping("upload_asCSV")
-	public String upload_asCSV(HttpServletRequest req,
-			HttpServletResponse res) throws IOException, ServletException {
-		Part filePart = req.getPart("csvFile");
-		InputStream inputStream = filePart.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-		
-		String line;
-		while((line = reader.readLine()) != null) {
-			String[] data = line.split(",");
-		}
-		
-		reader.close();
-		return "업로드 완료";
-	}
-	@RequestMapping("download_asXLSX")
-	public String download_asXLSX(HttpServletRequest req,
-			HttpServletResponse res) throws IOException {
-		res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		res.setHeader("Content-Disposition", "attachment; filename=upload_template.xlsx");
-
-		Workbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("양식");
-		Row header = sheet.createRow(0);
-		header.createCell(0).setCellValue("이름");
-		header.createCell(1).setCellValue("나이");
-		header.createCell(2).setCellValue("이메일");
-		
-		workbook.write(res.getOutputStream());
-		workbook.close();
-		
-	}
 	/*
 	 * @RequestMapping("signUpClass") public String list(HttpServletRequest request,
 	 * HttpServletResponse response) { List<Class1> list = dao.list();

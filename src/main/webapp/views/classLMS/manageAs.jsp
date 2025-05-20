@@ -45,7 +45,9 @@ manageassignment
        		</tr>
 		</table>
 	
-		<h3 class="my-4">과제 목록</h3>
+		<h3 class="my-4">과제 목록
+			<a href="addAssignmentForm" class="btn btn-dark" role="button">과제추가</a>
+			</h3>
 	
 		<table class="table table-bordered"> 
 			<thead class="thead-light">
@@ -76,15 +78,14 @@ manageassignment
 		</table>
 		
 		<div class="m-5 d-flex justify-content-end" style="gap: 10px;">
-			<a href="addAssignmentForm" class="btn btn-dark" role="button">과제추가</a>
 			<a href="#" class="btn btn-dark" role="button">과제 다운로드</a>
 			<a href="#" class="btn btn-dark" role="button">파일2 다운로드 csv</a>
 			<a href="#" class="btn btn-dark" role="button">파일업로드 csv</a>
 		</div>
 
-	<a href="download_asXLSX" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
+	<a href="download_asXLSX?as_no=${as_no}" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
 	<form method="post" action="upload_asCSV" enctype="multipart/form-data">
-	  <input type="file" name="csvfile" accept=".csv" required />
+	  <input type="file" name="csvFile" accept=".csv" required />
 	  <button type="submit">양식 업로드 csv</button>
 	</form>
 

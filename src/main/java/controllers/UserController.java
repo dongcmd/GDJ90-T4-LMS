@@ -45,14 +45,19 @@ public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
 	private MajorDao majorDao = new MajorDao();
 	/*
-		상단에 꼭 선언해야 함. 필요한 것에 따라 2줄 모두 가져가야 함.
+		C 상단에 꼭 선언해야 함.
 		private UserController uc = new UserController();
 		
+		필요한 것에 따라 2줄 모두 메서드 내부 위에 작성.
+
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 
 		String adminCheck = uc.adminCheck(request, response);
 		if(adminCheck != null) { return adminCheck; } // 관리자 확인
+
+		String profCheck = uc.profCheck(request, response);
+		if(profCheck != null) { return profCheck; } // 교수 확인
 
 		String user_noCheck = uc.user_noCheck(request, response);
 		if(user_noCheck != null) { return user_noCheck; } // 유저번호 확인
@@ -62,6 +67,7 @@ public class UserController extends MskimRequestMapping{
 		
 		String classCheck = uc.classCheck(request, response);
 		if(classCheck != null) { return classCheck; } // 강의 확인
+	
 	*/
 	
 	// 로그인 =================================================================
@@ -82,6 +88,7 @@ public class UserController extends MskimRequestMapping{
 			url = "loginForm";
 		} else { 
 			request.getSession().setAttribute("login", user);
+			request.getSession().setAttribute("class1", null);
 			msg = user.getUser_name() + "님 반갑습니다.";
 			url = "../mainLMS/main";
 		}
@@ -184,6 +191,17 @@ public class UserController extends MskimRequestMapping{
 		return "alert";
 	}
 	// 이동원
+	// 교수 체크 ===================================
+	public String profCheck(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		if(login.getRole().equals("2")) {
+			return null;
+		}
+		request.setAttribute("msg", "교수가 아닙니다.");
+		request.setAttribute("url", "../mainLMS/main");
+		return "alert";
+	}
+	// 이동원 
 	// 유저번호 체크 ===================================
 	public String user_noCheck(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
@@ -225,10 +243,8 @@ public class UserController extends MskimRequestMapping{
 				return null; }
 			request.setAttribute("msg", "자신이 진행하는 강의가 아닙니다.");
 		} else if(login.getRole().equals("1")) { // login이 학생일 경우
-			for(Student st : target.getStudents()) {
-				if(st.USER_NO.equals(login.getUser_no())) { // 소속학생일 경우
-					return null; }
-			}
+			if(target.getStudents().get(login.getUser_no()) != null) { // 소속학생일 경우
+				return null; }
 			request.setAttribute("msg", "수강 중인 강의가 아닙니다.");	
 		}
 		request.setAttribute("url", "../board/board?board_id"+login.getMajor_no());
