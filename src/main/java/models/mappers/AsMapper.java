@@ -13,6 +13,7 @@ import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Submitted_Assignments;
 
+
 public interface AsMapper {
 	
 	// 과제 추가=================

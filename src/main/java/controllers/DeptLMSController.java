@@ -18,8 +18,10 @@ import models.users.User;
 
 @WebServlet(urlPatterns = { "/deptLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class DeptLMSController extends MskimRequestMapping {
-	private Class1Dao dao = new Class1Dao();
+	private Class1Dao class1Dao = new Class1Dao();
+	private UserController uc = new UserController();
 	
+	// 강의 추가 - 교수
 	@RequestMapping("addClass1")
 	public String addClass(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();
@@ -54,7 +56,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 
 		// 3) DAO 호출 및 결과 처리
-		if (dao.insertClass(cls)) {
+		if (class1Dao.insertClass(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 추가되었습니다.");
 			request.setAttribute("url", "myClass");
 		} else {
@@ -63,30 +65,33 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return "alert";
 	}
-
+	
+	// 자신의 강의 목록 - 교수
 	@RequestMapping("myClass")
 	public String myClasses(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User) request.getSession().getAttribute("login");
 		String userNo = login.getUser_no();
-		List<Class1> classesList = dao.selectByProfessor(userNo);
+		List<Class1> classesList = class1Dao.selectByProfessor(userNo);
 
 		request.setAttribute("classesList", classesList);
 		return "deptLMS/myClass";
 	}
-
+	
+	// 강의 수정 - 교수
 	@RequestMapping("updateClass")
 	public String showUpdateForm(HttpServletRequest request, HttpServletResponse response) {
-	    Class1 key = new Class1();
-	    key.setClass_no(request.getParameter("no"));
-	    key.setBan(request.getParameter("ban"));
-	    key.setYear(Integer.parseInt(request.getParameter("year")));
-	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+		Class1 key = new Class1();
+		key.setClass_no(request.getParameter("no"));
+		key.setBan(request.getParameter("ban"));
+		key.setYear(Integer.parseInt(request.getParameter("year")));
+		key.setTerm(Integer.parseInt(request.getParameter("term")));
 
-	    Class1 cls = dao.selectOne(key);
-	    request.setAttribute("cls", cls);
-	    return "deptLMS/updateClass";
+		Class1 cls = class1Dao.selectOne(key);
+		request.setAttribute("cls", cls);
+		return "deptLMS/updateClass";
 	}
-
+	
+	// 강의 수정 기능 - 교수
 	@RequestMapping("updateClass1")
 	public String updateClass1(HttpServletRequest request, HttpServletResponse response) {
 		Class1 cls = new Class1();
@@ -109,7 +114,7 @@ public class DeptLMSController extends MskimRequestMapping {
 			cls.setDays(days);
 		}
 
-		if (dao.update(cls)) {
+		if (class1Dao.update(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 수정 성공하였습니다..");
 			request.setAttribute("url", "myClass");
 		} else {
@@ -118,20 +123,60 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return "alert";
 	}
+
+	// 강의 삭제 - 교수
 	@RequestMapping("deleteClass")
 	public String deleteClass(HttpServletRequest request, HttpServletResponse response) {
-	    Class1 key = new Class1();
-	    key.setClass_no(request.getParameter("no"));
-	    key.setBan(request.getParameter("ban"));
-	    key.setYear(Integer.parseInt(request.getParameter("year")));
-	    key.setTerm(Integer.parseInt(request.getParameter("term")));
+		Class1 key = new Class1();
+		key.setClass_no(request.getParameter("no"));
+		key.setBan(request.getParameter("ban"));
+		key.setYear(Integer.parseInt(request.getParameter("year")));
+		key.setTerm(Integer.parseInt(request.getParameter("term")));
 
-	    if (dao.delete(key)) {
-	        request.setAttribute("msg", "강의가 정상적으로 삭제되었습니다.");
-	    } else {
-	        request.setAttribute("msg", "강의 삭제에 실패했습니다.");
-	    }
-	    request.setAttribute("url", "myClass");
-	    return "alert";
+		if (class1Dao.delete(key)) {
+			request.setAttribute("msg", "강의가 정상적으로 삭제되었습니다.");
+		} else {
+			request.setAttribute("msg", "강의 삭제에 실패했습니다.");
+		}
+		request.setAttribute("url", "myClass");
+		return "alert";
+	}
+
+	// 수강 목록 - 학생
+	@RequestMapping("classList")
+	public String classList(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int term = (month >= 3 && month <= 8) ? 1 : 2;
+
+		Class1 cls = new Class1();
+		cls.setUser_no(login.getUser_no());
+		cls.setYear(year);
+		cls.setTerm(term);
+
+		List<Class1> classesList = class1Dao.nowClassList(cls);
+		request.setAttribute("classesList", classesList);
+		return "deptLMS/classList";
+	}
+
+	// 수강 신청 취소
+	@RequestMapping("dropClass")
+	public String dropClass(HttpServletRequest request, HttpServletResponse response) {
+		User login = (User) request.getSession().getAttribute("login");
+		Class1 key = new Class1();
+		key.setUser_no(login.getUser_no());
+		key.setClass_no(request.getParameter("no"));
+		key.setBan(request.getParameter("ban"));
+		key.setYear(Integer.parseInt(request.getParameter("year")));
+		key.setTerm(Integer.parseInt(request.getParameter("term")));
+		if (class1Dao.cancelClass(key)) {
+			request.setAttribute("msg", "강의가 정상적으로 취소되었습니다.");
+		} else {
+			request.setAttribute("msg", "수강 신청 취소를 실패했습니다.");
+		}
+		request.setAttribute("url", "classList");
+		return "alert";
 	}
 }
