@@ -55,6 +55,7 @@ manageassignment
 					<th style="text-align: center">과제명</th>
 					<th style="text-align: center">기한</th>
 					<th style="text-align: center">과제내용</th>
+					<th style="text-align: center">배점</th>
 					<th style="text-align: center">제출현황</th>
 					<th style="text-align: center">수정/삭제</th>
 				</tr>
@@ -65,10 +66,11 @@ manageassignment
 			<tbody>
 				<tr>
 					<td style="text-align: center"><a href="manageAs?as_no=${as.as_no}">${as.as_name}</a></td>
-					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
-						~ <fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
-					<td style="text-align: center">${as.as_content }</td>
-					<td style="text-align: center">3 / 10</td>
+					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /><br>
+						~<fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
+					<td style="text-align: center">${as.as_content}</td>
+					<td style="text-align: center">${as.as_point}</td>
+					<td style="text-align: center">${as.submittedCount} / ${class1.max_p}</td>
 					<td class="d-flex justify-content-center" style="gap: 10px;">
 						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
 						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a></td>

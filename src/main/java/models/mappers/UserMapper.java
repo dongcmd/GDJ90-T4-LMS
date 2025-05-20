@@ -66,5 +66,9 @@ public interface UserMapper {
   @Select("select * from users where role = #{keyword} order by user_no")
   List<User> searchByRole(@Param("keyword") String keyword);
 	//==============================================================================
-	
+  
+  @Select("select user_name from users where user_no = #{user_no}")
+  String selectName(String user_no);
+  
+  
 }

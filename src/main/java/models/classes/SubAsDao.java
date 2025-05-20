@@ -19,7 +19,7 @@ public class SubAsDao {
 		 try {
 			 map.put("as_no", as_no);
 			 scores.forEach((st, sc) -> {
-				 map.put("user_no", st.USER_NO);
+				 map.put("user_no", st.getUser_no());
 				 map.put("as_score", sc);
 				 if(conn.getMapper(cls).insertScore(map) == 1) { i++; }
 			 });
@@ -30,4 +30,7 @@ public class SubAsDao {
 		 }
 		 return i;
 	}
+	
+	
+	
 }

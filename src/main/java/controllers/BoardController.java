@@ -26,8 +26,7 @@ import models.users.User;
 import models.users.UserDao;
 
 //이동원
-@WebServlet(urlPatterns = {"/board/*"}
-	, initParams = {@WebInitParam(name = "view", value="/views/")})
+@WebServlet(urlPatterns = {"/board/*"} , initParams = {@WebInitParam(name = "view", value="/views/")})
 public class BoardController extends MskimRequestMapping {
 	private Reg_classDao reg_classDao = new Reg_classDao();
 	private BoardDao boardDao = new BoardDao();

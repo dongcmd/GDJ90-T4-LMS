@@ -35,6 +35,7 @@ public class Class1Dao {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
 			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			
 			List<Class1> list = clsMapper.selectByProfessor(userNo);
 			
 			for (Class1 cls : list) {

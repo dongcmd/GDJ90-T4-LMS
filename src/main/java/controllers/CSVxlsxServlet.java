@@ -118,7 +118,6 @@ public class CSVxlsxServlet extends HttpServlet {
         String path = request.getServletPath();
         String as_no = request.getParameter("as_no");
         Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-        System.out.println(class1);
         Assignment as = class1.getAssignments().get(as_no);
         request.setAttribute("as", as);
         
@@ -165,8 +164,8 @@ public class CSVxlsxServlet extends HttpServlet {
         for(Student st : as.getScores().keySet()) {
         	Row r = sheet.createRow(2 + i);
     		r.createCell(0).setCellValue(as.getAs_no());
-    		r.createCell(1).setCellValue(st.USER_NO);
-    		r.createCell(2).setCellValue(st.USER_NAME);
+    		r.createCell(1).setCellValue(st.getUser_no());
+    		r.createCell(2).setCellValue(st.getUser_name());
     		r.createCell(3).setCellValue("");
     		r.getCell(0).setCellStyle(pinkCell);
     		r.getCell(1).setCellStyle(pinkCell);

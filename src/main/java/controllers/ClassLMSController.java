@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -19,14 +21,52 @@ import models.classes.AsDao;
 import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
+import models.classes.Reg_classDao;
+import models.classes.Student;
+import models.classes.SubAsDao;
 import models.users.User;
+import models.users.UserDao;
 
 @WebServlet(urlPatterns = { "/classLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class ClassLMSController extends MskimRequestMapping {
 	private UserController uc = new UserController();
 	private Class1Dao class1Dao = new Class1Dao();
 	private AsDao asDao = new AsDao();
+	private Reg_classDao rcDao = new Reg_classDao();
+	private UserDao userDao = new UserDao();
+	private SubAsDao subAsDao = new SubAsDao();
 
+	// 세션에 클래스 넣기
+	private String putClass1Session(HttpServletRequest request) {
+		Class1 class1 = new Class1(request.getParameter("class_no"),
+				request.getParameter("ban"),
+				Integer.parseInt(request.getParameter("year")),
+				Integer.parseInt(request.getParameter("term")));
+		class1 = class1Dao.selectOne(class1); // class1 객체 db에서 지정
+		if(class1 == null) {
+			request.setAttribute("msg", "class1 세션에 저장 실패");
+			request.setAttribute("url", "mainLMS/main");
+			return "alert";
+		}
+		
+		class1.setNow_p(rcDao.studentCount(class1)); // 현재원
+		class1.setProf(userDao.selectName(class1.getUser_no())); // 교수명
+		List<Student> stList = rcDao.studentList(class1);
+		Map<String, Student> stMap = new HashMap<>();
+		for(Student st : stList) { stMap.put(st.getUser_no(), st); }
+		class1.setStudents(stMap); // 소속 학생
+		List<Assignment> asList = asDao.list(class1);
+		Map<String, Assignment> asMap = new HashMap<>();
+		for(Assignment as : asList) {
+			as.setScores(asDao.scores(as, class1));
+			asMap.put(as.getAs_no()+"", as); }
+		class1.setAssignments(asMap); // 속한 과제
+		
+		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
+		return null;
+	}
+	
+	
 	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
 	public String chkClass1(HttpServletRequest request) {
 		if(request.getSession().getAttribute("class1") == null) {
@@ -36,7 +76,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		}
 		return null; // 있음.
 	}
-	
 									// login 체크(지울 예정) 수정필요 =================================================================
 									public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
 										User login = (User)request.getSession().getAttribute("login");
@@ -51,19 +90,14 @@ public class ClassLMSController extends MskimRequestMapping {
 	public String classInfo(HttpServletRequest request, HttpServletResponse response) {
 		String loginCheck = uc.loginIdCheck(request, response);
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
+		String cs = putClass1Session(request); 
+		if(cs != null) { return cs; } // 세션에 클래스 넣기
+		String hasClass = chkClass1(request);
+		if(hasClass != null) { return hasClass; } // class1 확인
 		
-		Class1 class1 = new Class1(request.getParameter("class_no"),
-				request.getParameter("ban"),
-				Integer.parseInt(request.getParameter("year")),
-				Integer.parseInt(request.getParameter("term")));
-		class1 = class1Dao.selectOne(class1); // class1 객체 db에서 지정
-		
-		String classCheck = uc.classCheck(request, response);
-		if(classCheck != null) { return classCheck; } // 강의 확인
-		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 		return "classLMS/classInfo";
 	}
-			
+	
 			// 과제관리 접근권한 설정================================================
 			@RequestMapping("manageAs")
 			public String manageAs(HttpServletRequest request, HttpServletResponse response) {
@@ -71,14 +105,15 @@ public class ClassLMSController extends MskimRequestMapping {
 				if(loginCheck != null) { return loginCheck; } // 로그인 확인
 				String profCheck = uc.profCheck(request, response);
 				if(profCheck != null) { return profCheck; } // 교수 확인
-				if(chkClass1(request) != null) { return chkClass1(request); } // class1 확인
+				String hasClass = chkClass1(request);
+				if(hasClass != null) { return hasClass; } // class1 확인
 				String classCheck = uc.classCheck(request, response);
 				if(classCheck != null) { return classCheck; } // 강의 확인
 			
 				Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 				List<Assignment> asList = asDao.list(class1);
 				request.setAttribute("asList", asList);
-				return "classLMS/manageAS"; // 정상인 경우
+				return "classLMS/manageAs"; // 정상인 경우
 			}
 			// 과제 추가 접근권한 설정============================================================
 			@RequestMapping("addAssignmentForm")
