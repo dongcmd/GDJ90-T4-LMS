@@ -39,7 +39,6 @@ import models.others.NotificationDao;
 public class MainLMSController extends MskimRequestMapping {
 	UserController uc = new UserController();
 	private EventDao eventDao = new EventDao();
-	private NotificationDao NotificationDao = new NotificationDao();
 	private Class1Dao clsdao = new Class1Dao();
   
 	@RequestMapping("main")
@@ -283,16 +282,6 @@ public class MainLMSController extends MskimRequestMapping {
 		// 리스트
 		request.setAttribute("eventList", eventDao.eventList());
 		return "mainLMS/event";
-	}
-	
-	// 원동인 (알림)
-	
-	@RequestMapping("notificationForm")
-	public String notification(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-		User login = (User) request.getSession().getAttribute("login");
-	    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
-	    request.setAttribute("notificationsList", notificationsList);
-		return "mainLMS/notificationForm";
 	}
 
 	// 수강신청

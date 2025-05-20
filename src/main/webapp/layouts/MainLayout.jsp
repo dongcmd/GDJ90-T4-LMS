@@ -231,7 +231,7 @@
 	    }
 	    
 	    document.getElementById('btnNotification').addEventListener('click', function () {
-	        fetch('notificationForm')
+	        fetch('${path}/users/notificationForm')
 	            .then(response => response.text())
 	            .then(html => {
 	                document.getElementById('modalBody').innerHTML = html;
