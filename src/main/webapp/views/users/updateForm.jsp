@@ -59,10 +59,10 @@
                         <label>학년</label>
                         <select name="grade" class="form-control">
                             <option value="choose" disabled selected>-- 선택하세요 --</option>
-                            <option value="1" ${login.grade == 1 ? "selected" : ""}>1학년</option>
-                            <option value="2" ${login.grade == 2 ? "selected" : ""}>2학년</option>
-                            <option value="3" ${login.grade == 3 ? "selected" : ""}>3학년</option>
-                            <option value="4" ${login.grade == 4 ? "selected" : ""}>4학년</option>
+                            <option value="1" ${login.user_grade == 1 ? "selected" : ""}>1학년</option>
+                            <option value="2" ${login.user_grade == 2 ? "selected" : ""}>2학년</option>
+                            <option value="3" ${login.user_grade == 3 ? "selected" : ""}>3학년</option>
+                            <option value="4" ${login.user_grade == 4 ? "selected" : ""}>4학년</option>
                         </select>
                     </div>
                 </c:if>

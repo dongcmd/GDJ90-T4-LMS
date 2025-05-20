@@ -1,12 +1,13 @@
 package models.others;
 
 import java.util.Date;
+import java.util.List;
 
 public class Notification {
     private int notif_no;  // 알림번호
     private String user_no; // 유저번호
     private String notif_content; // 알림내용
-    private Date notif_date_; // 알림 작성시간
+    private Date notif_date; // 알림 작성시간
     private Boolean is_pinned; // 알림 고정
     private Boolean is_read; // 알림 여부
     
@@ -28,11 +29,12 @@ public class Notification {
 	public void setNotif_content(String notif_content) {
 		this.notif_content = notif_content;
 	}
-	public Date getNotif_date_() {
-		return notif_date_;
+	
+	public Date getNotif_date() {
+		return notif_date;
 	}
-	public void setNotif_date_(Date notif_date_) {
-		this.notif_date_ = notif_date_;
+	public void setNotif_date(Date notif_date) {
+		this.notif_date = notif_date;
 	}
 	public Boolean getIs_pinned() {
 		return is_pinned;

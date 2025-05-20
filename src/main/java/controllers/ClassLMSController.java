@@ -2,6 +2,7 @@ package controllers;
 
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,21 +26,34 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.oreilly.servlet.MultipartRequest;
+
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import models.boards.Article;
 import models.classes.AsDao;
 import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
+import models.classes.Submitted_Assignments;
 import models.users.User;
 import models.users.UserDao;
 
 @WebServlet(urlPatterns = { "/classLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class ClassLMSController extends MskimRequestMapping {
-
-	private AsDao asDao = new AsDao(); 
+	private UserController uc = new UserController();
+	private Class1Dao class1Dao = new Class1Dao();
+	private AsDao asDao = new AsDao();
+	
+	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
+	public String chkClass1(HttpServletRequest request) {
+		if(request.getSession().getAttribute("class1") == null) {
+			return "../deptLMS/classList"; // 없음
+		}
+		return null; // 있음.
+	}
 	
 	// 로그인 아이디 체크 =================================================================
 			public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -53,23 +67,29 @@ public class ClassLMSController extends MskimRequestMapping {
 			}
 			// 과제관리 접근권한 설정================================================
 			@RequestMapping("manageAs")
-			@MSLogin("loginIdCheck")
 			public String manageAs(HttpServletRequest request, HttpServletResponse response) {
-				User login = (User)request.getSession().getAttribute("login");
-				//나중에 클래스와 함께 처리
-//				Class1 class1 = c1Dao.selectOne("");
-				if(login.getRole().equals("1")) {
-					request.setAttribute("msg", "접근 권한이 없습니다.");
-					request.setAttribute("url","classInfo");
-					return "alert";
-				}				
-				List<Assignment> asList = asDao.selectAll();
+				String loginCheck = uc.loginIdCheck(request, response); 
+				if(loginCheck != null) { return loginCheck; } // 로그인 확인
+				String profCheck = uc.profCheck(request, response);
+				if(profCheck != null) { return profCheck; } // 교수 확인
+				chkClass1(request); // class1 확인
+				String classCheck = uc.classCheck(request, response);
+				if(classCheck != null) { return classCheck; } // 강의 확인
+			
+//				Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+				// 임시
+				Class1 class1 = new Class1();
+				class1.setClass_no("1001");
+				class1.setBan("A");
+				class1.setYear(2025);
+				class1.setTerm(1);
+				//임시
+				List<Assignment> asList = asDao.list(class1);
 				request.setAttribute("asList", asList);
-				return null; // 정상인 경우
+				return "classLMS/manageAS"; // 정상인 경우
 			}
 			// 과제 추가 접근권한 설정============================================================
 			@RequestMapping("addAssignmentForm")
-			@MSLogin("loginIdCheck")
 			public String addAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
 				User login = (User)request.getSession().getAttribute("login");
 				if(login.getRole().equals("1")) {
@@ -78,8 +98,7 @@ public class ClassLMSController extends MskimRequestMapping {
 					return "alert";
 				}
 				// 여기 부분은 추후에 수정해야할듯!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				Class1Dao C1Dao = new Class1Dao();
-				List<Class1> cls = C1Dao.selectByProfessor(login.getUser_no());
+				List<Class1> cls = class1Dao.selectByProfessor(login.getUser_no());
 				System.out.println(cls);
 				request.setAttribute("cls", cls);
 				return null; // 정상인 경우
@@ -87,7 +106,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			
 			// 과제 추가============================================================
 			@RequestMapping("addAssignment")
-			@MSLogin("loginIdCheck")
 			public String addAssignment(HttpServletRequest request, HttpServletResponse response) {
 				User login = (User)request.getSession().getAttribute("login");
 				AsDao dao = new AsDao();	    
@@ -124,7 +142,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			
 			// 과제 수정 권한 업데이트 및 요청 객체 전달============================================================
 			@RequestMapping("updateAssignmentForm")
-			@MSLogin("loginIdCheck")
 			public String udpateAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
 				User login = (User)request.getSession().getAttribute("login");
 				if(login.getRole().equals("1")) {
@@ -185,7 +202,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			}
 			// 과제 삭제폼 =====================================================
 			@RequestMapping("deleteAssignmentForm")
-			@MSLogin("loginIdCheck")
 			public String deleteAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
 				User login = (User)request.getSession().getAttribute("login");
 				if(login.getRole().equals("1")) {
@@ -220,43 +236,70 @@ public class ClassLMSController extends MskimRequestMapping {
 			    request.setAttribute("url", url);
 			    return "alert";
 			}
+			//과제제출(학생) 메인폼 =============================================
+			@RequestMapping("submitAs")
+			public String submitAs(HttpServletRequest request , HttpServletResponse response) {				
+				User login = (User)request.getSession().getAttribute("login");
+				Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+				// 접근권한 넣어야함
+				//===========================
+				
+				Class1 class1 = new Class1();
+//				class1.setClass_no(loginclass.getClass_no());
+//				class1.setBan(loginclass.getBan());
+//				class1.setYear(loginclass.getYear());
+//				class1.setTerm(loginclass.getTerm());
+				class1.setClass_no("1001");
+				class1.setBan("A");
+				class1.setYear(2025);
+				class1.setTerm(1);
+				List<Assignment> asList = asDao.list(class1);
+				System.out.println(asList);
+				request.setAttribute("asList", asList);
+				return "classLMS/submitAs";
+			}
+			//과제제출(학생) 제출폼 =============================================
+			@RequestMapping("submitassignment")
+			public String submitassignment(HttpServletRequest request , HttpServletResponse response) {				
+				User login = (User)request.getSession().getAttribute("login");
+				Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+				// 접근권한 넣어야함 ==========================
+				int as_no = Integer.parseInt(request.getParameter("as_no"));
+				Assignment as1 = asDao.selectOne(as_no);
+				request.setAttribute("as", as1);
+				return "classLMS/submitassignment";
+			}
 	
-
-	@RequestMapping("upload_asCSV")
-	public String upload_asCSV(HttpServletRequest req,
-			HttpServletResponse res) throws IOException, ServletException {
-		Part filePart = req.getPart("csvFile");
-		InputStream inputStream = filePart.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-		
-		String line;
-		while((line = reader.readLine()) != null) {
-			String[] data = line.split(",");
-		}
-		
-		reader.close();
-		return "업로드 완료";
-	}
-	@RequestMapping("download_asXLSX")
-	public String download_asXLSX(HttpServletRequest req,
-			HttpServletResponse res) throws IOException {
-		res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		res.setHeader("Content-Disposition", "attachment; filename=upload_template.xlsx");
-
-		Workbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("양식");
-		Row header = sheet.createRow(0);
-		header.createCell(0).setCellValue("이름");
-		header.createCell(1).setCellValue("나이");
-		header.createCell(2).setCellValue("이메일");
-		
-		workbook.write(res.getOutputStream());
-		workbook.close();
-		
-	}
 	/*
 	 * @RequestMapping("signUpClass") public String list(HttpServletRequest request,
 	 * HttpServletResponse response) { List<Class1> list = dao.list();
 	 * request.setAttribute("classesList", list); return "mainLMS/signUpClass"; }
 	 */
+			@RequestMapping("upload")
+			public String upload(HttpServletRequest request , HttpServletResponse response) {	
+				User login = (User)request.getSession().getAttribute("login");
+				String path = request.getServletContext().getRealPath("/") +"files/";
+				File f = new File(path);
+				if(!f.exists()) f.mkdirs();
+				int size = 5*1024*1024;
+				MultipartRequest multi = null;
+				try { multi = new MultipartRequest(request, path, size, "utf-8");
+				} catch(IOException e) { e.printStackTrace(); }
+				String asNo = multi.getParameter("as_no");
+				String fileName = multi.getOriginalFileName("file");
+				Submitted_Assignments as = new Submitted_Assignments();
+				as.setAs_no(Integer.parseInt(asNo));
+				as.setFile(fileName);
+				as.setUser_no(login.getUser_no());
+				if(asDao.insertAs(as)) {
+					request.setAttribute("msg", "과제가 제출되었습니다.");
+					request.setAttribute("url", "submitAs");
+				} else {
+					request.setAttribute("msg", "과제 제출 실패");
+					request.setAttribute("url", "submitassignment?as_no=" + asNo);
+				}
+	
+				return "alert";
+			}
+			
 }

@@ -16,4 +16,16 @@ public class Student {
 		this.USER_NAME = user.getUser_name();
 		this.USER_GRADE = user.getUser_grade();
 	}
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (!(o instanceof Student)) return false;
+	    Student other = (Student) o;
+	    return USER_NO.equals(other.USER_NO);
+	}
+
+	@Override
+	public int hashCode() {
+	    return USER_NO.hashCode();
+	}
 }

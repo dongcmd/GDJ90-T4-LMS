@@ -28,10 +28,10 @@ public class AsDao {
 		 return false;
 	}
 	// 과제 전체 목록 조회==========================================
-	public List<Assignment> selectAll() {
+	public List<Assignment> list(Class1 class1) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
-			 return session.getMapper(cls).selectAll();
+			 return session.getMapper(cls).list(class1);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -75,6 +75,20 @@ public class AsDao {
 		}
 		return false;
 	}
+	public boolean insertAs(Submitted_Assignments as) {
+		 SqlSession conn = MyBatisConnection.getConnection();
+		 try {
+			 if(conn.getMapper(cls).insertAs(as) > 0) return true;
+			 else return false;
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(conn);
+		 }
+		 return false;
+	}
+	
+
 
 
 }

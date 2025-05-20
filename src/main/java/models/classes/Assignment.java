@@ -1,6 +1,7 @@
 package models.classes;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Assignment {
 	
@@ -14,13 +15,12 @@ public class Assignment {
 	private String ban;
 	private int year;
 	private int term;
-
-	
+	private Map<Student, Integer> scores;
+	// 이동원-학생별 점수 저장
 	
 	public int getAs_no() {
 		return as_no;
 	}
-
 
 
 	public void setAs_no(int as_no) {
@@ -142,6 +142,18 @@ public class Assignment {
 		return "Assignment [as_no=" + as_no + ", as_name=" + as_name + ", as_content=" + as_content + ", as_s_date="
 				+ as_s_date + ", as_e_date=" + as_e_date + ", as_point=" + as_point + ", class_no=" + class_no
 				+ ", ban=" + ban + ", year=" + year + ", term=" + term + "]";
+	}
+
+
+
+	public Map<Student, Integer> getScores() {
+		return scores;
+	}
+
+
+
+	public void setScores(Map<Student, Integer> scores) {
+		this.scores = scores;
 	}
 
 	
