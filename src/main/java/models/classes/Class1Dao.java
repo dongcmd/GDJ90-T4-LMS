@@ -127,13 +127,31 @@ public class Class1Dao {
 		}
 		return false;
 	}
+	
+	public boolean confirmClass(Class1 cls) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			if (clsMapper.confirmClass(cls) == 0) {
+				session.rollback();
+				return false;
+			}
+			session.commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return false;
+	}
 
-	public List<Class1> selectClassesByYearTerm(Class1 cls, String user_no) {
+	public List<Class1> selectClassesByYearTerm(Class1 cls, String user_no, String type, String fine) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
 			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
-			List<Class1> list = clsMapper.selectClassesByYearTerm(cls, user_no);
+			List<Class1> list = clsMapper.selectClassesByYearTerm(cls, user_no, type, fine);
 			for (Class1 clsDF : list) {
 				User profName = userMapper.selectOne(clsDF.getUser_no());
 				List<Integer> days = clsMapper.selectDaysByClass(clsDF);
@@ -210,5 +228,50 @@ public class Class1Dao {
 	    }
 	    return 0;
 	}
-	
+
+	public List<Class1> selectAllClass(String type, String fine) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			UserMapper userMapper = session.getMapper(UserMapper.class);
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			List<Class1> list = clsMapper.selectAllClass(type, fine);
+			for (Class1 clsDF : list) {
+				User profName = userMapper.selectOne(clsDF.getUser_no());
+				List<Integer> days = clsMapper.selectDaysByClass(clsDF);
+				int cont_p = clsMapper.enrolledCount(clsDF);
+				clsDF.setDays(days);
+				clsDF.setProf(profName.getUser_name());
+				clsDF.setNow_p(cont_p);
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
+
+	public List<Class1> selectTimeClash(Class1 class1) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			
+			List<Class1> list = clsMapper.selectTimeClash(class1);
+			
+			for (Class1 cls : list) {
+				List<Integer> days = clsMapper.selectDaysByClass(cls);
+				int cont_p = clsMapper.enrolledCount(cls);
+				cls.setNow_p(cont_p);
+				cls.setDays(days);
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
+
 }
