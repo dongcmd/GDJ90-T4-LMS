@@ -31,6 +31,7 @@ import models.users.UserDao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
+import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
 import models.others.NotificationDao;
@@ -46,6 +47,22 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
+		// 메인_강의목록(학생/교수)_원동인
+		User login = (User) request.getSession().getAttribute("login");
+	    Calendar cal = Calendar.getInstance();
+	    int calYear = cal.get(Calendar.YEAR);
+	    int calMonth = cal.get(Calendar.MONTH) + 1;
+	    int term = (calMonth >= 3 && calMonth <= 8) ? 1 : 2;
+	    Class1 cls = new Class1();
+	    cls.setUser_no(login.getUser_no());
+	    cls.setYear(calYear);
+	    cls.setTerm(term);
+	    List<Class1> classesList_main_s = clsdao.nowClassList(cls);
+	    request.setAttribute("classesList_main_s", classesList_main_s);
+	    String userNo = login.getUser_no();
+	    List<Class1> classesList_main_p = clsdao.selectByProfessor(userNo);
+	    request.setAttribute("classesList_main_p", classesList_main_p);    
+	
 		// 캘린더
 		String yearStr = request.getParameter("year");
 		String monthStr = request.getParameter("month");
