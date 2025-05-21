@@ -47,19 +47,19 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>강의 코드</label>
-                <input type="text" name="class_no" class="form-control" value="${cls[0].class_no}" required readonly>
+                <input type="text" name="class_no" class="form-control" value="${class1.class_no}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>반</label>
-                <input type="text" name="ban" class="form-control" value="${cls[0].ban}" required readonly>
+                <input type="text" name="ban" class="form-control" value="${class1.ban}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>년도</label>
-                <input type="number" name="year" class="form-control" value="${cls[0].year}" required readonly>
+                <input type="text" name="year" class="form-control" value="${class1.year}" required readonly>
             </div>
             <div class="form-group col-md-3">
                 <label>학기</label>
-                <input name="term" class="form-control" value="${cls[0].term}" required readonly>
+                <input name="term" class="form-control" value="${class1.term}" required readonly>
             </div>
         </div>
 

@@ -10,6 +10,8 @@ public class Class1 {
 	private String ban; // 반
 	private int year; // 연도
 	private int term; // 학기
+	// 위 4개 집합이 기본 키 - 이동원
+	
 	private String major_no; // 학과코드
 	private String user_no; // 교수번호
 	private String class_name; // 강의명
@@ -25,10 +27,27 @@ public class Class1 {
 	private Date s_date; // 개강일 
 	private Date e_date; // 종강일
 	private String prof; // 교수명
-	private List<Integer> days;
-	private Map<String ,Student> students; // 소속 학생들-이동원
-	private Map<String, Assignment> assignments; // 과제-이동원
+	private List<Integer> days; // 수업 요일
+	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
+	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
 
+	public Class1() {	} // 기본 생성자
+	public Class1(String class_no, String ban, int year, int term) {
+		this.class_no = class_no;
+		this.ban = ban;
+		this.year =year;
+		this.term = term;
+	} // 키를 넣는 생성자
+	
+	@Override
+	public String toString() {
+		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
+				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
+				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
+				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", s_date="
+				+ s_date + ", e_date=" + e_date + ", prof=" + prof + ", days=" + days + ", students=" + students
+				+ ", assignments=" + assignments + "]";
+	}
 	public String getClass_no() {
 		return class_no;
 	}
@@ -171,15 +190,6 @@ public class Class1 {
 
 	public void setDays(List<Integer> days) {
 		this.days = days;
-	}
-
-	@Override
-	public String toString() {
-		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
-				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
-				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
-				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", prof=" + prof
-				+ ", days=" + days + "]";
 	}
 
 	public Map<String, Student> getStudents() {

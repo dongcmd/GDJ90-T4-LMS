@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>     
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +34,7 @@
                 <li class="list-group-item"><strong>이름:</strong> ${user.user_name}</li>
                 <li class="list-group-item"><strong>성별:</strong> ${user.gender == 1 ? "남" : "여"}</li>
                 <c:if test="${user.role == 1}">
-                    <li class="list-group-item"><strong>학년:</strong> ${user.grade}</li>
+                    <li class="list-group-item"><strong>학년:</strong> ${user.user_grade}</li>
                 </c:if>
                 <c:if test="${user.role != 3}">
                 <li class="list-group-item"><strong>학과:</strong> ${user.major_no}</li>
