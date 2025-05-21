@@ -71,9 +71,10 @@ manageassignment
 					<td style="text-align: center">${as.as_content}</td>
 					<td style="text-align: center">${as.as_point}</td>
 					<td style="text-align: center">${as.submittedCount} / ${class1.max_p}</td>
-					<td class="d-flex justify-content-center" style="gap: 10px;">
+					<td class="d-flex justify-content-center">
 						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
-						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a></td>
+						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a>
+					</td>
 				</tr>
 			</tbody>
 			</c:forEach>
@@ -85,7 +86,7 @@ manageassignment
 			<a href="#" class="btn btn-dark" role="button">파일업로드 csv</a>
 		</div>
 
-	<a href="download_asXLSX?as_no=${as_no}" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
+	<a href="download_asXLSX?as_no=${selectedAs_no}" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
 	
   <form action="upload_asCSV" method="post" enctype="multipart/form-data">
   	<input type="hidden" name="as_no" value="${as_no}">
@@ -103,14 +104,17 @@ manageassignment
 					<th style="text-align: center">제출현황</th>
 				</tr>
 			</thead>
-			
-			<%-- <c:forEach var="classesList" items="${classesList}"></c:forEach> --%>
-			<tbody> <%-- as_no 값 받아서 처리 ${param.as_no} --%>
+			<tbody>
 				<tr>
-					<td style="text-align: center">111</td>
-					<td style="text-align: center">1</td>
-					<td style="text-align: center">홍길동</td>
-					<td style="text-align: center">x</td>
+					<c:forEach var="st" items="${stList}">
+						<td style="text-align: center">${st.user_no}</td>
+						<td style="text-align: center">${st.user_grade}</td>
+						<td style="text-align: center">${st.user_name}</td>
+						<td style="text-align: center">
+							<c:if test="${as.submitted == true}">제출 완료</c:if>
+							<c:if test="${as.submitted == false}">미제출</c:if>
+						</td>
+					</c:forEach>
 				</tr>
 			</tbody>
 		</table>
