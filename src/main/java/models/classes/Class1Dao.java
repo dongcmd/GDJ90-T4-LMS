@@ -273,5 +273,19 @@ public class Class1Dao {
 		}
 		return null;
 	}
+	
+	// 강의 계획서(원동인)
+	public List<Class1> classinfoList(Class1 class1) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			Class1Mapper clsMapper = session.getMapper(Class1Mapper.class);
+			return clsMapper.classinfoList(class1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
 
 }

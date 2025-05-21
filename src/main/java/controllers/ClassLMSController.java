@@ -99,11 +99,23 @@ public class ClassLMSController extends MskimRequestMapping {
 		String hasClass = chkClass1(request);
 		if(hasClass != null) { return hasClass; } // class1 확인
 		
-		//테스트
-		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
-		Collection<Student> studentList = noClass.getStudents().values();
+		// 강의 계획서(원동인)
+		Class1 class1 = (Class1) request.getSession().getAttribute("class1");
+		class1.setClass_no(request.getParameter("class_no"));
+		class1.setBan(request.getParameter("ban"));
+		class1.setYear(Integer.parseInt(request.getParameter("year")));
+		class1.setTerm(Integer.parseInt(request.getParameter("term")));
+	
+	    List<Class1> classesList = class1Dao.classinfoList(class1);
+	    request.setAttribute("classesList", classesList);
 
 		return "classLMS/classInfo";
+	}
+	
+	@RequestMapping("classTopTable")
+	public String classTopTable(HttpServletRequest request, HttpServletResponse response) {
+		// class 상단 고정(원동인)
+		return "classLMS/classTopTable";
 	}
 	
 	// 과제관리 접근권한 설정================================================

@@ -111,4 +111,8 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
 	List<Class1> selectTimeClash(Class1 class1);
+
+	// 강의계획서(원동인)
+	@Select("SELECT class_no, ban, year, term, c_plan, file FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
+	List<Class1> classinfoList(Class1 class1);
 }

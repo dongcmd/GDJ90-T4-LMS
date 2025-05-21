@@ -114,7 +114,7 @@
 	                </thead>
 	                <c:forEach var="cls" items="${classesList_main_s}" varStatus="stat">
 						<tr class="text-center">
-							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+							<td>${cls.class_name}</td>
 							<td>${cls.classroom}</td>
 							<td>
 							<c:forEach var="d" items="${cls.days}">
@@ -143,7 +143,7 @@
 	                </thead>
 	                <c:forEach var="cls" items="${classesList_main_p}" varStatus="stat">
 						<tr class="text-center">
-							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+							<td>${cls.class_name}</td>
 							<td>${cls.classroom}</td>
 							<td>
 							<c:forEach var="d" items="${cls.days}">
