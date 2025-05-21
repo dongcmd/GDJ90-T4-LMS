@@ -11,8 +11,9 @@ public interface Class1Mapper {
 	@Select("SELECT * FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
 	Class1 selectOne(Class1 class1);
 	
-	@Select("SELECT c.* " + "FROM registered_classes rc JOIN classes c "
-			+ "ON rc.class_no = c.class_no AND rc.ban = c.ban AND rc.year = c.year AND rc.term = c.term "
+	@Select("SELECT c.* , rc.status , u.user_name AS prof " + "FROM registered_classes rc "
+			+ "JOIN classes c ON rc.class_no = c.class_no AND rc.ban = c.ban AND rc.year = c.year AND rc.term = c.term "
+			+ "JOIN users u ON u.user_no = c.user_no "
 			+ "WHERE rc.user_no = #{user_no} AND rc.year = #{year} AND rc.term = #{term}")
 	List<Class1> nowClassList(Class1 class1);
 	
@@ -46,9 +47,34 @@ public interface Class1Mapper {
 	@Delete("DELETE FROM registered_classes WHERE user_no = #{user_no} AND class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
 	int cancelClass(Class1 class1);
 	
-	@Select("SELECT * " + "FROM classes WHERE year = #{class1.year} " + "AND term = #{class1.term} " + "AND class_no " + "NOT IN (SELECT class_no "
-			+ "FROM registered_classes " + "WHERE user_no = #{user_no}) ")
-	List<Class1> selectClassesByYearTerm(@Param("class1") Class1 class1 , @Param("user_no") String user_no);
+	/*	@Select("SELECT * " + "FROM classes WHERE year = #{class1.year} " 
+				+ "AND term = #{class1.term} " 
+				+ "AND class_no "
+				+ "NOT IN (SELECT class_no "
+				+ "FROM registered_classes " 
+				+ "WHERE user_no = #{user_no}) ")*/
+	@Select(
+		  "<script>"
+		  + "SELECT c.*, u.user_name AS prof_name "
+		  + "FROM classes c "
+		  + "JOIN users u ON c.user_no = u.user_no "
+		  + "WHERE c.year = #{class1.year} "
+		  + "AND c.term = #{class1.term} "
+		  + "<if test='user_no != null and user_no != \"\"'>"
+		  + "AND c.class_no NOT IN ( "
+		  + "SELECT class_no "
+		  + "FROM registered_classes "
+		  + "WHERE user_no = #{user_no}) "
+		  + "</if>"
+		  + "<if test='type == \"class_name\"'> "
+		  + "AND c.class_name LIKE CONCAT('%', #{fine}, '%') "
+		  + "</if> "
+		  + "<if test='type == \"user_name\"'> "
+		  + "AND u.user_name LIKE CONCAT('%', #{fine}, '%') "
+		  + "</if>"
+		  + "</script>"
+		)
+	List<Class1> selectClassesByYearTerm(@Param("class1") Class1 class1 , @Param("user_no") String user_no, @Param("type") String type, @Param("fine") String fine);
 
 	@Select("SELECT COUNT(*) " + "FROM registered_classes " + "WHERE class_no = #{class_no} " + "AND ban = #{ban} " + "AND year = #{year} "
 			+ "AND term = #{term}")
@@ -61,4 +87,28 @@ public interface Class1Mapper {
 	@Select("SELECT COUNT(*) FROM registered_classes " +
 	        "WHERE user_no = #{user_no} AND year = #{year} AND term = #{term}")
 	int countRegistered(Class1 class1);
+
+	@Update("UPDATE registered_classes SET status = 1 WHERE user_no = #{user_no} AND class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
+	int confirmClass(Class1 cls);
+	
+	@Select(
+		"<script>"
+	    + "SELECT c.*, u.user_name AS prof_name "
+	    + "FROM classes c "
+	    + "JOIN users u ON c.user_no = u.user_no"
+	    + "<where>"
+		+ "<if test='type == \"class_name\"'> "
+		+ "c.class_name LIKE CONCAT('%', #{fine}, '%') "
+		+ "</if> "
+		+ "<if test='type == \"user_name\"'> "
+		+ "u.user_name LIKE CONCAT('%', #{fine}, '%') "
+		+ "</if>"
+		+ "</where>"
+	    + "</script>"
+	)
+	List<Class1> selectAllClass(@Param("type") String type, @Param("fine") String fine);
+	
+	
+	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
+	List<Class1> selectTimeClash(Class1 class1);
 }

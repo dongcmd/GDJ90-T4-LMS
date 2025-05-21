@@ -20,6 +20,8 @@
 	    .main_list .list-group a{color:#333;}
     </style>
 </head>
+<%!private static String[] s_period = { "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00" };
+	private static String[] e_period = { "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" };%>
 <body>
 	<div class="row" style="justify-content: center; gap: 10px;">
 	    <div class="main_list col-sm-5 px-4 py-5">
@@ -96,85 +98,94 @@
 		        </tbody>
 		    </table>
         </div>
-
-        <div class="main_list col-sm-5 px-4 py-5">
-            <h3 class="mb-4 fw_b">강의목록</h3>
-            <table class="table">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="fw_b">과목명</th>
-                        <th class="fw_b">강의실</th>
-                        <th class="fw_b">이름</th>
-                        <th class="fw_b">강사명</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   <%-- <c:forEach var="m" items="${list}"> --%>
-                        <tr>
-	                        <td>자바스크립트</td>
-	                        <td>101호</td>
-	                        <td>1교시</td>
-	                        <td>홍길동</td>
-                        </tr>
-                        <tr>
-	                        <td>자바스크립트</td>
-	                        <td>101호</td>
-	                        <td>1교시</td>
-	                        <td>홍길동</td>
-                        </tr>
-                        <tr>
-	                        <td>자바스크립트</td>
-	                        <td>101호</td>
-	                        <td>1교시</td>
-	                        <td>홍길동</td>
-                        </tr>
-                        <tr>
-	                        <td>자바스크립트</td>
-	                        <td>101호</td>
-	                        <td>1교시</td>
-	                        <td>홍길동</td>
-                        </tr>
-                    <%-- </c:forEach> --%>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="main_list col-sm-5 px-4 py-5">
-            <h3 class="mb-4 fw_b">과제목록</h3>
-            <table class="table">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="fw_b">강의명</th>
-                        <th class="fw_b">과제명</th>
-                        <th class="fw_b">기한</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   <%-- <c:forEach var="m" items="${list}"> --%>
-                        <tr>
-	                        <td>AJAX</td>
-	                        <td>비동기 통신의 개념과 동작 방식 설명</td>
-	                        <td>25.05.17 ~ 25.05.22</td>
-                        </tr>
-                        <tr>
-	                        <td>DOM</td>
-	                        <td>HTML 요소를 자바스크립트로 추가/삭제/변경</td>
-	                        <td>25.05.17 ~ 25.05.22</td>
-                        </tr>
-                        <tr>
-	                        <td>Event listener</td>
-	                        <td>버튼 클릭, 마우스 이동 등의 이벤트 핸들링</td>
-	                        <td>25.05.17 ~ 25.05.22</td>
-                        </tr>
-                        <tr>
-	                        <td>Fetch API</td>
-	                        <td>REST API와 비동기 요청 실습</td>
-	                        <td>25.05.17 ~ 25.05.22</td>
-                        </tr>
-                    <%-- </c:forEach> --%>
-                </tbody>
-            </table>
-        </div>
+		<c:if test="${login.role != 3}">
+	        <div class="main_list col-sm-5 px-4 py-5">
+	            <h3 class="mb-4 fw_b">강의목록</h3>
+	            <table class="table">
+	                <!-- 메인 강의목록(학생)  -->
+	                <c:if test="${login.role == 1}">
+	                <thead class="thead-light">
+	                    <tr>
+							<th class="text-center">강의명</th>
+							<th class="text-center">강의실</th>
+							<th class="text-center">강의시간</th>
+							<th class="text-center">교수명</th>
+	                    </tr>
+	                </thead>
+	                <c:forEach var="cls" items="${classesList_main_s}" varStatus="stat">
+						<tr class="text-center">
+							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+							<td>${cls.classroom}</td>
+							<td>
+							<c:forEach var="d" items="${cls.days}">
+								<c:choose>
+									<c:when test="${d == 0}">월 </c:when>
+									<c:when test="${d == 1}">화 </c:when>
+									<c:when test="${d == 2}">수 </c:when>
+									<c:when test="${d == 3}">목 </c:when>
+									<c:when test="${d == 4}">금 </c:when>
+								</c:choose>
+							</c:forEach>&nbsp;
+							<%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%>
+							</td>
+							<td>${cls.prof}</td>
+						</tr>
+					</c:forEach>
+					</c:if>				
+					<!-- 메인 강의목록(교수)  -->
+	                <c:if test="${login.role == 2}">
+	                <thead class="thead-light">
+	                    <tr>
+							<th class="text-center">강의명</th>
+							<th class="text-center">강의실</th>
+							<th class="text-center">강의시간</th>			
+	                    </tr>
+	                </thead>
+	                <c:forEach var="cls" items="${classesList_main_p}" varStatus="stat">
+						<tr class="text-center">
+							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+							<td>${cls.classroom}</td>
+							<td>
+							<c:forEach var="d" items="${cls.days}">
+								<c:choose>
+									<c:when test="${d == 0}">월 </c:when>
+									<c:when test="${d == 1}">화 </c:when>
+									<c:when test="${d == 2}">수 </c:when>
+									<c:when test="${d == 3}">목 </c:when>
+									<c:when test="${d == 4}">금 </c:when>
+								</c:choose>
+							</c:forEach>&nbsp;
+							<%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%>
+							</td>
+						</tr>
+					</c:forEach>
+					</c:if>
+	            </table>
+	        </div>
+	        <div class="main_list col-sm-5 px-4 py-5">
+	            <h3 class="mb-4 fw_b">과제목록</h3>
+	            <table class="table">
+	                <thead class="thead-light">
+	                    <tr>
+	                        <th class="fw_b text-center">과제명</th>
+	                        <th class="fw_b text-center">기한</th>
+	                    	<th class="fw_b text-center">제출 여부</th>
+	                    </tr>
+	                </thead>
+	                
+	               	<%-- <c:forEach var="aslist" items="${asList}">
+					<tbody>
+						<tr>
+							<td style="text-align: center">${aslist.as_no}</td>
+							<td><a href="submitassignment?as_no=${aslist.as_no}" style="text-align: center">${aslist.as_name}</a></td>
+							<td> ~ <fmt:formatDate value="${aslist.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </td>
+							<td style="text-align: center">제출/미제출</td>
+						</tr>
+					</tbody>
+					</c:forEach> --%>
+	            </table>
+	        </div>
+        </c:if>
     </div>
     
     <script>
