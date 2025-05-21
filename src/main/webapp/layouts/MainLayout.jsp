@@ -20,7 +20,7 @@
   	<style>
   		@font-face {font-family: 'GmarketSansMedium'; src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal;}
 		*{margin: 0; padding: 0; font-family: 'GmarketSansMedium'; font-weight:500; letter-spacing: -0.05rem; font-size: 16px; color: #333; box-sizing:border-box;}
-    	a{display: block; color: #333 !important;}
+    	a{display: block; color: #333;}
     	img{display: block; max-width: 100%; margin: 0 auto;}
     	.table td, .table th{vertical-align:middle !important;}
     	.table tr td{white-space: nowrap;overflow: hidden; text-overflow: ellipsis; max-width: 200px;}
@@ -146,7 +146,7 @@
 		        	<c:if test="${empty login.major_no}">
 		                <li class="nav-item">
 			            	<a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
-			                <a href="../board/board?board_id=2000">전기공학과 게시판</a>
+			                <a href="../board/board?board_id=2000">기계공학과 게시판</a>
 			                <a href="../board/board?board_id=3000">건축공학과 게시판</a>
 		                </li>
 		            </c:if>

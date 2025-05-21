@@ -46,40 +46,48 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
-		List<Event> event_main = eventDao.eventList();
-		request.setAttribute("event_main", event_main);
-		LocalDate now = LocalDate.now();
-		int year = now.getYear();
-		int month = now.getMonthValue(); // 1~12
-		
+		// 캘린더
+		String yearStr = request.getParameter("year");
+		String monthStr = request.getParameter("month");
+		int year, month;
+		if (yearStr != null && monthStr != null) {
+		    year = Integer.parseInt(yearStr);
+		    month = Integer.parseInt(monthStr);
+		} else {
+		    LocalDate now = LocalDate.now();
+		    year = now.getYear();
+		    month = now.getMonthValue();
+		}
 		LocalDate firstDay = LocalDate.of(year, month, 1);
-		int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // 일요일=0
+		int startDayOfWeek = firstDay.getDayOfWeek().getValue() % 7;
 		int lastDate = firstDay.lengthOfMonth();
-	
-		// 달력 칸을 맞추기 위해 6주(6x7=42칸) 배열 생성
+
+		List<Event> event_main = eventDao.eventList();
+
+		// 달력 셀 생성 (6주:42칸)
 		List<Map<String, Object>> calendarCells = new ArrayList<>();
 		for (int i = 0; i < 42; i++) {
-	    Map<String, Object> cell = new HashMap<>();
-	    int dateNum = i - startDayOfWeek + 1;
-	    if (dateNum > 0 && dateNum <= lastDate) {
-		LocalDate currentDate = LocalDate.of(year, month, dateNum);
-		cell.put("date", dateNum);
-		cell.put("fullDate", currentDate.toString()); // "yyyy-MM-dd"
-		
-		// 일정 있는 날짜 선택
-		List<Event> dayEvents = new ArrayList<>();
-		for (Event event : event_main ) {
-		LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
-		dayEvents.add(event);
-		}
-		}
-		cell.put("events", dayEvents);
-		} else {
-		cell.put("date", null); // 빈칸
-		}
-		calendarCells.add(cell);
+		    Map<String, Object> cell = new HashMap<>();
+		    int dateNum = i - startDayOfWeek + 1;
+
+		    if (dateNum > 0 && dateNum <= lastDate) {
+		        LocalDate currentDate = LocalDate.of(year, month, dateNum);
+		        cell.put("date", dateNum);
+		        cell.put("fullDate", currentDate.toString());
+		        // 해당 날짜에 포함되는 이벤트 필터링
+		        List<Event> dayEvents = new ArrayList<>();
+		        for (Event event : event_main) {
+		            LocalDate start = event.getEven_s_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            LocalDate end = event.getEven_e_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            if (!currentDate.isBefore(start) && !currentDate.isAfter(end)) {
+		                dayEvents.add(event);
+		            }
+		        }
+		        cell.put("events", dayEvents);
+		    } else {
+		        cell.put("date", null); // 빈칸
+		    }
+		    calendarCells.add(cell);
 		}
 		request.setAttribute("year", year);
 		request.setAttribute("month", month);

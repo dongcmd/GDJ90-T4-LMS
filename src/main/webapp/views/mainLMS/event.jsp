@@ -37,6 +37,7 @@
 		<table class="table">
 			<thead class="thead-light">
 				<tr>
+		        	<th class="fw_b text-center">N0</th>
 		        	<th class="fw_b text-center">제목</th>
 		        	<th class="fw_b text-center">시작일</th>
 		        	<th class="fw_b text-center">종료일</th>
@@ -45,8 +46,9 @@
 		    	</tr>
 			</thead>
 
-		    <c:forEach var="e" items="${eventList}">
+		    <c:forEach var="e" items="${eventList}" varStatus="status">
 		        <tr>
+		            <td class="text-center">${status.index + 1}</td>
 		            <td class="text-center">${e.event_name}</td>
 		            <td class="text-center"><fmt:formatDate value="${e.even_s_date}" pattern="yyyy-MM-dd" /></td>
 		            <td class="text-center"><fmt:formatDate value="${e.even_e_date}" pattern="yyyy-MM-dd" /></td>

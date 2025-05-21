@@ -17,6 +17,7 @@
 	    .main_list{min-width:600px; height: 400px; background-color: #fff; border:1px solid #eee; border-radius: 10px;}
 	    .main_list .list-group-item{border: none; border-bottom: 1px solid #eee;}
 	    .main_list .list-group-item:last-child{border: none;}
+	    .main_list .list-group a{color:#333;}
     </style>
 </head>
 <body>
@@ -60,38 +61,40 @@
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
             	</c:if>
             </h3>
-            <h2>${year}년 ${month}월</h2>			
+            <form id="calendarForm" method="post" action="main">
+			    <input type="hidden" name="year" id="year" value="${year}">
+			    <input type="hidden" name="month" id="month" value="${month}">
+			</form>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+		        <button type="button" class="btn btn-outline-secondary" onclick="changeMonth(-1)">이전달</button>
+		        <h2>${year}년 ${month}월</h2>
+		        <button type="button" class="btn btn-outline-secondary" onclick="changeMonth(1)">다음달</button>
+    		</div>	
 			<table class="table">
-			    <thead>
-			        <tr>
-			            <th>일</th>
-			            <th>월</th>
-			            <th>화</th>
-			            <th>수</th>
-			            <th>목</th>
-			            <th>금</th>
-			            <th>토</th>
-			        </tr>
-			    </thead>
-			    <tbody>
-			        <c:forEach var="cell" items="${calendarCells}" varStatus="status">
-			            <c:if test="${status.index % 7 == 0}">
-			                <tr>
-			            </c:if>
-			            <td>
-			                <c:if test="${cell.date != null}">
-			                    <div>${cell.date}</div>
-			                    <c:forEach var="event" items="${cell.events}">
-			                        <div>${event.event_name}</div>
-			                    </c:forEach>
-			                </c:if>
-			            </td>
-			            <c:if test="${status.index % 7 == 6}">
-			                </tr>
-			            </c:if>
-			        </c:forEach>
-			    </tbody>
-			</table>
+		        <thead>
+		            <tr>
+		                <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <c:forEach var="cell" items="${calendarCells}" varStatus="status">
+		                <c:if test="${status.index % 7 == 0}">
+		                    <tr>
+		                </c:if>
+		                <td>
+		                    <c:if test="${cell.date != null}">
+		                        <div><strong>${cell.date}</strong></div>
+		                        <c:forEach var="event" items="${cell.events}">
+		                            <div>${event.event_name}</div>
+		                        </c:forEach>
+		                    </c:if>
+		                </td>
+		                <c:if test="${status.index % 7 == 6}">
+		                    </tr>
+		                </c:if>
+		            </c:forEach>
+		        </tbody>
+		    </table>
         </div>
 
         <div class="main_list col-sm-5 px-4 py-5">
@@ -173,5 +176,20 @@
             </table>
         </div>
     </div>
+    
+    <script>
+    	// year, month 값 계산
+		function changeMonth(offset) {
+		    let year = +document.getElementById("year").value;
+		    let month = +document.getElementById("month").value + offset;
+		
+		    if (month < 1) { month = 12; year--; }
+		    else if (month > 12) { month = 1; year++; }
+		
+		    document.getElementById("year").value = year;
+		    document.getElementById("month").value = month;
+		    document.getElementById("calendarForm").submit();
+		}
+	</script>
 </body>
 </html>
