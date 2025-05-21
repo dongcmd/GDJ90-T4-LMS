@@ -9,7 +9,7 @@
 <title>님 학점조회</title>
 </head>
 <body>
-<h2>님 학점조회</h2>
+<h2>${login.user_name} 님 학점조회</h2>
 <%-- 
 <c:if test="${regList == null}"><h3 align="center">아직 새내기군요!</h3></c:if>
 <c:if test="${regList != null}">
@@ -36,7 +36,7 @@
 	<c:forEach var="regc" items="${regList}">
 	<tr><td>${i}</td><c:set var="i" value="${i+1}" /><td>${regc.year}-${regc.term}</td>
 			<td>${regc.class_no}-${regc.ban}</td><td>${regc.class_name}</td>
-			<td>${regc.prof}</td><td>${regc.}</td><td>${regc.mark}</td>
+			<td>${regc.prof}</td><%-- <td>${regc.}</td> --%><td>${regc.mark}</td>
 	</tr>
 	</c:forEach>
 </thead>
