@@ -157,11 +157,21 @@
 			                <a href="../board/board?board_id=3000">건축공학과 게시판</a>
 		                </li>
 		            </c:if>
-	                <c:if test="${!empty login.major_no}">
-		                <li>
-		                    <a href="../board/board?board_id=${login.major_no}">학과 게시판</a>
-	                  	</li>
-                  	</c:if>
+                <c:if test="${!empty login.major_no}">
+	                <li>
+	                    <a href="../board/board?board_id=${login.major_no}">
+		                    <c:if test="${login.major_no == 1000 }">
+				            			컴퓨터공학과
+				            		</c:if>
+				            		<c:if test="${login.major_no == 2000 }">
+				            			기계공학과
+				            		</c:if>
+				            		<c:if test="${login.major_no == 3000 }">
+				            			건축공학과
+				            		</c:if>
+	                    게시판</a>
+                  	</li>
+                 	</c:if>
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
 		                    <a href="../deptLMS/classList">수강 조회</a>

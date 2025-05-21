@@ -58,5 +58,8 @@ public interface AsMapper {
 	@Select("select * from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
 	List<Assignment> selectAsByClass(Class1 loginclass);
 
+	@Select("select user_no from registered_classes where class_no=#{value}")
+	List<String> selectReg_Std(String class_no);
+
 	
 }

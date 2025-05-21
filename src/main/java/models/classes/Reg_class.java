@@ -1,8 +1,7 @@
 package models.classes;
 
 public class Reg_class {
-// registered_classes
-	
+
 	private String user_no;
     private String class_no;
     private String ban;

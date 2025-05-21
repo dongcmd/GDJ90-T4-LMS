@@ -127,6 +127,17 @@ public class AsDao {
 		 }
 		 return null;
 	}
+	public List<String> selectReg_Std(String class_no) {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectReg_Std(class_no);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
 	
 
 

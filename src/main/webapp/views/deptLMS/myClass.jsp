@@ -31,7 +31,7 @@
 			<tr class="text-center">
 				<td>${stat.index + 1}</td>
 				<td>${cls.class_no}</td>
-				<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+				<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" target="_blank;"> ${cls.class_name}</a></td>
 				<td>${login.user_name}</td>
 				<td>${cls.class_grade}</td>
 				<td>${cls.credit}</td>
