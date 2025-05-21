@@ -213,7 +213,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		User login = (User) request.getSession().getAttribute("login");
 		Class1 key = new Class1();
 		key.setUser_no(login.getUser_no());
-		key.setClass_no(request.getParameter("no"));
+		key.setClass_no(request.getParameter("class_no"));
 		key.setBan(request.getParameter("ban"));
 		key.setYear(Integer.parseInt(request.getParameter("year")));
 		key.setTerm(Integer.parseInt(request.getParameter("term")));

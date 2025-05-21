@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,10 +68,9 @@ public class ClassLMSController extends MskimRequestMapping {
 				subAsMap.put(st.getUser_no(), subAsDao.selectOne(st.getUser_no(), as.getAs_no()));
 			}
 			as.setSub_as(subAsMap);
-			asMap.put(as.getAs_no()+"", as); 
+			asMap.put(as.getAs_no()+"", as);
 		}
 		class1.setAssignments(asMap); // 클래스에 각 과제 넣기
-		
 		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 		return null;
 	}
@@ -133,7 +133,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		// 여기 부분은 추후에 수정해야할듯!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		Class1Dao C1Dao = new Class1Dao();
 		List<Class1> cls = C1Dao.selectByProfessor(login.getUser_no());
-		System.out.println(cls);
 		request.setAttribute("cls", cls);
 		return null; // 정상인 경우
 	}
@@ -184,7 +183,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			return "alert";
 		}
 		int as_no = Integer.parseInt(request.getParameter("as_no"));
-		System.out.println(as_no);
 		Assignment as1 = asDao.selectOne(as_no);
 		//시작날짜, 끝나는 날짜는 따로 저장
 		LocalDateTime as_s_date = as1.getAs_s_date().toInstant()
@@ -289,7 +287,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		class1.setYear(2025);
 		class1.setTerm(1);
 		List<Assignment> asList = asDao.list(class1);
-		System.out.println(asList);
 		request.setAttribute("asList", asList);
 		return "classLMS/submitAs";
 	}
@@ -318,7 +315,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		} catch(IOException e) { e.printStackTrace(); }
 		String asNo = multi.getParameter("as_no");
 		String fileName = multi.getOriginalFileName("file");
-		Submitted_Assignments as = new Submitted_Assignments();
+		Sub_as as = new Sub_as();
 		as.setAs_no(Integer.parseInt(asNo));
 		as.setFile(fileName);
 		as.setUser_no(login.getUser_no());
@@ -336,9 +333,12 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("manageScore")
 	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
-		if(profCheck != null) { return profCheck; }
-		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
-		Collection<Student> studentList = noClass.getStudents().values();
+		if(profCheck != null) { return profCheck; } // 교수 확인
+		
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		List<Student> studentList = new ArrayList<>(class1.getStudents().values());
+		studentList.sort((s1, s2) -> s1.getUser_no().compareTo(s2.getUser_no()));
+		// 학번을 오름차순으로 정렬
 		request.setAttribute("reg_users", studentList);
 		return "classLMS/manageScore";
 	}
