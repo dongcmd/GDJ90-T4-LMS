@@ -3,10 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%-- 원동인 --%>
-<%-- 이동원
-기존 파일명
-assignmentList
- --%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -67,7 +63,7 @@ assignmentList
 					</td>
 					<td>
 						<div class="d-flex justify-content-center">
-							<a href="../files/${sub_as.file}" class="btn btn-dark" role="button" style="text-align: center" download>다운로드</a>
+							<a href="../files/${sub_as.file}" class="btn btn-dark" role="button" style="text-align: center">다운로드</a>
 						</div>
 					</td>
 				</tr>

@@ -18,8 +18,7 @@ public class AsDao {
 	 public boolean insert(Assignment as) {
 		 SqlSession conn = MyBatisConnection.getConnection();
 		 try {
-			 if(conn.getMapper(cls).insert(as) > 0) return true;
-			 else return false;
+			 return conn.getMapper(cls).insert(as) > 0;
 		 } catch(Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -106,8 +105,7 @@ public class AsDao {
 	public boolean updateAs(Sub_as as) {
 		 SqlSession conn = MyBatisConnection.getConnection();
 		 try {
-			 if(conn.getMapper(cls).updateAs(as) > 0) return true;
-			 else return false;
+			 return conn.getMapper(cls).updateAs(as) > 0;
 		 } catch(Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -116,10 +114,10 @@ public class AsDao {
 		 return false;	
 	}
 	// 해당 수업의 모든 과제 리스트 =============================
-	public List<Assignment> selectAsbyClass(Class1 loginclass) {
+	public List<Assignment> selectList(Class1 class1) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
-			 return session.getMapper(cls).selectAsByClass(loginclass);
+			 return session.getMapper(cls).selectList(class1);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
