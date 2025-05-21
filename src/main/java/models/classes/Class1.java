@@ -27,7 +27,9 @@ public class Class1 {
 	private Date s_date; // 개강일 
 	private Date e_date; // 종강일
 	private String prof; // 교수명
+
 	private int status;
+
 	private List<Integer> days; // 수업 요일
 	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
 	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
@@ -40,7 +42,6 @@ public class Class1 {
 		this.term = term;
 	} // 키를 넣는 생성자
 	
-
 	@Override
 	public String toString() {
 		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no=" + major_no + ", user_no="

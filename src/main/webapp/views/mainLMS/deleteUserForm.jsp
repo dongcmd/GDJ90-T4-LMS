@@ -41,10 +41,10 @@
             </li>
             <li class="list-group-item"><strong>학년:</strong>
                 <c:choose>
-                    <c:when test="${user.grade == 1}">1학년</c:when>
-                    <c:when test="${user.grade == 2}">2학년</c:when>
-                    <c:when test="${user.grade == 3}">3학년</c:when>
-                    <c:when test="${user.grade == 4}">4학년</c:when>
+                    <c:when test="${user.user_grade == 1}">1학년</c:when>
+                    <c:when test="${user.user_grade == 2}">2학년</c:when>
+                    <c:when test="${user.user_grade == 3}">3학년</c:when>
+                    <c:when test="${user.user_grade == 4}">4학년</c:when>
                     <c:otherwise>-</c:otherwise>
                 </c:choose>
             </li>

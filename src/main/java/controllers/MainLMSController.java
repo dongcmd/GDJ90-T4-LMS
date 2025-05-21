@@ -47,6 +47,7 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
+
 		// 메인_강의목록(학생/교수)_원동인
 		User login = (User) request.getSession().getAttribute("login");
 	    Calendar cal = Calendar.getInstance();
@@ -63,6 +64,7 @@ public class MainLMSController extends MskimRequestMapping {
 	    List<Class1> classesList_main_p = clsdao.selectByProfessor(userNo);
 	    request.setAttribute("classesList_main_p", classesList_main_p);    
 	
+
 		// 캘린더
 		String yearStr = request.getParameter("year");
 		String monthStr = request.getParameter("month");
@@ -140,7 +142,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setRole(request.getParameter("role"));
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setMajor_no(request.getParameter("major_no"));
-		String grade = request.getParameter("grade");
+		String grade = request.getParameter("user_grade");
 		user.setUser_grade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
 		user.setEmail(request.getParameter("email"));
 		user.setTel(request.getParameter("tel"));
@@ -174,7 +176,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setTel(request.getParameter("tel"));
 		user.setEmail(request.getParameter("email"));
-		user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
+		user.setUser_grade(Integer.parseInt(request.getParameter("user_grade")));
 		user.setMajor_no(request.getParameter("major_no"));
 		user.setPassword(request.getParameter("password"));
 		// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
@@ -196,8 +198,7 @@ public class MainLMSController extends MskimRequestMapping {
 	}
 
 	//사용자 삭제폼(관리자 권한) ========================================================
-	
-	@MSLogin("loginAdminCheck")
+	@RequestMapping("deleteUserForm")
 	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {
 		UserDao dao = new UserDao();
 		String user_no = request.getParameter("user_no");

@@ -47,7 +47,7 @@
 						</c:choose>
 					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
 				<td>${cls.classroom}</td>
-				<td>${cls.now_p}/${cls.max_p}</td>
+				<td>${cls.now_p}/${cls.max_p}</td>=
 				<td>
 					<c:if test="${cls.status == 0}">
 						<a href="confirmClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 확정 하시겠습니까?');">확정</a>

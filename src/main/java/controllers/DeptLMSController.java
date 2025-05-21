@@ -33,6 +33,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		if(profCheck != null) { return profCheck; }
 		return "deptLMS/addClass";
 	}
+
 	@RequestMapping("addClassList")
 	public String addClassList(HttpServletRequest request, HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
@@ -44,6 +45,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		return "deptLMS/addClassList";
 	}
 	
+
 	// 강의 추가 기능 - 교수
 	@RequestMapping("addClass1")
 	public String addClass1(HttpServletRequest request, HttpServletResponse response) {
@@ -71,6 +73,7 @@ public class DeptLMSController extends MskimRequestMapping {
 
 		cls.setYear(year);
 		cls.setTerm(term);
+
 		cls.setClass_name(multi.getParameter("className"));
 		cls.setClass_no(multi.getParameter("classNo"));
 		cls.setBan(multi.getParameter("classBan"));
@@ -92,7 +95,6 @@ public class DeptLMSController extends MskimRequestMapping {
 			cls.setDays(days);
 			System.out.println("days" + days);
 		}
-		
 		System.out.println(timeCheck(cls, request, response));
 		if(timeCheck(cls, request, response)) return "alert";
 		
@@ -179,7 +181,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		cls.setMajor_no(login.getMajor_no());
 		cls.setUser_no(login.getUser_no());
-		
+
 		cls.setClass_name(multi.getParameter("className"));
 		cls.setClass_no(multi.getParameter("classNo"));
 		cls.setBan(multi.getParameter("classBan"));
