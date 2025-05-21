@@ -14,10 +14,12 @@ public class SubAsDao {
 	private Class<SubAsMapper> cls = SubAsMapper.class;
 	private Map<String, Object> map = new HashMap<>();
 	private int i;
+	
 	public int insertScores(int as_no, Map<Student, Integer> scores) {
 		i = 0;
 		SqlSession conn = MyBatisConnection.getConnection();
 		 try {
+			 map.clear();
 			 map.put("as_no", as_no);
 			 scores.forEach((st, sc) -> {
 				 map.put("user_no", st.getUser_no());
@@ -31,16 +33,25 @@ public class SubAsDao {
 		 }
 		 return i;
 	}
-	public List<SubmittedStudent> submittedStudents(int as_no) {
+	public List<Sub_as> list(int as_no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
-			List<SubmittedStudent> result = session.getMapper(cls).submittedStudents(as_no);
-			for(SubmittedStudent ss : result) {
-				if(ss.getAs_file() == null || ss.getAs_file().trim().equals("")) {
-					ss.setSubmitted(false);
-				} else { ss.setSubmitted(true); } 
-			}
-			return result;
+			return session.getMapper(cls).list(as_no);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return null;
+	}
+	
+	public Sub_as selectOne(String user_no, int as_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			map.clear();
+			map.put("user_no", user_no);
+			map.put("as_no", as_no);
+			return session.getMapper(cls).selectOne(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

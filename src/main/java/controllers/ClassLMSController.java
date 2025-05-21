@@ -28,8 +28,7 @@ import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.classes.SubAsDao;
-import models.classes.SubmittedStudent;
-import models.classes.Submitted_Assignments;
+import models.classes.Sub_as;
 import models.users.User;
 import models.users.UserDao;
 
@@ -60,6 +59,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		List<Student> stList = rcDao.studentList(class1);
 		Map<String, Student> stMap = new TreeMap<>();
 		for(Student st : stList) { stMap.put(st.getUser_no(), st); }
+<<<<<<< HEAD
 		class1.setStudents(stMap); // 소속 학생
 		List<Assignment> asList = asDao.list(class1);
 		Map<String, Assignment> asMap = new TreeMap<>();
@@ -67,6 +67,21 @@ public class ClassLMSController extends MskimRequestMapping {
 			as.setScores(asDao.scores(as, class1));
 			asMap.put(as.getAs_no()+"", as); }
 		class1.setAssignments(asMap); // 속한 과제
+=======
+		class1.setStudents(stMap); // 클래스에 소속 학생 넣기
+		List<Assignment> asList = asDao.list(class1); 
+		Map<String, Assignment> asMap = new HashMap<>(); // class1의 과제 목록
+		for(Assignment as : asList) { // 과제에 각 제출한 과제 넣기
+			Map<String, Sub_as> subAsMap = new HashMap<>();
+			for(Student st : stList) { // 제출한 과제 목록에 각 학생 넣기
+				subAsMap.put(st.getUser_no(), subAsDao.selectOne(st.getUser_no(), as.getAs_no()));
+			}
+			as.setSub_as(subAsMap);
+			asMap.put(as.getAs_no()+"", as); 
+		}
+		class1.setAssignments(asMap); // 클래스에 각 과제 넣기
+		
+>>>>>>> main
 		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 		return null;
 	}
@@ -111,12 +126,13 @@ public class ClassLMSController extends MskimRequestMapping {
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		List<Assignment> asList = asDao.list(class1);
-		int as_no = Integer.parseInt(request.getParameter("as_no"));
-		
-		List<SubmittedStudent> stList = subAsDao.submittedStudents(as_no);
+		if(request.getParameter("as_no") != null) {
+			int as_no = Integer.parseInt(request.getParameter("as_no"));
+			List<Sub_as> subAsList = subAsDao.list(as_no);
+			request.setAttribute("selectedAs_no", as_no);
+			request.setAttribute("subAsList", subAsList);
+		}
 		request.setAttribute("asList", asList);
-		request.setAttribute("selectedAs_no", as_no);
-		request.setAttribute("stList", stList);
 		return "classLMS/manageAs"; // 정상인 경우
 	}
 	// 과제 추가 접근권한 설정============================================================

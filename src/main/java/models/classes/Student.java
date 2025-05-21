@@ -3,7 +3,7 @@ package models.classes;
 public class Student {
 	private String user_no;
 	private String user_name;
-	private int USER_GRADE;
+	private int user_grade;
 	private int exam1_score; // 중간 점수
 	private int exam2_score; // 기말 점수
 	private int as_tot_score; // 과제 점수
@@ -23,14 +23,6 @@ public class Student {
 
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
-	}
-
-	public int getUSER_GRADE() {
-		return USER_GRADE;
-	}
-
-	public void setUSER_GRADE(int uSER_GRADE) {
-		USER_GRADE = uSER_GRADE;
 	}
 
 	public int getExam1_score() {
@@ -78,10 +70,20 @@ public class Student {
 	    return user_no.hashCode();
 	}
 
+<<<<<<< HEAD
 	@Override
 	public String toString() {
 		return "Student [user_no=" + user_no + ", user_name=" + user_name + ", USER_GRADE=" + USER_GRADE + ", exam1_score=" + exam1_score
 				+ ", exam2_score=" + exam2_score + ", as_tot_score=" + as_tot_score + ", att_score=" + att_score + "]";
 	}
 	
+=======
+	public int getUser_grade() {
+		return user_grade;
+	}
+
+	public void setUser_grade(int user_grade) {
+		this.user_grade = user_grade;
+	}
+>>>>>>> main
 }
