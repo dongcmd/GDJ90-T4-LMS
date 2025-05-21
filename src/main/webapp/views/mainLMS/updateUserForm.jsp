@@ -32,7 +32,6 @@
             <select name="role" class="form-control" required>
                 <option value="1" ${user.role == 1 ? 'selected' : ''}>학생</option>
                 <option value="2" ${user.role == 2 ? 'selected' : ''}>교수</option>
-                <option value="3" ${user.role == 3 ? 'selected' : ''}>관리자</option>
             </select>
         </div>
 

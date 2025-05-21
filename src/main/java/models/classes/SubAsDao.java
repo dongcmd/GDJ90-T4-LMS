@@ -15,14 +15,14 @@ public class SubAsDao {
 	private Map<String, Object> map = new HashMap<>();
 	private int i;
 	
-	public int insertScores(int as_no, Map<Student, Integer> scores) {
-		i = 0;
+	public int insertScores(int as_no, Map<String, Integer> scores) {
+		i = 0; 						// 학번, 점수
 		SqlSession conn = MyBatisConnection.getConnection();
+		map.clear();
 		 try {
-			 map.clear();
 			 map.put("as_no", as_no);
-			 scores.forEach((st, sc) -> {
-				 map.put("user_no", st.getUser_no());
+			 scores.forEach((user_no, sc) -> {
+				 map.put("user_no", user_no);
 				 map.put("as_score", sc);
 				 if(conn.getMapper(cls).insertScore(map) == 1) { i++; }
 			 });

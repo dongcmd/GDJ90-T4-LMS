@@ -82,17 +82,18 @@ manageassignment
 		
 		<div class="m-5 d-flex justify-content-end" style="gap: 10px;">
 			<a href="#" class="btn btn-dark" role="button">과제 다운로드</a>
-			<a href="#" class="btn btn-dark" role="button">파일2 다운로드 csv</a>
-			<a href="#" class="btn btn-dark" role="button">파일업로드 csv</a>
 		</div>
 
-	<a href="download_asXLSX?as_no=${selectedAs_no}" class="btn btn-dark" role="button">양식 다운로드 xlsx</a>
-	
-  <form action="upload_asCSV" method="post" enctype="multipart/form-data">
-  	<input type="hidden" name="as_no" value="${as_no}">
-  	<input type="file" name="file" accept=".csv" />
-  	<button type="submit">csv 업로드</button>
-	</form>
+
+	<c:if test="${!empty selectedAs_no}">
+		<a href="download_asXLSX?as_no=${selectedAs_no}" class="btn btn-dark" role="button">
+		양식 다운로드 xlsx</a>
+	  <form action="upload_asCSV" method="post" enctype="multipart/form-data">
+	  	<input type="hidden" name="as_no" value="${selectedAs_no}">
+	  	<input type="file" name="file" accept=".csv" />
+	  	<button type="submit">${selectedAs_no} | csv 업로드</button>
+		</form>
+	</c:if>
 
 
 		<table class="table table-bordered"> 

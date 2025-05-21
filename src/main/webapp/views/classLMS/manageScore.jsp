@@ -16,9 +16,9 @@
 				<th>학번</th>
 				<th>학년</th>
 				<th>이름</th>
-				<th>과제총점(20)</th>
 				<th>중간고사(30)</th>
 				<th>기말고사(40)</th>
+				<th>과제총점(20)</th>
 				<th>출석(10)</th>
 				<th>총점(100)</th>
 				<th>학점</th>
@@ -30,11 +30,11 @@
 			<tr>
 				<td>${stat.index + 1}</td>
 				<td>${ru.user_no}</td>
-				<td>${ru.USER_GRADE}</td>
+				<td>${ru.user_grade}</td>
 				<td>${ru.user_name}</td>
-				<td>${ru.as_tot_score}</td>
 				<td>${ru.exam1_score}</td>
 				<td>${ru.exam2_score}</td>
+				<td>${ru.as_tot_score}</td>
 				<td>${ru.att_score}</td>
 				<c:set var="tot_score" value="${ru.as_tot_score + ru.exam1_score + ru.exam2_score + ru.att_score}" />
 				<td>${tot_score}</td>
@@ -53,10 +53,9 @@
 		</c:forEach>
 	</table>
 	<div style="display: flex; justify-content: flex-end; gap: 10px;">
-		<form action="downloadXlsx" method="get">
-			<button class="btn btn-dark">양식 다운로드</button>
-		</form>
-		<form action="uploadCsv" method="post" enctype="multipart/form-data">
+		<a href="download_stXLSX?"
+			 class="btn btn-dark">양식 다운로드</a>
+		<form action="upload_stCSV" method="post" enctype="multipart/form-data">
 			<input type="file" name="file" accept=".csv">
 			<button class="btn btn-light btn-outline-secondary">csv 업로드</button>
 		</form>

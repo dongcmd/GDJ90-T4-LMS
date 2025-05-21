@@ -27,7 +27,7 @@ public class AsDao {
 		 }
 		 return false;
 	}
-	// 과제 전체 목록 조회==========================================
+	// 과제 목록 조회==========================================
 	public List<Assignment> list(Class1 class1) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
@@ -75,6 +75,8 @@ public class AsDao {
 		}
 		return false;
 	}
+	
+	//과제 제출=================================================
 
 	public boolean insertAs(Sub_as as) {
 		 SqlSession conn = MyBatisConnection.getConnection();
@@ -87,6 +89,43 @@ public class AsDao {
 			 MyBatisConnection.close(conn);
 		 }
 		 return false;
+	}
+	//제출한 과제==========================================================
+	public Sub_as selectSub_as(String user_no, int as_no) {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectSub_as(user_no, as_no);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;		
+	}
+	//제출된 과제 수정
+	public boolean updateAs(Sub_as as) {
+		 SqlSession conn = MyBatisConnection.getConnection();
+		 try {
+			 if(conn.getMapper(cls).updateAs(as) > 0) return true;
+			 else return false;
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(conn);
+		 }
+		 return false;	
+	}
+	// 해당 수업의 모든 과제 리스트 =============================
+	public List<Assignment> selectAsbyClass(Class1 loginclass) {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAsByClass(loginclass);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
 	}
 	
 

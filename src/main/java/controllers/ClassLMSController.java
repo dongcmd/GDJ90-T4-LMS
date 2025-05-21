@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.TreeMap;
 
 import javax.servlet.annotation.WebInitParam;
@@ -29,6 +31,7 @@ import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.classes.SubAsDao;
 import models.classes.Sub_as;
+import models.classes.Submitted_Assignments;
 import models.users.User;
 import models.users.UserDao;
 
@@ -59,15 +62,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		List<Student> stList = rcDao.studentList(class1);
 		Map<String, Student> stMap = new TreeMap<>();
 		for(Student st : stList) { stMap.put(st.getUser_no(), st); }
-<<<<<<< HEAD
-		class1.setStudents(stMap); // 소속 학생
-		List<Assignment> asList = asDao.list(class1);
-		Map<String, Assignment> asMap = new TreeMap<>();
-		for(Assignment as : asList) {	// 과제 없을 때 방지
-			as.setScores(asDao.scores(as, class1));
-			asMap.put(as.getAs_no()+"", as); }
-		class1.setAssignments(asMap); // 속한 과제
-=======
+    
 		class1.setStudents(stMap); // 클래스에 소속 학생 넣기
 		List<Assignment> asList = asDao.list(class1); 
 		Map<String, Assignment> asMap = new HashMap<>(); // class1의 과제 목록
@@ -77,11 +72,9 @@ public class ClassLMSController extends MskimRequestMapping {
 				subAsMap.put(st.getUser_no(), subAsDao.selectOne(st.getUser_no(), as.getAs_no()));
 			}
 			as.setSub_as(subAsMap);
-			asMap.put(as.getAs_no()+"", as); 
+			asMap.put(as.getAs_no()+"", as);
 		}
 		class1.setAssignments(asMap); // 클래스에 각 과제 넣기
-		
->>>>>>> main
 		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 		return null;
 	}
@@ -109,6 +102,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		//테스트
 		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
 		Collection<Student> studentList = noClass.getStudents().values();
+
 		return "classLMS/classInfo";
 	}
 	
@@ -124,21 +118,25 @@ public class ClassLMSController extends MskimRequestMapping {
 		String classCheck = uc.classCheck(request, response);
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
-		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-		List<Assignment> asList = asDao.list(class1);
+		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+		List<Assignment> asList = asDao.selectAsbyClass(loginclass);
 		if(request.getParameter("as_no") != null) {
 			int as_no = Integer.parseInt(request.getParameter("as_no"));
 			List<Sub_as> subAsList = subAsDao.list(as_no);
+			System.out.println(subAsList);
 			request.setAttribute("selectedAs_no", as_no);
 			request.setAttribute("subAsList", subAsList);
 		}
 		request.setAttribute("asList", asList);
+
 		return "classLMS/manageAs"; // 정상인 경우
 	}
 	// 과제 추가 접근권한 설정============================================================
 	@RequestMapping("addAssignmentForm")
 	public String addAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
+		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+
 		if(login.getRole().equals("1")) {
 			request.setAttribute("msg", "접근 권한이 없습니다.");
 			request.setAttribute("url","classInfo");
@@ -147,7 +145,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		// 여기 부분은 추후에 수정해야할듯!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		Class1Dao C1Dao = new Class1Dao();
 		List<Class1> cls = C1Dao.selectByProfessor(login.getUser_no());
-		System.out.println(cls);
 		request.setAttribute("cls", cls);
 		return null; // 정상인 경우
 	}
@@ -156,6 +153,8 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("addAssignment")
 	public String addAssignment(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
+		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+
 		AsDao dao = new AsDao();	    
 		Assignment as = new Assignment();
 	    as.setAs_name(request.getParameter("as_name"));
@@ -174,10 +173,11 @@ public class ClassLMSController extends MskimRequestMapping {
 	    as.setAs_e_date(as_e_date);
 	    
 	    as.setAs_point(Integer.parseInt(request.getParameter("as_point")));
-	    as.setClass_no(request.getParameter("class_no"));
-	    as.setBan(request.getParameter("ban"));
-	    as.setYear(Integer.parseInt(request.getParameter("year")));
-	    as.setTerm(Integer.parseInt(request.getParameter("term")));
+    
+	    as.setClass_no(loginclass.getClass_no());
+	    as.setBan(loginclass.getBan());
+	    as.setYear(loginclass.getYear());
+	    as.setTerm(loginclass.getTerm());
 		if(dao.insert(as)) {
 			request.setAttribute("msg","과제를 추가하였습니다.");
 			request.setAttribute("url", "manageAs");
@@ -198,7 +198,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			return "alert";
 		}
 		int as_no = Integer.parseInt(request.getParameter("as_no"));
-		System.out.println(as_no);
 		Assignment as1 = asDao.selectOne(as_no);
 		//시작날짜, 끝나는 날짜는 따로 저장
 		LocalDateTime as_s_date = as1.getAs_s_date().toInstant()
@@ -290,19 +289,22 @@ public class ClassLMSController extends MskimRequestMapping {
 	public String submitAs(HttpServletRequest request , HttpServletResponse response) {				
 		User login = (User)request.getSession().getAttribute("login");
 		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+    
+		System.out.println(loginclass);
 		// 접근권한 넣어야함
 		//===========================
 		
-		Class1 class1 = new Class1();
-	//		class1.setClass_no(loginclass.getClass_no());
-	//		class1.setBan(loginclass.getBan());
-	//		class1.setYear(loginclass.getYear());
-	//		class1.setTerm(loginclass.getTerm());
-		class1.setClass_no("1001");
-		class1.setBan("A");
-		class1.setYear(2025);
-		class1.setTerm(1);
-		List<Assignment> asList = asDao.list(class1);
+		List<Assignment> asList = asDao.selectAsbyClass(loginclass);
+//		if(request.getParameter("as_no") != null) {
+//			//as_no = Integer.parseInt(request.getParameter("as_no"));
+//			List<Sub_as> subAsList = subAsDao.list(as_no);
+//			System.out.println(subAsList);
+//			request.setAttribute("selectedAs_no", as_no);
+//			request.setAttribute("subAsList", subAsList);
+//		}
+		System.out.println("과제리스트"+asList);
+		System.out.println("세션 정보"+loginclass);
+
 		request.setAttribute("asList", asList);
 		return "classLMS/submitAs";
 	}
@@ -331,28 +333,42 @@ public class ClassLMSController extends MskimRequestMapping {
 		} catch(IOException e) { e.printStackTrace(); }
 		String asNo = multi.getParameter("as_no");
 		String fileName = multi.getOriginalFileName("file");
-		Submitted_Assignments as = new Submitted_Assignments();
+		Sub_as as = new Sub_as();
 		as.setAs_no(Integer.parseInt(asNo));
 		as.setFile(fileName);
 		as.setUser_no(login.getUser_no());
-		if(asDao.insertAs(as)) {
-			request.setAttribute("msg", "과제가 제출되었습니다.");
-			request.setAttribute("url", "submitAs");
+		Sub_as existing = asDao.selectSub_as(as.getUser_no(), as.getAs_no());
+		if (existing == null) {
+			if(asDao.insertAs(as)) {
+				request.setAttribute("msg", "과제가 제출되었습니다.");
+				request.setAttribute("url", "submitAs");
+			} else {
+				request.setAttribute("msg", "과제제출에 실패하였습니다.");
+				request.setAttribute("url", "submitassignment");
+			}
 		} else {
-			request.setAttribute("msg", "과제 제출 실패");
-			request.setAttribute("url", "submitassignment?as_no=" + asNo);
+			if(asDao.updateAs(as)) {
+				request.setAttribute("msg", "제출된 파일을 수정했습니다.");
+				request.setAttribute("url", "submitAs");
+			} else {
+				request.setAttribute("msg", "수정에 실패하였습니다.");
+				request.setAttribute("url", "submitassignment");
+			}
 		}
-
 		return "alert";
 	}
-	// 학점관리 - 교수 (점수 목록만 구현)
+	
 	@RequestMapping("manageScore")
 	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
-		if(profCheck != null) { return profCheck; }
-		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
-		Collection<Student> studentList = noClass.getStudents().values();
+		if(profCheck != null) { return profCheck; } // 교수 확인
+		
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		List<Student> studentList = new ArrayList<>(class1.getStudents().values());
+		studentList.sort((s1, s2) -> s1.getUser_no().compareTo(s2.getUser_no()));
+		// 학번을 오름차순으로 정렬
 		request.setAttribute("reg_users", studentList);
 		return "classLMS/manageScore";
 	}
+
 }
