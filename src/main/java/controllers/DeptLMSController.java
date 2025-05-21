@@ -33,6 +33,17 @@ public class DeptLMSController extends MskimRequestMapping {
 		if(profCheck != null) { return profCheck; }
 		return "deptLMS/addClass";
 	}
+	@RequestMapping("addClassList")
+	public String addClassList(HttpServletRequest request, HttpServletResponse response) {
+		String profCheck = uc.profCheck(request, response);
+		if(profCheck != null) { return profCheck; }
+		String type = request.getParameter("type");
+		String fine = request.getParameter("fine");
+		List<Class1> classesList = class1Dao.selectAllClass(type, fine);
+		request.setAttribute("classesList", classesList);
+		return "deptLMS/addClassList";
+	}
+	
 	// 강의 추가 기능 - 교수
 	@RequestMapping("addClass1")
 	public String addClass1(HttpServletRequest request, HttpServletResponse response) {
@@ -52,14 +63,14 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		cls.setMajor_no(login.getMajor_no());
 		cls.setUser_no(login.getUser_no());
-
+	
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int term = (month >= 3 && month <= 8) ? 1 : 2;
+
 		cls.setYear(year);
 		cls.setTerm(term);
-
 		cls.setClass_name(multi.getParameter("className"));
 		cls.setClass_no(multi.getParameter("classNo"));
 		cls.setBan(multi.getParameter("classBan"));
@@ -73,12 +84,43 @@ public class DeptLMSController extends MskimRequestMapping {
 		cls.setFile(multi.getFilesystemName("file1"));
 		cls.setS_date(Date.valueOf(multi.getParameter("sDate")));
 		cls.setE_date(Date.valueOf(multi.getParameter("eDate")));
-		String[] dayArr = multi.getParameterValues("days");
-		if (dayArr != null) {
-			List<Integer> days = Arrays.stream(dayArr).map(Integer::valueOf).collect(Collectors.toList());
+		String[] daysArr = multi.getParameterValues("days");
+		
+		// 요일 넣기
+		if (daysArr != null) {
+			List<Integer> days = Arrays.stream(daysArr).map(Integer::valueOf).collect(Collectors.toList());
 			cls.setDays(days);
+			System.out.println("days" + days);
 		}
-
+		
+		System.out.println(timeCheck(cls, request, response));
+		if(timeCheck(cls, request, response)) return "alert";
+		
+		/*		// 강의 시간 비교를 위한 데이터값
+				List<Class1> classesList = class1Dao.selectTimeClash(cls);
+				System.out.println("cls = " + cls);
+				System.out.println("daysArr = " + daysArr);
+				System.out.print("class1I = ");
+				for(Class1 class1I : classesList) {
+					for(Integer daysI : class1I.getDays()) {
+						for(Integer daysJ : cls.getDays()) {
+							if(daysI.equals(daysJ)) {
+								if(cls.getE_time() <= class1I.getS_time() || cls.getS_time() >= class1I.getE_time()) {
+									if(cls.getUser_no().equals(class1I.getUser_no())) {
+										request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 시간 혹은 요일이 겹칩니다.");
+										request.setAttribute("url", "addClass");
+										return "alert";								
+									} else if(cls.getBan().equals(class1I.getBan())) {
+										request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 강의실이 겹칩니다.");
+										request.setAttribute("url", "addClass");
+										return "alert";
+									}
+								}
+							}
+						}
+					}
+				}*/
+		
 		if (class1Dao.insertClass(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 추가되었습니다.");
 			request.setAttribute("url", "myClass");
@@ -123,6 +165,8 @@ public class DeptLMSController extends MskimRequestMapping {
 	public String updateClass1(HttpServletRequest request, HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; }
+		Class1 cls = new Class1();
+		User login = (User) request.getSession().getAttribute("login");
 		String path = request.getServletContext().getRealPath("/") + "/files/";
 		File f = new File(path);
 		if (!f.exists())
@@ -133,8 +177,9 @@ public class DeptLMSController extends MskimRequestMapping {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		cls.setMajor_no(login.getMajor_no());
+		cls.setUser_no(login.getUser_no());
 		
-		Class1 cls = new Class1();
 		cls.setClass_name(multi.getParameter("className"));
 		cls.setClass_no(multi.getParameter("classNo"));
 		cls.setBan(multi.getParameter("classBan"));
@@ -157,7 +202,34 @@ public class DeptLMSController extends MskimRequestMapping {
 			List<Integer> days = Arrays.stream(daysArr).map(Integer::valueOf).collect(Collectors.toList());
 			cls.setDays(days);
 		}
-
+		
+		System.out.println(timeCheck(cls, request, response));
+		if(timeCheck(cls, request, response)) return "alert";
+		/*// 강의 시간 비교를 위한 데이터값
+		List<Class1> classesList = class1Dao.selectTimeClash(cls);
+		System.out.println("cls = " + cls);
+		System.out.println("daysArr = " + daysArr);
+		System.out.print("class1I = ");
+		for(Class1 class1I : classesList) {
+			for(Integer daysI : class1I.getDays()) {
+				for(Integer daysJ : cls.getDays()) {
+					if(daysI.equals(daysJ)) {
+						if(cls.getE_time() <= class1I.getS_time() || cls.getS_time() >= class1I.getE_time()) {
+							if(cls.getUser_no().equals(class1I.getUser_no())) {
+								request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 시간 혹은 요일이 겹칩니다.");
+								request.setAttribute("url", "addClass");
+								return "alert";								
+							} else if(cls.getBan().equals(class1I.getBan())) {
+								request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 강의실이 겹칩니다.");
+								request.setAttribute("url", "addClass");
+								return "alert";
+							}
+						}
+					}
+				}
+			}
+		}	*/
+		
 		if (class1Dao.update(cls)) {
 			request.setAttribute("msg", "강의가 정상적으로 수정 성공하였습니다..");
 			request.setAttribute("url", "myClass");
@@ -206,6 +278,24 @@ public class DeptLMSController extends MskimRequestMapping {
 		request.setAttribute("classesList", classesList);
 		return "deptLMS/classList";
 	}
+	// 수강 확정 - 학생
+	@RequestMapping("confirmClass")
+	public String confirmClass(HttpServletRequest request, HttpServletResponse response) {
+		Class1 key = new Class1();
+		User login = (User) request.getSession().getAttribute("login");
+		key.setUser_no(login.getUser_no());
+		key.setClass_no(request.getParameter("class_no"));
+		key.setBan(request.getParameter("ban"));
+		key.setYear(Integer.parseInt(request.getParameter("year")));
+		key.setTerm(Integer.parseInt(request.getParameter("term")));
+		if (class1Dao.confirmClass(key)) {
+			request.setAttribute("msg", "강의가 정상적으로 취소되었습니다.");
+		} else {
+			request.setAttribute("msg", "수강 신청 취소를 실패했습니다.");
+		}
+		request.setAttribute("url", "classList");
+		return "alert";
+	}
 
 	// 수강 신청 취소
 	@RequestMapping("dropClass")
@@ -213,7 +303,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		User login = (User) request.getSession().getAttribute("login");
 		Class1 key = new Class1();
 		key.setUser_no(login.getUser_no());
-		key.setClass_no(request.getParameter("no"));
+		key.setClass_no(request.getParameter("class_no"));
 		key.setBan(request.getParameter("ban"));
 		key.setYear(Integer.parseInt(request.getParameter("year")));
 		key.setTerm(Integer.parseInt(request.getParameter("term")));
@@ -224,5 +314,33 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		request.setAttribute("url", "classList");
 		return "alert";
+	}
+	
+	private boolean timeCheck(Class1 cls, HttpServletRequest request, HttpServletResponse response) {
+		// 강의 시간 비교를 위한 데이터값
+		List<Class1> classesList = class1Dao.selectTimeClash(cls);
+		for(Class1 class1I : classesList) {
+			if(cls.getClass_name().equals(class1I.getClass_name())) return false;
+			for(Integer daysI : class1I.getDays()) {
+				for(Integer daysJ : cls.getDays()) {
+					if(daysI.equals(daysJ)) {
+						if(!(cls.getE_time() <= class1I.getS_time() || cls.getS_time() >= class1I.getE_time())) {
+							if(cls.getUser_no().equals(class1I.getUser_no())) {
+								System.out.println(cls.getUser_no()+" 같나욘?" + class1I.getUser_no());
+								request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 시간 혹은 요일이 겹칩니다.");
+								request.setAttribute("url", "addClass");		
+								return true;
+							} else if(cls.getClassroom().equals(class1I.getClassroom())) {
+								System.out.println(cls.getBan()+" 같나욘?" + class1I.getBan());
+								request.setAttribute("msg", "강의 [" + class1I.getClass_name() + "] 와 강의실이 겹칩니다.");
+								request.setAttribute("url", "addClass");
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

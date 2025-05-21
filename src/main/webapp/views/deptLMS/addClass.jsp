@@ -29,7 +29,9 @@
 							<option value="${g}">${g}학년</option>
 						</c:forEach>
 				</select></td>
-				<td><button class="btn btn-light btn-outline-secondary">강의 검색</button></td>
+				<td>
+				<button type="button" class="btn btn-light btn-outline-secondary" onclick="win_open_classList('../deptLMS/addClassList')">강의 검색</button>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">이수학점</td>
@@ -109,6 +111,10 @@
 		</table>
 	</form>
 	<script type="text/javascript">
+		function win_open_classList(page){
+		    open(page, "", "width=1200, height=800, left=300, top=50");
+		    console.log("발동하냐?");
+		}
 		const s_period = [ "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00" ];
 		const e_period = [ "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" ];
 		window.onload = function () {

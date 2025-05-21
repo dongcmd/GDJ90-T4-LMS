@@ -337,14 +337,16 @@ public class MainLMSController extends MskimRequestMapping {
 		Class1 cls = new Class1();
 		Calendar cal = Calendar.getInstance();
 		User login = (User) request.getSession().getAttribute("login");
+		String type = request.getParameter("type");
+		String fine = request.getParameter("fine");
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int term = (month >= 3 && month <= 8) ? 1 : 2;
 		cls.setYear(year);
 		cls.setTerm(term);
-		List<Class1> classesList = clsdao.selectClassesByYearTerm(cls, login.getUser_no());
+		
+		List<Class1> classesList = clsdao.selectClassesByYearTerm(cls, login.getUser_no(), type, fine);
 		request.setAttribute("classesList", classesList);
-
 		return "mainLMS/signUpClass";
 	}
 	@RequestMapping("signUpCls")
@@ -373,5 +375,27 @@ public class MainLMSController extends MskimRequestMapping {
 	    }
 	    request.setAttribute("url", "signUpClass");
 	    return "alert";
-  }
+	}
+	
+	// 사용자 검색 ========================================
+	@RequestMapping("searchNowClass")
+	public String searchClass(HttpServletRequest request, HttpServletResponse response) {
+		String type = request.getParameter("type"); // class_name, user_name
+		String fine = request.getParameter("fine"); // 검색어
+
+		if (type == null || type.isEmpty()) {
+			request.setAttribute("msg", "검색 기준을 선택해주세요");
+			request.setAttribute("url", "signUpClass");
+			return "alert";
+		}
+		if (fine == null || fine.isEmpty()) {
+			request.setAttribute("msg", "검색어를 입력해주세요");
+			request.setAttribute("url", "signUpClass");
+			return "alert";
+		}
+		List<Class1> classesList = request.getParameter("classesList");
+		
+		request.setAttribute("classesList", classesList);
+		return "mainLMS/signUpClass";
+	}
 }

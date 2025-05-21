@@ -39,10 +39,14 @@
 				<c:set var="tot_score" value="${ru.as_tot_score + ru.exam1_score + ru.exam2_score + ru.att_score}" />
 				<td>${tot_score}</td>
  				<td><c:choose>
-					<c:when test="${tot_score >= 90}">A<</c:when>
-					<c:when test="${tot_score >= 80}">B</c:when>
-					<c:when test="${tot_score >= 70}">C</c:when>
-					<c:when test="${tot_score >= 60}">D</c:when>
+					<c:when test="${tot_score >= 95}">A+<</c:when>
+					<c:when test="${tot_score >= 90}">A0<</c:when>
+					<c:when test="${tot_score >= 85}">B+</c:when>
+					<c:when test="${tot_score >= 80}">B0</c:when>
+					<c:when test="${tot_score >= 75}">C+</c:when>
+					<c:when test="${tot_score >= 70}">C0</c:when>
+					<c:when test="${tot_score >= 65}">D+</c:when>
+					<c:when test="${tot_score >= 60}">D0</c:when>
 					<c:otherwise>F</c:otherwise>
 				</c:choose></td>
 			</tr>

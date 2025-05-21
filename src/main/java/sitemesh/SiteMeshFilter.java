@@ -19,7 +19,8 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 		.addExcludedPath("/users/updateForm")
 		.addExcludedPath("/users/pwForm")
 		.addExcludedPath("/board/deleteForm")
-		.addExcludedPath("/users/notificationForm");
+		.addExcludedPath("/users/notificationForm")
+		.addExcludedPath("/deptLMS/addClassList");
 
 		builder.addDecoratorPath("/mainLMS/*", "/layouts/MainLayout.jsp");
 		builder.addDecoratorPath("/deptLMS/*", "/layouts/MainLayout.jsp");
