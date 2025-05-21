@@ -17,7 +17,7 @@
 		<thead class="thead-light" style="text-align: center">
 			<tr>
 				<th style="width: 5%;">No</th>
-				<th style="width: 10%;">강의코드</th>
+				<th style="width: 8%;">강의코드</th>
 				<th style="width: 15%;">강의명</th>
 				<th style="width: 10%;">교수명</th>
 				<th style="width: 5%;">학년</th>
@@ -25,7 +25,7 @@
 				<th style="width: 15%;">강의시간</th>
 				<th style="width: 10%;">강의실</th>
 				<th style="width: 8%;">수강인원</th>
-				<th style="width: 10%;">취소</th>
+				<th style="width: 10%;">취소/확정</th>
 			</tr>
 		</thead>
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
@@ -33,7 +33,7 @@
 				<td>${stat.index + 1}</td>
 				<td>${cls.class_no}</td>
 				<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
-				<td>${login.user_name}</td>
+				<td>${cls.prof}</td>
 				<td>${cls.class_grade}</td>
 				<td>${cls.credit}</td>
 
@@ -47,8 +47,13 @@
 						</c:choose>
 					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
 				<td>${cls.classroom}</td>
-				<td>${cls.now_p}/${cls.max_p}</td>
-				<td><a href="dropClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a></td>
+				<td>${cls.now_p}/${cls.max_p}</td>=
+				<td>
+					<c:if test="${cls.status == 0}">
+						<a href="confirmClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 확정 하시겠습니까?');">확정</a>
+						<a href="dropClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-outline-danger" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a>
+					</c:if>
+				</td>
 			</tr>
 		</c:forEach>
 	</table>

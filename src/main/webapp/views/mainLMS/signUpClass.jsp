@@ -15,20 +15,18 @@
 			"17:50" };%>
 <body>
 	<h2>수강 신청</h2>
-	<form action="signUpClass" method="get" style="display: flex; gap: 8px; align-items: center;">
-		<select name="column" class="form-control" style="width: 150px">
-			<option value="강의이름,userName">강의명+교수명</option>
-			<option value="강의이름">강의명</option>
-			<option value="userName">교수명</option>
+	<form action="signUpClass" method="post" style="display: flex; gap: 8px; align-items: center;">
+		<select name="type" class="form-control" style="width: 150px">
+			<option value="class_name">강의명</option>
+			<option value="user_name">교수명</option>
 		</select>
-		<input type="text" name="fine" placeholder="Search" class="form-control" style="width: 230px;">
-		<%-- <input type="hidden" name="user_no" value="${login.user_no}"> --%>
+		<input type="text" name="fine" placeholder="Search" value="${param.fine}" class="form-control" style="width: 230px;">
 		<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
 	</form>
 	<br>
 	<table class="table table-bordered">
 		<thead class="thead-light" style="text-align: center">
-			<tr>
+			<tr>	
 				<th style="width: 5%;">No</th>
 				<th style="width: 10%;">강의코드</th>
 				<th style="width: 15%;">강의명</th>
@@ -45,9 +43,6 @@
 		
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
 			<tr class="text-center">
-			<script>
-				cosole.log()
-			</script>
 				<td>${stat.index + 1}</td>
 				<td>${cls.class_no}</td>
 				<td>${cls.class_name}</td>

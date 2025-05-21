@@ -63,7 +63,7 @@
             	</a>
             </c:if>
             <c:if test="${fn:startsWith(relativeURI, '/classLMS/') or lms == 'class'}">
-            	<a href="../classLMS/classInfo"><h2 class="m-0 fw_b" style="flex: 2;">
+            	<a href="../board/board?board_id=${login.major_no}"><h2 class="m-0 fw_b" style="flex: 2;">
             		<c:if test="${login.major_no == 1000 }">
             			컴퓨터공학과
             		</c:if>
@@ -78,7 +78,6 @@
             </c:if>
             <ul class="nav d-flex justify-content-end align-items-center" style="flex: 1; gap: 10px; flex-wrap:nowrap;">
                 <li class="nav-item">
-
                   <a class="nav-link" onclick="win_open('../users/info')"><span>${login.user_name}</span> 님 반갑습니다.</a> <!-- 기흔 수정 -->
                 </li>
                 <li class="nav-item">
@@ -114,15 +113,23 @@
     		<%-- mainLMS 메뉴 --%>
     		<c:if test="${fn:startsWith(relativeURI, '/mainLMS/') or lms == 'main'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">      
-	            	  <li class="nav-item"> <%-- 이동원 --%>
+	            	<li class="nav-item"> <%-- 이동원 --%>
 	                    <a href="../board/board?board_id=9999">공지게시판</a>
 	                </li>
+	              
+                    <c:if test="${login.role == 3 }">
+                    	<li class="nav-item">
+							<a href="../board/board?board_id=1000">학과 LMS</a>
+						</li>
+					</c:if>
+					
+					<c:if test="${login.role == 1 || login.role == 2}">
+                    	<li class="nav-item">
+							<a href="../board/board?board_id=${login.major_no}">학과 LMS</a>
+						</li>
+					</c:if>
 
-	                <li class="nav-item">
-	                    <a href="../deptLMS/deptMain" target="_blank">학과 LMS</a>
-	                </li>
-
-					        <c:if test="${login.role == 1}">
+					<c:if test="${login.role == 1}">
 		                <li class="nav-item">
 		                    <a href="../mainLMS/signUpClass">수강신청</a>
 		                </li>
@@ -180,10 +187,10 @@
 	        
 	        <%-- classLMS 메뉴 --%>
 	        <c:if test="${fn:startsWith(relativeURI, '/classLMS/') or lms == 'class'}">
-	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
-	                <%-- 이동원
-	                강의명 지우고, 중앙에 표 형식으로 강의정보 표시하기
-	                 --%>
+	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">
+	            	<li class="nav-item">
+	                    <a href="../classLMS/classInfo">강의 계획서</a>
+	                </li>                       
 	                <li class="nav-item">
 	                    <a href="../board/board?board_id=${class1.class_no}">질문 게시판</a>
 	                </li> 

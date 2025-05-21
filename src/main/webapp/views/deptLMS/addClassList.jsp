@@ -1,93 +1,91 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- addClass 강의 추가 오예록 --%>
+<%-- addClassList 수강신청 오예록 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>강의 추가</title>
+	<title>전체 강의</title>
+ 	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">  
+  	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  	
+  	<style>
+  		@font-face {font-family: 'GmarketSansMedium'; src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff'); font-weight: normal; font-style: normal;}
+		*{margin: 0; padding: 0; font-family: 'GmarketSansMedium'; font-weight:500; letter-spacing: -0.05rem; font-size: 16px; color: #333; box-sizing:border-box;}
+    	a{display: block; color: #333;}
+    	img{display: block; max-width: 100%; margin: 0 auto;}
+    	.table td, .table th{vertical-align:middle !important;}
+    	.table tr td{white-space: nowrap;overflow: hidden; text-overflow: ellipsis; max-width: 200px;}
+    	.btn-dark{color: #fff  !important;}
+    	.fw_b{font-weight:600;}
+    	.nav-link{padding:0; cursor:pointer; font-weight:500; color:#333;}
+    	.nav-link:hover, .nav-link:hover span{color:#333; font-weight:600;}
+    	.nav-link span{text-decoration:underline;}
+    	.main_menu li{height: 100px; line-height:100px; border-bottom:1px solid #eee;}
+    	.main_menu li a{display:block; font-size:20px; font-weight:600;text-decoration:none; width:100%; height:100%; background-color:#fff; color:#333;}
+		.main_menu li a:hover, .main_menu li a:focus{background-color:#343a40; color:#fff !important; transition: 0.3s ease-out;}
+		footer ul li p{font-size:14px; line-height:1; font-weight:500; color:#eee;}
+	</style>
 </head>
+<%!private static String[] s_period = { "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
+			"17:00" };
+	private static String[] e_period = { "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50",
+			"17:50" };%>
 <body>
-	<h2>강의 추가</h2>
-	<table>
-		<tr>
-			<td>과목명</td>
-			<td>과목 코드</td>
-			<td>분반</td>
-		</tr>
-		<tr>
-			<td><input type="text"></td>
-			<td><input type="text"></td>
-			<td><input type="text"></td>
-			<td><button>강의 검색</button></td>
-		</tr>
-		<tr>
-			<td>과목명</td>
-			<td>과목 코드</td>
-			<td>분반</td>
-		</tr>
-		<tr>
-			<td><input type="text"></td>
-			<td><input type="text"></td>
-			<td><select>
-			</select></td>
-		</tr>
-		<tr></tr>
-		<tr>
-			<td>요일<span style="color: red;">*</span></td>
-			<td style="text-align: center"><span>수업 시간</span><br>
-				<div class="day-checkbox">
-					<input type="checkbox" id="mon" name="days" value="월">
-					<input type="checkbox" id="tue" name="days" value="화">
-					<input type="checkbox" id="wed" name="days" value="수">
-					<input type="checkbox" id="thu" name="days" value="목">
-					<input type="checkbox" id="fri" name="days" value="금">
-					<br>
-					<label for="mon">월&nbsp;</label>
-					<label for="tue">화&nbsp;</label>
-					<label for="wed">수&nbsp;</label>
-					<label for="thu">목&nbsp;</label>
-					<label for="fri">금</label>
-				</div>
-				<button onclick="test">확인</button> <script type="text/javascript">
-					function test() {
-						console.log("")
-					}
-				</script></td>
-		</tr>
-		<tr>
-			<td>시작 교시<span style="color: red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="number" min="1" max="9" oninput="updateTime(0,this)"></td>
-			<td><span id="startPeriod"></span></td>
-		</tr>
-		<tr>
-			<td>종료 교시<span style="color: red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="number" min="1" max="9" oninput="updateTime(1,this)"></td>
-			<td><span id="endPeriod"></span></td>
-		</tr>
+	<h2>전체 강의</h2>
+	<form action="addClassList" method="post" style="display: flex; gap: 8px; align-items: center;">
+		<select name="type" class="form-control" style="width: 150px">
+			<option value="class_name">강의명</option>
+			<option value="user_name">교수명</option>
+		</select>
+		<input type="text" name="fine" placeholder="Search" value="${param.fine}" class="form-control" style="width: 230px;">
+		<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
+	</form>
+	<br>
+	<table class="table table-bordered">
+		<thead class="thead-light" style="text-align: center">
+			<tr>	
+				<th style="width: 5%;">No</th>
+				<th style="width: 10%;">강의코드</th>
+				<th style="width: 15%;">강의명</th>
+				<th style="width: 10%;">교수명</th>
+				<th style="width: 5%;">학년</th>
+				<th style="width: 8%;">이수학점</th>
+				<th style="width: 15%;">강의시간</th>
+				<th style="width: 10%;">강의실</th>
+				<th style="width: 8%;">수강인원</th>
+			</tr>
+		</thead>
+		<%-- <c:forEach var="classesList" items="${classesList}"></c:forEach> --%>
+		
+		<c:forEach var="cls" items="${classesList}" varStatus="stat">
+			<tr class="text-center">
+				<td>${stat.index + 1}</td>
+				<td>${cls.class_no}</td>
+				<td>${cls.class_name}</td>
+				<td>${cls.prof}</td>
+				<td>${cls.class_grade}</td>
+				<td>${cls.credit}</td>
+				<td><c:forEach var="d" items="${cls.days}">
+						<c:choose>
+							<c:when test="${d == 0}">월 </c:when>
+							<c:when test="${d == 1}">화 </c:when>
+							<c:when test="${d == 2}">수 </c:when>
+							<c:when test="${d == 3}">목 </c:when>
+							<c:when test="${d == 4}">금 </c:when>
+						</c:choose>
+					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
+				<td>${cls.classroom}</td>
+				<td>${cls.now_p}/${cls.max_p}</td>
+			</tr>
+		</c:forEach>
 	</table>
-	<script type="text/javascript">
-		const period=[
-			'09:00 ~ 09:50',
-			'10:00 ~ 10:50',
-			'11:00 ~ 11:50',
-			'12:00 ~ 12:50',
-			'13:00 ~ 13:50',
-			'14:00 ~ 14:50',
-			'15:00 ~ 15:50',
-			'16:00 ~ 16:50',
-			'17:00 ~ 17:50'
-		]
-		function updateTime(type, input) {
-			if(input.value < 1 || input.value > 9){
-				input.value = '';
-				return null;
-			}
-			var index = input.value - 1;
-			console.log(type);
-			console.log(input.value);
-			if(type == 0)document.querySelector("#startPeriod").innerHTML = period[index];
-			if(type == 1)document.querySelector("#endPeriod").innerHTML = period[index];	
-		}
-	</script>
 </body>
 </html>

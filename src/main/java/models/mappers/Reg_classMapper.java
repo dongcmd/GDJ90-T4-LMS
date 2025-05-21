@@ -16,7 +16,8 @@ public interface Reg_classMapper {
 
 	@Select("select u.user_no, u.user_name, u.user_grade, rc.exam1_score, rc.exam2_score, rc.as_tot_score, rc.att_score "
 			+ " from users u join registered_classes rc "
-			+ " on u.user_no = rc.user_no where (class_no = #{class_no} and ban = #{ban} and year = #{year} and term = #{term})")
+			+ " on u.user_no = rc.user_no where (class_no = #{class_no} and ban = #{ban} and year = #{year} and term = #{term})"
+			+ " ORDER BY u.user_no")
 	List<Student> studentList(Class1 class1);
 
 }

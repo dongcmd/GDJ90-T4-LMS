@@ -27,17 +27,19 @@ public class Class1 {
 	private Date s_date; // 개강일 
 	private Date e_date; // 종강일
 	private String prof; // 교수명
+
+	private int status;
+
 	private List<Integer> days; // 수업 요일
 	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
 	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
 	
 	@Override
 	public String toString() {
-		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
-				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
-				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
-				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", s_date="
-				+ s_date + ", e_date=" + e_date + ", prof=" + prof + ", days=" + days + ", students=" + students
+		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no=" + major_no + ", user_no="
+				+ user_no + ", class_name=" + class_name + ", class_grade=" + class_grade + ", credit=" + credit + ", classroom=" + classroom
+				+ ", s_time=" + s_time + ", e_time=" + e_time + ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file
+				+ ", s_date=" + s_date + ", e_date=" + e_date + ", prof=" + prof + ", status=" + status + ", days=" + days + ", students=" + students
 				+ ", assignments=" + assignments + "]";
 	}
 	public Class1() {	} // 기본 생성자
@@ -222,6 +224,12 @@ public class Class1 {
 
 	public void setE_date(Date e_date) {
 		this.e_date = e_date;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }

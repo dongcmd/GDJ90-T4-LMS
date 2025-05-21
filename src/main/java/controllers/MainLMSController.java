@@ -31,6 +31,7 @@ import models.users.UserDao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
+import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
 import models.others.NotificationDao;
@@ -46,6 +47,24 @@ public class MainLMSController extends MskimRequestMapping {
 		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
 		
+
+		// 메인_강의목록(학생/교수)_원동인
+		User login = (User) request.getSession().getAttribute("login");
+	    Calendar cal = Calendar.getInstance();
+	    int calYear = cal.get(Calendar.YEAR);
+	    int calMonth = cal.get(Calendar.MONTH) + 1;
+	    int term = (calMonth >= 3 && calMonth <= 8) ? 1 : 2;
+	    Class1 cls = new Class1();
+	    cls.setUser_no(login.getUser_no());
+	    cls.setYear(calYear);
+	    cls.setTerm(term);
+	    List<Class1> classesList_main_s = clsdao.nowClassList(cls);
+	    request.setAttribute("classesList_main_s", classesList_main_s);
+	    String userNo = login.getUser_no();
+	    List<Class1> classesList_main_p = clsdao.selectByProfessor(userNo);
+	    request.setAttribute("classesList_main_p", classesList_main_p);    
+	
+
 		// 캘린더
 		String yearStr = request.getParameter("year");
 		String monthStr = request.getParameter("month");
@@ -123,7 +142,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setRole(request.getParameter("role"));
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setMajor_no(request.getParameter("major_no"));
-		String grade = request.getParameter("grade");
+		String grade = request.getParameter("user_grade");
 		user.setUser_grade(grade != null && !grade.isEmpty() ? Integer.parseInt(grade) : 0);
 		user.setEmail(request.getParameter("email"));
 		user.setTel(request.getParameter("tel"));
@@ -157,7 +176,7 @@ public class MainLMSController extends MskimRequestMapping {
 		user.setGender(Integer.parseInt(request.getParameter("gender")));
 		user.setTel(request.getParameter("tel"));
 		user.setEmail(request.getParameter("email"));
-		user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
+		user.setUser_grade(Integer.parseInt(request.getParameter("user_grade")));
 		user.setMajor_no(request.getParameter("major_no"));
 		user.setPassword(request.getParameter("password"));
 		// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
@@ -179,8 +198,7 @@ public class MainLMSController extends MskimRequestMapping {
 	}
 
 	//사용자 삭제폼(관리자 권한) ========================================================
-	
-	@MSLogin("loginAdminCheck")
+	@RequestMapping("deleteUserForm")
 	public String deleteUserForm(HttpServletRequest request, HttpServletResponse response) {
 		UserDao dao = new UserDao();
 		String user_no = request.getParameter("user_no");
@@ -320,14 +338,16 @@ public class MainLMSController extends MskimRequestMapping {
 		Class1 cls = new Class1();
 		Calendar cal = Calendar.getInstance();
 		User login = (User) request.getSession().getAttribute("login");
+		String type = request.getParameter("type");
+		String fine = request.getParameter("fine");
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int term = (month >= 3 && month <= 8) ? 1 : 2;
 		cls.setYear(year);
 		cls.setTerm(term);
-		List<Class1> classesList = clsdao.selectClassesByYearTerm(cls, login.getUser_no());
+		
+		List<Class1> classesList = clsdao.selectClassesByYearTerm(cls, login.getUser_no(), type, fine);
 		request.setAttribute("classesList", classesList);
-
 		return "mainLMS/signUpClass";
 	}
 	@RequestMapping("signUpCls")
@@ -356,5 +376,27 @@ public class MainLMSController extends MskimRequestMapping {
 	    }
 	    request.setAttribute("url", "signUpClass");
 	    return "alert";
-  }
+	}
+	
+	// 사용자 검색 ========================================
+	@RequestMapping("searchNowClass")
+	public String searchClass(HttpServletRequest request, HttpServletResponse response) {
+		String type = request.getParameter("type"); // class_name, user_name
+		String fine = request.getParameter("fine"); // 검색어
+
+		if (type == null || type.isEmpty()) {
+			request.setAttribute("msg", "검색 기준을 선택해주세요");
+			request.setAttribute("url", "signUpClass");
+			return "alert";
+		}
+		if (fine == null || fine.isEmpty()) {
+			request.setAttribute("msg", "검색어를 입력해주세요");
+			request.setAttribute("url", "signUpClass");
+			return "alert";
+		}
+		List<Class1> classesList = request.getParameter("classesList");
+		
+		request.setAttribute("classesList", classesList);
+		return "mainLMS/signUpClass";
+	}
 }
