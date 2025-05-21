@@ -105,17 +105,17 @@ manageassignment
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<c:forEach var="st" items="${stList}">
-						<td style="text-align: center">${st.user_no}</td>
-						<td style="text-align: center">${st.user_grade}</td>
-						<td style="text-align: center">${st.user_name}</td>
+				<c:forEach var="subAs" items="${subAsList}">
+					<tr>
+						<td style="text-align: center">${subAs.user_no}</td>
+						<td style="text-align: center">${subAs.user_grade}</td>
+						<td style="text-align: center">${subAs.user_name}</td>
 						<td style="text-align: center">
-							<c:if test="${as.submitted == true}">제출 완료</c:if>
-							<c:if test="${as.submitted == false}">미제출</c:if>
+							<c:if test="${!empty subAs.file}">제출완료</c:if>
+							<c:if test="${empty subAs.file or subAs.file.trim() == ''}">미제출</c:if>
 						</td>
-					</c:forEach>
-				</tr>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 	</body>

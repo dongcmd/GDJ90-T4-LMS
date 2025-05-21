@@ -28,8 +28,8 @@ public class Class1 {
 	private Date e_date; // 종강일
 	private String prof; // 교수명
 	private List<Integer> days; // 수업 요일
-	private Map<String ,Student> students; // 소속 학생들-이동원
-	private Map<String, Assignment> assignments; // 과제들-이동원
+	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
+	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
 
 	public Class1() {	} // 기본 생성자
 	public Class1(String class_no, String ban, int year, int term) {
