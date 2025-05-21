@@ -1,13 +1,16 @@
 package models.classes;
 
-import java.io.File;
-import java.util.Arrays;
-
-public class Submitted_Assignments {
-	private String user_no;
-	private int as_no;
-	private String file;
-	private int as_score;
+// 김기흔
+// 이동원 수정 - 학년, 이름 추가
+public class Sub_as {
+	
+	private String user_no; // 학번
+	private String user_grade; // 학년 - 추가
+	private String user_name; // 이름 - 추가
+	private int as_no; // 과제 번호
+	private String file; // 파일 경로
+	private int as_score; // 점수
+	
 	public String getUser_no() {
 		return user_no;
 	}
@@ -36,5 +39,17 @@ public class Submitted_Assignments {
 	public String toString() {
 		return "Submitted_Assignments [user_no=" + user_no + ", as_no=" + as_no + ", file=" + file + ", as_score="
 				+ as_score + "]";
+	}
+	public String getUser_grade() {
+		return user_grade;
+	}
+	public void setUser_grade(String user_grade) {
+		this.user_grade = user_grade;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 }
