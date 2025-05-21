@@ -27,20 +27,27 @@ public class Class1 {
 	private Date s_date; // 개강일 
 	private Date e_date; // 종강일
 	private String prof; // 교수명
-
+	
+	private int exam1_score;    // 중간
+	private int exam2_score;    // 기말
+	private int as_tot_score;   // 과제
+	private int att_score;      // 출석
 	private int status;
 
 	private List<Integer> days; // 수업 요일
 	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
 	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
 	
+	
 	@Override
 	public String toString() {
-		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no=" + major_no + ", user_no="
-				+ user_no + ", class_name=" + class_name + ", class_grade=" + class_grade + ", credit=" + credit + ", classroom=" + classroom
-				+ ", s_time=" + s_time + ", e_time=" + e_time + ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file
-				+ ", s_date=" + s_date + ", e_date=" + e_date + ", prof=" + prof + ", status=" + status + ", days=" + days + ", students=" + students
-				+ ", assignments=" + assignments + "]";
+		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
+				+ major_no + ", user_no=" + user_no + ", class_name=" + class_name + ", class_grade=" + class_grade
+				+ ", credit=" + credit + ", classroom=" + classroom + ", s_time=" + s_time + ", e_time=" + e_time
+				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", s_date="
+				+ s_date + ", e_date=" + e_date + ", prof=" + prof + ", exam1_score=" + exam1_score + ", exam2_score="
+				+ exam2_score + ", as_tot_score=" + as_tot_score + ", att_score=" + att_score + ", status=" + status
+				+ ", days=" + days + ", students=" + students + ", assignments=" + assignments + "]";
 	}
 	public Class1() {	} // 기본 생성자
 	public Class1(String class_no, String ban, int year, int term) {
@@ -50,6 +57,12 @@ public class Class1 {
 		this.term = term;
 	} // 키를 넣는 생성자
 	
+	public int getMark() {
+	    return exam1_score
+	         + exam2_score
+	         + as_tot_score
+	         + att_score;
+	} // 총합점수
 	public String getClass_no() {
 		return class_no;
 	}
@@ -231,5 +244,28 @@ public class Class1 {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-
+	public int getExam1_score() {
+		return exam1_score;
+	}
+	public void setExam1_score(int exam1_score) {
+		this.exam1_score = exam1_score;
+	}
+	public int getExam2_score() {
+		return exam2_score;
+	}
+	public void setExam2_score(int exam2_score) {
+		this.exam2_score = exam2_score;
+	}
+	public int getAs_tot_score() {
+		return as_tot_score;
+	}
+	public void setAs_tot_score(int as_tot_score) {
+		this.as_tot_score = as_tot_score;
+	}
+	public int getAtt_score() {
+		return att_score;
+	}
+	public void setAtt_score(int att_score) {
+		this.att_score = att_score;
+	}
 }
