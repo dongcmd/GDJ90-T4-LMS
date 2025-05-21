@@ -77,4 +77,11 @@ public class Student {
 	public int hashCode() {
 	    return user_no.hashCode();
 	}
+
+	@Override
+	public String toString() {
+		return "Student [user_no=" + user_no + ", user_name=" + user_name + ", USER_GRADE=" + USER_GRADE + ", exam1_score=" + exam1_score
+				+ ", exam2_score=" + exam2_score + ", as_tot_score=" + as_tot_score + ", att_score=" + att_score + "]";
+	}
+	
 }

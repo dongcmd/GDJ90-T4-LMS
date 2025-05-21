@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -57,16 +58,15 @@ public class ClassLMSController extends MskimRequestMapping {
 		class1.setNow_p(rcDao.studentCount(class1)); // 현재원
 		class1.setProf(userDao.selectName(class1.getUser_no())); // 교수명
 		List<Student> stList = rcDao.studentList(class1);
-		Map<String, Student> stMap = new HashMap<>();
+		Map<String, Student> stMap = new TreeMap<>();
 		for(Student st : stList) { stMap.put(st.getUser_no(), st); }
 		class1.setStudents(stMap); // 소속 학생
 		List<Assignment> asList = asDao.list(class1);
-		Map<String, Assignment> asMap = new HashMap<>();
-		for(Assignment as : asList) {
+		Map<String, Assignment> asMap = new TreeMap<>();
+		for(Assignment as : asList) {	// 과제 없을 때 방지
 			as.setScores(asDao.scores(as, class1));
 			asMap.put(as.getAs_no()+"", as); }
 		class1.setAssignments(asMap); // 속한 과제
-		
 		request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 		return null;
 	}
@@ -91,6 +91,9 @@ public class ClassLMSController extends MskimRequestMapping {
 		String hasClass = chkClass1(request);
 		if(hasClass != null) { return hasClass; } // class1 확인
 		
+		//테스트
+		Class1 noClass = (Class1)request.getSession().getAttribute("class1");
+		Collection<Student> studentList = noClass.getStudents().values();
 		return "classLMS/classInfo";
 	}
 	
@@ -284,7 +287,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		class1.setYear(2025);
 		class1.setTerm(1);
 		List<Assignment> asList = asDao.list(class1);
-		System.out.println(asList);
 		request.setAttribute("asList", asList);
 		return "classLMS/submitAs";
 	}
@@ -327,7 +329,7 @@ public class ClassLMSController extends MskimRequestMapping {
 
 		return "alert";
 	}
-	
+	// 학점관리 - 교수 (점수 목록만 구현)
 	@RequestMapping("manageScore")
 	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
@@ -337,9 +339,4 @@ public class ClassLMSController extends MskimRequestMapping {
 		request.setAttribute("reg_users", studentList);
 		return "classLMS/manageScore";
 	}
-	
-	
-	
-	
-	
 }
