@@ -129,16 +129,28 @@ public class AsDao {
 		 }
 		 return null;
 	}
-	// 메인_내 수강목록 조회(원동인)
-	public List<Assignment> selectAssignmentsByClassNo(String classNo) {
+	// 메인_과제목록 (학생용)
+	public List<Assignment> selectAssignmentsByStudent(String classNo) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
-			 return session.getMapper(cls).selectAssignmentsByClassNo(classNo);
+			 return session.getMapper(cls).selectAssignmentsByStudent(classNo);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
 			 MyBatisConnection.close(session);
 		 }
 		 return null;
+	}
+	// 메인_과제목록 (교수용)
+	public List<Assignment> selectAssignmentsByProf(String classNo) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAssignmentsByProf(classNo);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		return null;
 	}
 }
