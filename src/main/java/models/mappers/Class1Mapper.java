@@ -111,4 +111,6 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
 	List<Class1> selectTimeClash(Class1 class1);
+	
+	
 }

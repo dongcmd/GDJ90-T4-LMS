@@ -54,10 +54,10 @@
 					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
 					  ~ <fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </td>
 					<td style="text-align: center">
-						<c:if test="${sub_as.file != null}">
-						제출
+						<c:if test="${!empty sub_as.file and !sub_as.file.trim().equals('')}">
+						제출 완료
 						</c:if>
-						<c:if test="${sub_as.file == null}">
+						<c:if test="${empty sub_as.file or sub_as.file.trim().equals('')}">
 						미제출
 						</c:if>						
 					</td>

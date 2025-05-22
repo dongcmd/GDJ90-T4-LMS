@@ -19,11 +19,14 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.Class1;
 import models.classes.Class1Dao;
+import models.classes.Reg_classDao;
+import models.classes.Student;
 import models.users.User;
 
 @WebServlet(urlPatterns = { "/deptLMS/*" }, initParams = { @WebInitParam(name = "view", value = "/views/") })
 public class DeptLMSController extends MskimRequestMapping {
 	private Class1Dao class1Dao = new Class1Dao();
+	private Reg_classDao rcDao = new Reg_classDao();
 	private UserController uc = new UserController();
 	
 	@RequestMapping("addClass")
@@ -142,6 +145,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		String userNo = login.getUser_no();
 		List<Class1> classesList = class1Dao.selectByProfessor(userNo);
 
+		request.setAttribute("now", new java.util.Date());
 		request.setAttribute("classesList", classesList);
 		return "deptLMS/myClass";
 	}
@@ -345,4 +349,20 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return false;
 	}
+	//(dwCheck)교수가 종강시키기====================================
+	@RequestMapping("endClass")
+	public String endClass(HttpServletRequest request, HttpServletResponse response) {
+		Class1 class1 = new Class1(request.getParameter("class_no"),
+				request.getParameter("ban"),
+				Integer.parseInt(request.getParameter("year")),
+				Integer.parseInt(request.getParameter("term")));
+		class1 = class1Dao.selectOne(class1);
+		
+		if(class1Dao.endClass(class1)) {
+			
+		}
+		
+	}
+	
+	
 }

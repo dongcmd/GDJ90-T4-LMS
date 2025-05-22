@@ -16,42 +16,53 @@
 		<thead class="thead-light" style="text-align: center;">
 			<tr>
 				<th style="width: 5%;">No</th>
-				<th style="width: 10%;">강의코드</th>
+				<th style="width: 6%;">강의코드</th>
 				<th style="width: 15%;">강의명</th>
-				<th style="width: 8%;">교수명</th>
 				<th style="width: 5%;">학년</th>
 				<th style="width: 8%;">이수학점</th>
+				<th style="width: 12%;">수업일자</th>
 				<th style="width: 10%;">강의시간</th>
-				<th style="width: 8%;">강의실</th>
+				<th style="width: 4%;">강의실</th>
 				<th style="width: 9%;">정원</th>
-				<th style="width: 8%;">수정/삭제</th>
+				<th style="width: 12%;">관리하기</th>
 			</tr>
 		</thead>
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
+				<fmt:formatDate var="s_date" value="${cls.s_date}" pattern="yyyy/MM/dd" />
+				<fmt:formatDate var="e_date" value="${cls.e_date}" pattern="yyyy/MM/dd" />
 			<tr class="text-center">
 				<td>${stat.index + 1}</td>
-				<td>${cls.class_no}</td>
-				<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" target="_blank;"> ${cls.class_name}</a></td>
-				<td>${login.user_name}</td>
+				<td>${cls.class_no}-${cls.ban}</td>
+				<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}""> ${cls.class_name}</a></td>
 				<td>${cls.class_grade}</td>
 				<td>${cls.credit}</td>
+				<td>${s_date}<br>
+						~ ${e_date}</td>
 				<td><c:forEach var="d" items="${cls.days}">
 						<c:choose>
-							<c:when test="${d == 0}">월 </c:when>
-							<c:when test="${d == 1}">화 </c:when>
-							<c:when test="${d == 2}">수 </c:when>
-							<c:when test="${d == 3}">목 </c:when>
-							<c:when test="${d == 4}">금 </c:when>
+							<c:when test="${d == 0}">월</c:when>
+							<c:when test="${d == 1}">화</c:when>
+							<c:when test="${d == 2}">수</c:when>
+							<c:when test="${d == 3}">목</c:when>
+							<c:when test="${d == 4}">금</c:when>
 						</c:choose>
-					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
+					</c:forEach><br><%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%>
+					 ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
 				<td>${cls.classroom}</td>
 				<td>${cls.now_p}/${cls.max_p}</td>
-				<td><a href="updateClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark">수정</a> <a
-						href="deleteClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 이 강의를 삭제하시겠습니까?');"
-					>삭제</a></td>
+				<td><a href="updateClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark">수정</a>
+				<a href="deleteClass?no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" 
+						onclick="return confirm('정말 이 강의를 삭제하시겠습니까?');">
+						삭제</a>
+				<c:if test="${now ge cls.e_date}">
+					<a href="endClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark"
+					 onclick="return confirm('종강하겠습니까? 종강 후 학점 수정이 불가합니다.');">
+					 종강</a>
+				</c:if></td>
 			</tr>
 		</c:forEach>
 	</table>
 	<button type="button" class="btn btn-light btn-outline-secondary" onclick="location.href='addClass'" style="position: fixed; right: 24px; z-index: 1000;">강의 추가</button>
 </body>
+
 </html>

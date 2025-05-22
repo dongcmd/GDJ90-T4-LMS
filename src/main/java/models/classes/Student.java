@@ -9,6 +9,13 @@ public class Student {
 	private int as_tot_score; // 과제 점수
 	private int att_score; // 출석 점수
 	
+	@Override
+	public String toString() {
+		return "Student [user_no=" + user_no + ", user_name=" + user_name + ", user_grade=" + user_grade
+				+ ", exam1_score=" + exam1_score + ", exam2_score=" + exam2_score + ", as_tot_score=" + as_tot_score
+				+ ", att_score=" + att_score + "]";
+	}
+
 	public String getUser_no() {
 		return user_no;
 	}
