@@ -18,10 +18,6 @@ manageassignment
 		<jsp:include page="classTopTable.jsp" />
 	
 		<h3 class="my-4">컴퓨터 공학과 과제관리</h3>
-        <input type="hidden" name="class_no" value="${class_no}">
-        <input type="hidden" name="ban" value="${ban}">
-        <input type="hidden" name="year" value="${year}">
-        <input type="hidden" name="term" value="${term}">
         		
 		<h3 class="my-4">과제 목록
 			<a href="addAssignmentForm" class="btn btn-dark" role="button">과제추가</a>

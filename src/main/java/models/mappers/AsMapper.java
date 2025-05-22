@@ -34,17 +34,13 @@ public interface AsMapper {
 
 	@Delete("delete from assignments where as_no=#{value}")
 	int deleteuser(int as_no);
-	
-	//과제 제출
-	@Insert("insert into submitted_assignments (user_no, as_no, file)"
-			+ "	values(#{user_no}, #{as_no}, #{file})")
-	int insertAs(Sub_as as);
+
 	
 	//제출 과제 선택 ==============================================
 	@Select("select * from submitted_assignments where user_no=#{user_no} and as_no = #{as_no}")
 	Sub_as selectSub_as(@Param("user_no") String user_no, @Param("as_no") int as_no);
 	
-	//과제 업데이트
+	//과제 제출/수정
 	@Update("UPDATE submitted_assignments SET file = #{file} WHERE user_no = #{user_no} AND as_no = #{as_no}")
 	int updateAs(Sub_as as);
 	
@@ -56,6 +52,19 @@ public interface AsMapper {
 	@Select("select * from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
 	List<Assignment> selectList(Class1 loginclass);
 
+	//수업의 수강생 user_no 리스트 불러오기
+	@Select("select user_no from registered_classes where class_no=#{value}")
+	List<String> selectReg_Std(String class_no);
+
+	//수업의 과제번호 리스트 불러오기
+	@Select("select as_no from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
+	List<Integer> selectAs_no(Class1 class1);
+
+	//user_no, as_no에 맞는 File 속성값 갖고오기
+	@Select("select file from submitted_assignments where user_no=#{user_no} and as_no=#{as_no}")
+	String selectFile(@Param("user_no") String user_no, @Param("as_no") int as_no);
+
+	
 	// 메인_강의목록(학생/교수)_원동인
 	@Select("select class_no, ban, year, term  from registered_classes where user_no = #{user_no}")
 	List<Assignment> main_assignments(List<Class1> classesList_main_s);

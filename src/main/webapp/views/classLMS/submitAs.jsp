@@ -24,31 +24,31 @@
 					<th style="text-align: center">제출한 과제 다운로드</th>
 				</tr>
 			</thead>	
-			<c:forEach var="as" items="${asList}">
-			<c:if test="${class1.class_no == as.class_no}">		
 			<tbody>
+			<c:forEach var="as" items="${asList}" varStatus="status">
+			<c:if test="${class1.class_no == as.class_no}">		
 				<tr>
-					<td style="text-align: center">${as.as_no}</td>
+					<td style="text-align: center">${status.index + 1}</td>
 					<td><a href="submitassignment?as_no=${as.as_no}" style="text-align: center">${as.as_name}</a></td>
 					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> 
 					  ~ <fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </td>
 					<td style="text-align: center">
-						<c:if test="${!empty sub_as.file and !sub_as.file.trim().equals('')}">
-						제출 완료
+						<c:if test="${filelist[status.index] != null and !filelist[status.index].trim().equals('')}">
+						제출
 						</c:if>
-						<c:if test="${empty sub_as.file or sub_as.file.trim().equals('')}">
+						<c:if test="${filelist[status.index] == null and filelist[status.index].trim().equals('')}">
 						미제출
 						</c:if>						
 					</td>
 					<td>
 						<div class="d-flex justify-content-center">
-							<a href="../files/${sub_as.file}" class="btn btn-dark" role="button" style="text-align: center">다운로드</a>
+							<a href="../files/${filelist[status.index]}" class="btn btn-dark" role="button" style="text-align: center" download>다운로드</a>
 						</div>
 					</td>
 				</tr>
-			</tbody>
 			</c:if>
 			</c:forEach>
+			</tbody>
 		</table>
 	</body>
 </html>

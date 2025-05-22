@@ -18,6 +18,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import com.oreilly.servlet.MultipartRequest;
+
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.AsDao;
@@ -38,30 +44,9 @@ public class ClassLMSController extends MskimRequestMapping {
 	private AsDao asDao = new AsDao();
 	private Reg_classDao rcDao = new Reg_classDao();
 	private UserDao userDao = new UserDao();
-	private SubAsDao subAsDao = new SubAsDao();
-
-	/*
-	 class1.setNow_p(rcDao.studentCount(class1)); // 현재원
-		class1.setProf(userDao.selectName(class1.getUser_no())); // 교수명
-		List<Student> stList = rcDao.studentList(class1);
-		Map<String, Student> stMap = new TreeMap<>();
-		for(Student st : stList) { stMap.put(st.getUser_no(), st); }
-    
-		class1.setStudents(stMap); // 클래스에 소속 학생 넣기
-		List<Assignment> asList = asDao.list(class1); 
-		Map<String, Assignment> asMap = new HashMap<>(); // class1의 과제 목록
-		for(Assignment as : asList) { // 과제에 각 제출한 과제 넣기
-			Map<String, Sub_as> subAsMap = new HashMap<>();
-			for(Student st : stList) { // 제출한 과제 목록에 각 학생 넣기
-				subAsMap.put(st.getUser_no(), subAsDao.selectOne(st.getUser_no(), as.getAs_no()));
-			}
-			as.setSub_as(subAsMap);
-			asMap.put(as.getAs_no()+"", as);
-		} // for
-		
-		class1.setAssignments(asMap); // 클래스에 각 과제 넣기
-	 
-	 // 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
+	private SubAsDao subAsDao = new SubAsDao();	
+	
+	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
 	public String chkClass1(HttpServletRequest request) {
 		if(request.getSession().getAttribute("class1") == null) {
 			request.setAttribute("msg", "강의를 선택하세요.");
@@ -99,6 +84,8 @@ public class ClassLMSController extends MskimRequestMapping {
            return "alert";
         }
         // 세션에 교수정보(원동인)
+		String prof = class1Dao.selectProf(class1);
+	    class1.setProf(prof);
         request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
         return null;
      }
@@ -112,7 +99,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		Class1 class1 = new Class1();
 		String cs = putClass1Session(request, class1); 
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
-    Class1 class1 = (Class1) request.getSession().getAttribute("class1");
+    	Class1 class1 = (Class1) request.getSession().getAttribute("class1");
 		
 		return "classLMS/classInfo";
 	}
@@ -129,13 +116,21 @@ public class ClassLMSController extends MskimRequestMapping {
 		String classCheck = uc.classCheck(request, response);
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
-		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
-		List<Assignment> asList = asDao.selectAsbyClass(loginclass);
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		System.out.println(class1);
+		List<Assignment> asList = asDao.selectAsbyClass(class1);
+		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
+		System.out.println("수강생 이름 :"+r_stuList);
 		if(request.getParameter("as_no") != null) {
 			int as_no = Integer.parseInt(request.getParameter("as_no"));
+			for(String a : r_stuList) { // a : string 형태의 수강생 user_no
+			System.out.println(as_no);
+			System.out.println(a);
+			subAsDao.totStd_list(a, as_no);
 			List<Sub_as> subAsList = subAsDao.list(as_no);
 			request.setAttribute("selectedAs_no", as_no);
 			request.setAttribute("subAsList", subAsList);
+			}
 		}
 		request.setAttribute("asList", asList);
 
@@ -151,7 +146,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
 		String classCheck = uc.classCheck(request, response);
 		if(classCheck != null) { return classCheck; } // 강의 확인
-		
 		return null; // 정상인 경우
 	}
 	
@@ -298,10 +292,16 @@ public class ClassLMSController extends MskimRequestMapping {
 		
 	    String password = request.getParameter("password");
 	    int as_no = Integer.parseInt(request.getParameter("as_no"));
+	    System.out.println(as_no);
 	    String msg = "비밀번호가 맞지 않습니다.";
-	    String url = "deleteAssignmentForm";
-	    if (login.getPassword().equals(password)) {
-	        if (asDao.deleteAssignment(as_no)) {
+	    String url = "deleteAssignmentForm?as_no=" + as_no;
+	    if (password != null && login.getPassword().equals(password)) {
+	        List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
+	        for(String a : r_stuList) {
+	           subAsDao.deleteStd_list(a, as_no);
+	        }
+	        boolean result = asDao.deleteAssignment(as_no);
+	        if (result) {
 	            msg = "사용자 삭제 완료";
 	            url = "manageAs";
 	        } else {
@@ -314,28 +314,27 @@ public class ClassLMSController extends MskimRequestMapping {
 	}
 	
 	//과제제출(학생) 메인폼 =============================================
-	@RequestMapping("submitAs")
+	@RequestMapping("submitAs") //기흔체크
 	public String submitAs(HttpServletRequest request , HttpServletResponse response) {				
 		User login = (User)request.getSession().getAttribute("login");
-		String studentCheck = uc.studentCheck(request, response);
-		if(studentCheck != null) { return studentCheck; } // 학생 확인
-		Class1 class1 = new Class1();
-		String cs = putClass1Session(request, class1); 
-		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		
-		
+		// 접근권한 넣어야함
 		//===========================
 		
-		List<Assignment> asList = asDao.selectList(class1);
-		Sub_as mySub_as = subAsDao.selectOne(login.getUser_no(), 0);
-		
-//		if(request.getParameter("as_no") != null) {
-//			//as_no = Integer.parseInt(request.getParameter("as_no"));
-//			List<Sub_as> subAsList = subAsDao.list(as_no);
-//			request.setAttribute("selectedAs_no", as_no);
-//			request.setAttribute("subAsList", subAsList);
-//		}
+		List<Assignment> asList = asDao.selectAsbyClass(class1);
+		List<Integer> as_noList = asDao.selectAs_no(class1);
+		System.out.println(as_noList);
+		List<String> filelist = new ArrayList<>();
+		for(int as_no : as_noList) {
+			String file = asDao.selectFile(login.getUser_no(), as_no);
+			filelist.add(file);
+		}
+//		System.out.println("파일리스트"+filelist);
+//		System.out.println("과제리스트"+asList);
+//		System.out.println("세션 정보"+class1);
 
+		request.setAttribute("filelist", filelist);
 		request.setAttribute("asList", asList);
 		return "classLMS/submitAs";
 	}
@@ -352,41 +351,72 @@ public class ClassLMSController extends MskimRequestMapping {
 		return "classLMS/submitassignment";
 	}
 	
-	@RequestMapping("upload")
-	public String upload(HttpServletRequest request , HttpServletResponse response) {	
-		User login = (User)request.getSession().getAttribute("login");
-		String path = request.getServletContext().getRealPath("/") +"files/";
-		File f = new File(path);
-		if(!f.exists()) f.mkdirs();
-		int size = 5*1024*1024;
-		MultipartRequest multi = null;
-		try { multi = new MultipartRequest(request, path, size, "utf-8");
-		} catch(IOException e) { e.printStackTrace(); }
-		String asNo = multi.getParameter("as_no");
-		String fileName = multi.getOriginalFileName("file");
-		Sub_as as = new Sub_as();
-		as.setAs_no(Integer.parseInt(asNo));
-		as.setFile(fileName);
-		as.setUser_no(login.getUser_no());
-		Sub_as existing = asDao.selectSub_as(as.getUser_no(), as.getAs_no());
-		if (existing == null) {
-			if(asDao.insertAs(as)) {
-				request.setAttribute("msg", "과제가 제출되었습니다.");
-				request.setAttribute("url", "submitAs");
-			} else {
-				request.setAttribute("msg", "과제제출에 실패하였습니다.");
-				request.setAttribute("url", "submitassignment");
-			}
-		} else {
-			if(asDao.updateAs(as)) {
-				request.setAttribute("msg", "제출된 파일을 수정했습니다.");
-				request.setAttribute("url", "submitAs");
-			} else {
-				request.setAttribute("msg", "수정에 실패하였습니다.");
-				request.setAttribute("url", "submitassignment");
-			}
-		}
-		return "alert";
+	@RequestMapping("upload") //commons-fileupload-1.4 jar + commons-io-2.6.jar
+	public String upload(HttpServletRequest request , HttpServletResponse response) {
+	    User login = (User)request.getSession().getAttribute("login");
+	    String path = request.getServletContext().getRealPath("/") + "files/";
+	    File uploadDir = new File(path);
+	    if (!uploadDir.exists()) uploadDir.mkdirs();
+	    int maxSize = 5 * 1024 * 1024; // 5MB
+	    String asNo = null;
+	    String fileName = null;
+	    if (ServletFileUpload.isMultipartContent(request)) {
+	        try {
+	            DiskFileItemFactory factory = new DiskFileItemFactory();
+	            factory.setSizeThreshold(1024 * 1024); // 1MB 메모리 임계값
+	            factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
+
+	            ServletFileUpload upload = new ServletFileUpload(factory);
+	            upload.setSizeMax(maxSize);
+
+	            List<FileItem> formItems = upload.parseRequest(request);
+
+	            if (formItems != null && formItems.size() > 0) {
+	                for (FileItem item : formItems) {
+	                    if (item.isFormField()) {
+	                        if (item.getFieldName().equals("as_no")) {
+	                            asNo = item.getString("utf-8");
+	                        }
+	                    } else {
+	                        fileName = new File(item.getName()).getName();
+	                        String filePath = path + fileName;
+	                        File storeFile = new File(filePath);
+	                        item.write(storeFile);
+	                    }
+	                }
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            request.setAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
+	            request.setAttribute("url", "submitassignment");
+	            return "alert";
+	        }
+	    }
+	    Sub_as as = new Sub_as();
+	    as.setAs_no(Integer.parseInt(asNo));
+	    as.setFile(fileName);
+	    as.setUser_no(login.getUser_no());
+
+	    Sub_as existing = asDao.selectSub_as(as.getUser_no(), as.getAs_no());
+	    if (existing.getFile() == null) {
+	        if (asDao.updateAs(as)) {
+	            request.setAttribute("msg", "과제가 제출되었습니다.");
+	            request.setAttribute("url", "submitAs");
+	        } else {
+	            request.setAttribute("msg", "과제제출에 실패하였습니다.");
+	            request.setAttribute("url", "submitassignment");
+	        }
+	    } else {
+	        if (asDao.updateAs(as)) {
+	            request.setAttribute("msg", "제출된 파일을 수정했습니다.");
+	            request.setAttribute("url", "submitAs");
+	        } else {
+	            request.setAttribute("msg", "수정에 실패하였습니다.");
+	            request.setAttribute("url", "submitassignment");
+	        }
+	    }
+
+	    return "alert";
 	}
 
 	// 이동원 학점 관리========================

@@ -143,19 +143,19 @@ public class UserController extends MskimRequestMapping{
 			randpw = String.valueOf(x);
 			int pass = dao.pwReset(user_no, randpw);
 			if(pass == 1) {
-				request.setAttribute("msg", "비밀번호:"+ randpw);
+				request.setAttribute("msg", "임시 비밀번호는"+ randpw+"입니다. 비밀번호를 복사해주세요.");
 				request.setAttribute("close", true);
 				return "alert";
 			} else {
 				request.setAttribute("msg", "오류발생");
 				return "users/resetPwForm";
-			}
-			
+			}		
 		}
 		request.setAttribute("msg", "비밀번호를 찾을 수 없습니다.");
 		request.setAttribute("url", "resetPwForm");
 		return "alert";
 	}
+	
 	
 	// 로그아웃 =================================================================
 	@RequestMapping("logout")

@@ -60,6 +60,7 @@ public class BoardController extends MskimRequestMapping {
 			if(class1 != null) {
 				System.out.println("4번 : " + board_id);
 				if(class1.getStudents().get(login.getUser_no()) != null) {
+
 					System.out.println("5번 : " + board_id);
 					check = true;
 				}
