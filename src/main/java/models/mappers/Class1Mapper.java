@@ -113,6 +113,10 @@ public interface Class1Mapper {
 	List<Class1> selectTimeClash(Class1 class1);
 
 	// 강의계획서(원동인)
-	@Select("SELECT class_no, ban, year, term, c_plan, file FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
+	@Select("SELECT * FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
 	List<Class1> classinfoList(Class1 class1);
+	
+	// 세션에 교수이름(원동인)
+	@Select("select user_name from users where user_no=#{user_no}")
+	String selectProf(Class1 class1);
 }

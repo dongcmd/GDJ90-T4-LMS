@@ -8,6 +8,7 @@
 <title>학점 관리</title>
 </head>
 <body>
+	<jsp:include page="classTopTable.jsp" />
 	<h2>학점 관리</h2>
 	<table class="table table-bordered">
 		<thead class="thead-light">

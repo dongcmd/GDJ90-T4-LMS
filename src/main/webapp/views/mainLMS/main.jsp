@@ -168,21 +168,24 @@
 	                <thead class="thead-light">
 	                    <tr>
 	                        <th class="fw_b text-center">과제명</th>
-	                        <th class="fw_b text-center">기한</th>
-	                    	<th class="fw_b text-center">제출 여부</th>
+	                        <th class="fw_b text-center">과제내용</th>
+	                    	<th class="fw_b text-center">제출 기한</th>
 	                    </tr>
 	                </thead>
-	                
-	               	<%-- <c:forEach var="aslist" items="${asList}">
-					<tbody>
-						<tr>
-							<td style="text-align: center">${aslist.as_no}</td>
-							<td><a href="submitassignment?as_no=${aslist.as_no}" style="text-align: center">${aslist.as_name}</a></td>
-							<td> ~ <fmt:formatDate value="${aslist.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </td>
-							<td style="text-align: center">제출/미제출</td>
-						</tr>
-					</tbody>
-					</c:forEach> --%>
+	               <c:forEach var="assignmentMap_main" items="${assignmentMap_main}">
+					  <tbody>
+					    <c:forEach var="ass_main" items="${assignmentMap_main.value}">
+					      <tr>
+					        <td class="text-center">${ass_main.as_name}</td>
+					        <td class="text-center">${ass_main.as_content}</td>
+					        <td class="text-center">
+					          <fmt:formatDate value="${ass_main.as_s_date}" pattern="yyyy/MM/dd" /> ~ 
+					          <fmt:formatDate value="${ass_main.as_e_date}" pattern="yyyy/MM/dd" />
+					        </td>
+					      </tr>
+					    </c:forEach>
+					  </tbody>
+					</c:forEach>
 	            </table>
 	        </div>
         </c:if>

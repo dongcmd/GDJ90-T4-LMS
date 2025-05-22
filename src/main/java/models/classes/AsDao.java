@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+
+import controllers.registered_classes;
 import models.MyBatisConnection;
 import models.mappers.AsMapper;
 
@@ -127,8 +129,16 @@ public class AsDao {
 		 }
 		 return null;
 	}
-	
-
-
-
+	// 메인_내 수강목록 조회(원동인)
+	public List<Assignment> selectAssignmentsByClassNo(String classNo) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAssignmentsByClassNo(classNo);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
 }
