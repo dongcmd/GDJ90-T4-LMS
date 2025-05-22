@@ -9,7 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.oreilly.servlet.MultipartRequest;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
@@ -59,11 +61,11 @@ public class BoardController extends MskimRequestMapping {
 			boolean check = false;
 			if(class1 != null) {
 				System.out.println("4번 : " + board_id);
-				if(class1.getStudents().get(login.getUser_no()) != null) {
-
-					System.out.println("5번 : " + board_id);
-					check = true;
-				}
+//				if(class1.getStudents().get(login.getUser_no()) != null) {
+//수정
+//					System.out.println("5번 : " + board_id);
+//					check = true;
+//				}
 			} else if(!check) {
 				System.out.println("6번 : " + board_id);
 				req.setAttribute("msg", "접근 권한 없음");
@@ -158,34 +160,58 @@ public class BoardController extends MskimRequestMapping {
 		return "board/writeForm";
 	}
 	@RequestMapping("write")
-	public String write(HttpServletRequest req,
-			HttpServletResponse res) {
-		String path = req.getServletContext().getRealPath("/") +"files/";
-		File f = new File(path);
-		if(!f.exists()) f.mkdirs();
-		int size = 5*1024*1024;
-		MultipartRequest multi = null;
-		try { multi = new MultipartRequest(req, path, size, "utf-8");
-		} catch(IOException e) { e.printStackTrace(); }
-		
-		Article arti = new Article();
-		String board_id = multi.getParameter("board_id");
-		String arti_title = multi.getParameter("title");
-		String arti_content = multi.getParameter("content");
-		User login = (User)req.getSession().getAttribute("login");
-		
-		arti.setBoard_id(board_id);
-		arti.setArti_title(arti_title);
-		arti.setArti_content(arti_content);
-		arti.setUser_no(login.getUser_no());
-		
-		if(artiDao.insert(arti)) {
-			return "redirect:board?board_id="+board_id;
-		}
-		req.setAttribute("msg", "게시물 등록 실패");
-		req.setAttribute("url", "writeForm?board_id="+board_id);
-		return "alert";
+	public String write(HttpServletRequest req, HttpServletResponse res) {
+	    String path = req.getServletContext().getRealPath("/") + "files/";
+	    File uploadDir = new File(path);
+	    if (!uploadDir.exists()) uploadDir.mkdirs();
+
+	    int size = 5 * 1024 * 1024; // 5MB 제한
+	    Article arti = new Article();
+	    User login = (User) req.getSession().getAttribute("login");
+
+	    DiskFileItemFactory factory = new DiskFileItemFactory();
+	    factory.setSizeThreshold(1024 * 1024); // 메모리에 저장할 임시 파일 크기 제한
+	    factory.setRepository(uploadDir); // 임시 디렉토리
+
+	    ServletFileUpload upload = new ServletFileUpload(factory);
+	    upload.setSizeMax(size); // 전체 요청 크기 제한
+
+	    try {
+	        List<FileItem> items = upload.parseRequest(req);
+	        for (FileItem item : items) {
+	            if (item.isFormField()) {
+	                // 일반 form 필드
+	                String fieldName = item.getFieldName();
+	                String value = item.getString("utf-8");
+	                switch (fieldName) {
+	                    case "board_id": arti.setBoard_id(value); break;
+	                    case "title": arti.setArti_title(value); break;
+	                    case "content": arti.setArti_content(value); break;
+	                }
+	            } else {
+	                // 파일 업로드 처리 (원한다면)
+	                String fileName = new File(item.getName()).getName();
+	                if (!fileName.isEmpty()) {
+	                    File uploadedFile = new File(path + fileName);
+	                    item.write(uploadedFile);
+	                    // 필요하다면: arti.setFilename(fileName);
+	                }
+	            }
+	        }
+	        arti.setUser_no(login.getUser_no());
+
+	        if (artiDao.insert(arti)) {
+	            return "redirect:board?board_id=" + arti.getBoard_id();
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    req.setAttribute("msg", "게시물 등록 실패");
+	    req.setAttribute("url", "writeForm?board_id=" + arti.getBoard_id());
+	    return "alert";
 	}
+
 	@RequestMapping("deleteForm")
 	public String deleteForm(HttpServletRequest req,
 			HttpServletResponse res) {
@@ -251,36 +277,78 @@ public class BoardController extends MskimRequestMapping {
 	}
 	
 	@RequestMapping("update")
-	public String update(HttpServletRequest req,
-			HttpServletResponse res) {
-		String path = req.getServletContext().getRealPath("/") +"files/";
-		File f = new File(path);
-		if(!f.exists()) f.mkdirs();
-		int size = 5*1024*1024;
-		MultipartRequest multi = null;
-		try { multi = new MultipartRequest(req, path, size, "utf-8");
-		} catch(IOException e) { e.printStackTrace(); }
-		
-		int arti_no = Integer.parseInt(multi.getParameter("arti_no"));
-		Article arti = artiDao.selectOne(arti_no);
-		String arti_title = multi.getParameter("title");
-		String arti_content = multi.getParameter("content");
-		//첨부파일 수정. 
-		arti.setFile(multi.getFilesystemName("file1"));
-		//첨부파일 수정 안됨
-		if(arti.getFile()==null || arti.getFile().equals("")) {
-		//이전 첨부 파일을 유지
-			arti.setFile(multi.getParameter("file2"));
-		}
-		
-		arti.setArti_title(arti_title);
-		arti.setArti_content(arti_content);
-		
-		if(artiDao.update(arti)) {
-			return "redirect:board?board_id="+arti.getBoard_id();
-		}
-		req.setAttribute("msg", "게시물 등록 실패");
-		req.setAttribute("url", "writeForm?board_id="+arti.getBoard_id());
-		return "alert";
+	public String update(HttpServletRequest req, HttpServletResponse res) {
+	    String path = req.getServletContext().getRealPath("/") + "files/";
+	    File uploadDir = new File(path);
+	    if (!uploadDir.exists()) uploadDir.mkdirs();
+
+	    int size = 5 * 1024 * 1024; // 5MB 제한
+	    Article arti = new Article();
+	    String file1 = null;
+	    String file2 = null;
+	    int arti_no = 0;
+	    String arti_title = null;
+	    String arti_content = null;
+
+	    DiskFileItemFactory factory = new DiskFileItemFactory();
+	    factory.setSizeThreshold(1024 * 1024);
+	    factory.setRepository(uploadDir);
+
+	    ServletFileUpload upload = new ServletFileUpload(factory);
+	    upload.setSizeMax(size);
+
+	    try {
+	        List<FileItem> items = upload.parseRequest(req);
+	        for (FileItem item : items) {
+	            if (item.isFormField()) {
+	                String field = item.getFieldName();
+	                String value = item.getString("utf-8");
+	                switch (field) {
+	                    case "arti_no":
+	                        arti_no = Integer.parseInt(value);
+	                        break;
+	                    case "title":
+	                        arti_title = value;
+	                        break;
+	                    case "content":
+	                        arti_content = value;
+	                        break;
+	                    case "file2":
+	                        file2 = value; // 이전 파일명
+	                        break;
+	                }
+	            } else {
+	                String fileName = new File(item.getName()).getName();
+	                if (!fileName.isEmpty()) {
+	                    File uploadedFile = new File(path + fileName);
+	                    item.write(uploadedFile);
+	                    file1 = fileName; // 새 파일 업로드
+	                }
+	            }
+	        }
+
+	        arti = artiDao.selectOne(arti_no);
+	        arti.setArti_title(arti_title);
+	        arti.setArti_content(arti_content);
+
+	        // 새 첨부파일이 있으면 적용, 없으면 기존 파일 유지
+	        if (file1 != null && !file1.isEmpty()) {
+	            arti.setFile(file1);
+	        } else {
+	            arti.setFile(file2);
+	        }
+
+	        if (artiDao.update(arti)) {
+	            return "redirect:board?board_id=" + arti.getBoard_id();
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    req.setAttribute("msg", "게시물 등록 실패");
+	    req.setAttribute("url", "writeForm?board_id=" + (arti.getBoard_id() != null ? arti.getBoard_id() : ""));
+	    return "alert";
 	}
+
 }
