@@ -56,5 +56,13 @@ public interface AsMapper {
 	@Select("select * from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
 	List<Assignment> selectList(Class1 loginclass);
 
-	
+	// 메인_강의목록(학생/교수)_원동인
+	@Select("select class_no, ban, year, term  from registered_classes where user_no = #{user_no}")
+	List<Assignment> main_assignments(List<Class1> classesList_main_s);
+	// 메인_과제목록 (학생용)
+	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
+	List<Assignment> selectAssignmentsByStudent(String classNo);
+	// 메인_과제목록 (교수용)
+	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
+	List<Assignment> selectAssignmentsByProf(String classNo);
 }

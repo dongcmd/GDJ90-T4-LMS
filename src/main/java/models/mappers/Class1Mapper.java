@@ -111,6 +111,34 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
 	List<Class1> selectTimeClash(Class1 class1);
+  
+	// 강의계획서(원동인)
+	@Select("SELECT * FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
+	List<Class1> classinfoList(Class1 class1);
 	
-	
+	// 세션에 교수이름(원동인)
+	@Select("select user_name from users where user_no=#{user_no}")
+	String selectProf(Class1 class1);
+
+	@Select(
+	        "<script>"
+	      + "SELECT c.*, rc.exam1_score, rc.exam2_score, rc.as_tot_score, rc.att_score, u.user_name "
+	      + "AS prof, rc.year,rc.term "
+	      + "FROM registered_classes rc "
+	      + "JOIN classes c "
+	      + "ON rc.class_no=c.class_no "
+	      + "AND rc.ban=c.ban "
+	      + "AND rc.year=c.year "
+	      + "AND rc.term=c.term "
+	      + "JOIN users u "
+	      + "ON c.user_no=u.user_no "
+	      + "WHERE rc.user_no=#{user_no} "
+	      + "AND rc.status=2 "
+	      + "<if test=\"type=='class_name'\">AND c.class_name LIKE CONCAT('%',#{fine},'%') </if>"
+	      + "<if test=\"type=='user_name'\">AND u.user_name LIKE CONCAT('%',#{fine},'%') </if>"
+	      + "<if test=\"type=='year_term'\">AND CONCAT(rc.year,'-',rc.term) LIKE CONCAT('%',#{fine},'%') </if>"
+	      + "</script>"
+	    )
+	    List<Class1> selectGradesByUserFilter(@Param("user_no") String userNo, @Param("type") String type, @Param("fine") String fine );
+  
 }

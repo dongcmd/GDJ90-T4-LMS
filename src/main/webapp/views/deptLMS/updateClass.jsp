@@ -9,9 +9,14 @@
 <title>강의 수정</title>
 </head>
 <body>
+ 	<c:if test="${not empty msg}">
+    <script type="text/javascript">
+      alert('${msg}');
+    </script>
+  </c:if>
 	<h2>강의 수정</h2>
 	<form action="updateClass1" name="f" method="post" enctype="multipart/form-data" onsubmit="return input_check(this)">
-		<input type="hidden" name="no" value="${cls.class_no}" />
+		<input type="hidden" name="class_no" value="${cls.class_no}" />
 		<input type="hidden" name="ban" value="${cls.ban}" />
 		<input type="hidden" name="year" value="${cls.year}" />
 		<input type="hidden" name="term" value="${cls.term}" />
@@ -99,7 +104,7 @@
 				<span id="startPeriod"></span>
 				<span id="middleTilde"></span>
 				<span id="endPeriod"></span></td>
-				<td>개강 날짜 <input type="date" class="form-control" name="sDate" value="${sDateFmt}" placeholder="date input"></td>
+				<td>개강 날짜 <input type="date" class="form-control" name="sDate" min="${today}" value="${sDateFmt}" placeholder="date input" onchange="document.getElementById('eDate').min = this.value"></td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -107,7 +112,7 @@
 				<td style="text-align: right;">종료 교시<span style="color: red;">*</span></td>
 				<td><input type="number" min="1" max="9" name="eTime" class="form-control" style="width: 200px;" value="${cls.e_time}" oninput="updateTime(1,this)" placeholder="종료 교시를 입력하세요."></td>
 				<td></td>
-				<td>종강 날짜 <input type="date" class="form-control" name="eDate" value="${eDateFmt}" placeholder="date input"></td>
+				<td>종강 날짜 <input type="date" class="form-control" name="eDate" id="eDate" min="${sDateFmt}" value="${eDateFmt}" placeholder="date input"></td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -126,7 +131,6 @@
 	<script type="text/javascript">
 	function win_open_classList(page){
 	    open(page, "", "width=1200, height=800, left=300, top=50");
-	    console.log("발동하냐?");
 	}
 		const s_period = [ "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00" ];
 		const e_period = [ "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" ];

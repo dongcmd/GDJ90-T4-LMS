@@ -112,6 +112,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		Class1 class1 = new Class1();
 		String cs = putClass1Session(request, class1); 
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
+    Class1 class1 = (Class1) request.getSession().getAttribute("class1");
 		
 		return "classLMS/classInfo";
 	}
@@ -387,9 +388,11 @@ public class ClassLMSController extends MskimRequestMapping {
 		}
 		return "alert";
 	}
+
 	// 이동원 학점 관리========================
 	@RequestMapping("manageScore")
 	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
+
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; } // 교수 확인
 		Class1 class1 = new Class1();
@@ -401,7 +404,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		studentList.sort((s1, s2) -> s1.getUser_no().compareTo(s2.getUser_no()));
 		// 학번을 오름차순으로 정렬
 		request.setAttribute("reg_users", studentList);
-		return "classLMS/manageScore";
+		return "classLMS/manage";
 	}
 
 }

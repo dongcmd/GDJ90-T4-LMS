@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%-- 원동인 --%>
 <!DOCTYPE html>
 <html>
@@ -12,15 +13,17 @@
 		<jsp:include page="classTopTable.jsp" />
 		
 		<h3 class="my-4">강의 계획서</h3>
-		<div class="d-flex mb-4" style="gap:10px">
-			<table class="table table-bordered col-sm-4 mb-0">
-	       		<tr>
-	       			<th style="background-color: #eee;">파일</th>
-	       			<td>중간고사.pdf</td>
-	       		</tr>
-       		</table>
-			<button type="button" class="btn btn-dark">다운로드</button>
-		</div>
-		<textarea class="form-control" style=" resize: none; " rows="20">형 변환 문제를 통한 자료형의 이해, 출력 알고림즘 문제를 이용하여 공부합니다.</textarea>
+		<c:forEach var="classInfo" items="${classesList}">
+			<div class="d-flex mb-4" style="gap:10px">
+				<table class="table table-bordered col-sm-4 mb-0">
+		       		<tr>
+		       			<th style="background-color: #eee;">파일</th>
+		       			<td>${classInfo.file}_강의계획서.pdf</td>
+		       		</tr>
+	       		</table>
+				<a class="btn btn-dark d-flex align-items-center" href="../files/${classInfo.file}_강의계획서.pdf" download>다운로드</a>
+			</div>
+			<textarea class="form-control" style="resize: none;" rows="20" readonly>${classInfo.c_plan}</textarea>
+		</c:forEach>
 	</body>
 </html>

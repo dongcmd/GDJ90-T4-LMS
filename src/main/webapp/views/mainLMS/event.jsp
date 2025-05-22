@@ -63,14 +63,28 @@
 		</table>
 		
 		<!-- 수정 모달 -->
-		<div id="editModal" style="display:none; position:fixed; top:20%; left:30%; background:white; border:1px solid black; padding:20px;">
+		<div id="editModal" style="display:none; position:fixed; width:800px; top:20%; left:30%; background:white; border:1px solid black; padding:20px;">
 		    <form action="event" method="post">
-		        <input type="hidden" name="event_no" id="edit_event_no">
-		        제목: <input type="text" name="event_name" id="edit_event_name" required><br>
-		        시작일: <input type="date" name="even_s_date" id="edit_even_s_date" required><br>
-		        종료일: <input type="date" name="even_e_date" id="edit_even_e_date" required><br>
-		        <button type="submit">수정완료</button>
-		        <button type="button" onclick="closeEditModal()">닫기</button>
+		    <table class="table">
+			    <tr>
+				    <td>
+				    	<input type="hidden" name="event_no" id="edit_event_no">
+			        제목&nbsp;<input class="form-control"  type="text" name="event_name" id="edit_event_name" required>
+				    </td>
+			    </tr>
+				<tr>
+					<td>
+						시작일<input class="form-control" type="date" name="even_s_date" id="edit_even_s_date" required>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						종료일<input class="form-control" type="date" name="even_e_date" id="edit_even_e_date" required>
+					</td>
+				</tr>
+			</table>
+		        <button class="btn btn-light btn-outline-secondary mt-2" type="submit">수정완료</button>
+		        <button class="btn btn-light btn-outline-secondary mt-2" type="button" onclick="closeEditModal()">닫기</button>
 		    </form>
 		</div>
 		
