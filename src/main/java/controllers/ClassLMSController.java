@@ -22,8 +22,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import com.oreilly.servlet.MultipartRequest;
-
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.AsDao;
@@ -56,7 +54,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		return null; // 있음.
 	}
 	
-	 */
 	/*
 	 	세션 체크
 		Class1 class1 = new Class1();
@@ -99,7 +96,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		Class1 class1 = new Class1();
 		String cs = putClass1Session(request, class1); 
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
-    	Class1 class1 = (Class1) request.getSession().getAttribute("class1");
+    	class1 = (Class1) request.getSession().getAttribute("class1");
 		
 		return "classLMS/classInfo";
 	}
@@ -118,7 +115,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		System.out.println(class1);
-		List<Assignment> asList = asDao.selectAsbyClass(class1);
+		List<Assignment> asList = asDao.list(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
 		System.out.println("수강생 이름 :"+r_stuList);
 		if(request.getParameter("as_no") != null) {
@@ -322,7 +319,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		// 접근권한 넣어야함
 		//===========================
 		
-		List<Assignment> asList = asDao.selectAsbyClass(class1);
+		List<Assignment> asList = asDao.list(class1);
 		List<Integer> as_noList = asDao.selectAs_no(class1);
 		System.out.println(as_noList);
 		List<String> filelist = new ArrayList<>();

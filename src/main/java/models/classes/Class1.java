@@ -39,7 +39,6 @@ public class Class1 {
 
 	private List<Integer> days; // 수업 요일
 	
-	
 	@Override
 	public String toString() {
 		return "Class1 [class_no=" + class_no + ", ban=" + ban + ", year=" + year + ", term=" + term + ", major_no="
@@ -48,7 +47,7 @@ public class Class1 {
 				+ ", now_p=" + now_p + ", max_p=" + max_p + ", c_plan=" + c_plan + ", file=" + file + ", s_date="
 				+ s_date + ", e_date=" + e_date + ", prof=" + prof + ", exam1_score=" + exam1_score + ", exam2_score="
 				+ exam2_score + ", as_tot_score=" + as_tot_score + ", att_score=" + att_score + ", status=" + status
-				+ ", days=" + days + ", students=" + students + ", assignments=" + assignments + "]";
+				+ ", days=" + days + "]";
 	}
 	
 	public Class1() {	} // 기본 생성자

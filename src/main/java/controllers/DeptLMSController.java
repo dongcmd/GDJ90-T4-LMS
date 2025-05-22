@@ -500,20 +500,20 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return false;
 	}
-	//(dwCheck)교수가 종강시키기====================================
-	@RequestMapping("endClass")
-	public String endClass(HttpServletRequest request, HttpServletResponse response) {
-		Class1 class1 = new Class1(request.getParameter("class_no"),
-				request.getParameter("ban"),
-				Integer.parseInt(request.getParameter("year")),
-				Integer.parseInt(request.getParameter("term")));
-		class1 = class1Dao.selectOne(class1);
-		
-		if(class1Dao.endClass(class1)) {
-			
-		}
-		
-	}
-	
-	
+//	//(dwCheck)교수가 종강시키기====================================
+//	@RequestMapping("endClass")
+//	public String endClass(HttpServletRequest request, HttpServletResponse response) {
+//		Class1 class1 = new Class1(request.getParameter("class_no"),
+//				request.getParameter("ban"),
+//				Integer.parseInt(request.getParameter("year")),
+//				Integer.parseInt(request.getParameter("term")));
+//		class1 = class1Dao.selectOne(class1);
+//		
+//		if(class1Dao.endClass(class1)) {
+//			//이동원 수정 예정
+//		}
+//		
+//	}
+//	
+//	
 }

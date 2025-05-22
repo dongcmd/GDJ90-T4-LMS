@@ -63,6 +63,24 @@ public class Reg_classDao {
 		 }
 		return false;
 	}
+
+	public boolean isStudent(Class1 target, String user_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 map.clear();
+			 map.put("user_no", user_no);
+			 map.put("class_no", target.getClass_no());
+			 map.put("ban", target.getBan());
+			 map.put("year", target.getYear());
+			 map.put("term", target.getTerm());
+			 return session.getMapper(cls).isStudent(map) > 0;
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return false;
+	}
 	
 
 }

@@ -71,7 +71,7 @@ public class MainLMSController extends MskimRequestMapping {
 	    Map<String, List<Assignment>> assignmentMap_main = new HashMap<>();
 	    for (Class1 c : classesList_main_s) {
 	        String classNo = c.getClass_no();
-	        List<Assignment> assignments_main = asDao.selectAssignmentsByClassNo(classNo);
+	        List<Assignment> assignments_main = asDao.list(c);
 	        if (assignments_main == null) {
 	        	assignments_main = new ArrayList<>();
 	        }
@@ -393,28 +393,6 @@ public class MainLMSController extends MskimRequestMapping {
 	    }
 	    request.setAttribute("url", "signUpClass");
 	    return "alert";
-	}
-	
-	// 사용자 검색 ========================================
-	@RequestMapping("searchNowClass")
-	public String searchClass(HttpServletRequest request, HttpServletResponse response) {
-		String type = request.getParameter("type"); // class_name, user_name
-		String fine = request.getParameter("fine"); // 검색어
-
-		if (type == null || type.isEmpty()) {
-			request.setAttribute("msg", "검색 기준을 선택해주세요");
-			request.setAttribute("url", "signUpClass");
-			return "alert";
-		}
-		if (fine == null || fine.isEmpty()) {
-			request.setAttribute("msg", "검색어를 입력해주세요");
-			request.setAttribute("url", "signUpClass");
-			return "alert";
-		}
-		List<Class1> classesList = request.getParameter("classesList");
-		
-		request.setAttribute("classesList", classesList);
-		return "mainLMS/signUpClass";
 	}
 	
 	// 학점 조회

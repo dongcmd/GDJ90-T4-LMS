@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
-import controllers.registered_classes;
 import models.MyBatisConnection;
 import models.mappers.AsMapper;
 

@@ -26,12 +26,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.oreilly.servlet.MultipartRequest;
-
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.Class1;
+import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.others.Major;
 import models.others.MajorDao;
@@ -47,6 +46,7 @@ initParams = {@WebInitParam(name="view",value="/views/")})
 public class UserController extends MskimRequestMapping{
 	private UserDao dao = new UserDao();
 	private MajorDao majorDao = new MajorDao();
+	private Reg_classDao rcDao = new Reg_classDao();
 	private NotificationDao NotificationDao = new NotificationDao();
 	/*
 		C 상단에 꼭 선언해야 함.
@@ -268,7 +268,11 @@ public class UserController extends MskimRequestMapping{
 				return null; }
 			request.setAttribute("msg", "자신이 진행하는 강의가 아닙니다.");
 		} else if(login.getRole().equals("1")) { // login이 학생일 경우
-			if(target.getStudents().get(login.getUser_no()) != null) { // 소속학생일 경우
+			if(
+				rcDao.isStudent(target, login.getUser_no())
+					
+					
+					) { // 소속학생일 경우
 				return null; }
 			request.setAttribute("msg", "수강 중인 강의가 아닙니다.");	
 		}
