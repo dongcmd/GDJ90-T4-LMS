@@ -75,21 +75,6 @@ public class AsDao {
 		}
 		return false;
 	}
-	
-	//과제 제출=================================================
-
-	public boolean insertAs(Sub_as as) {
-		 SqlSession conn = MyBatisConnection.getConnection();
-		 try {
-			 if(conn.getMapper(cls).insertAs(as) > 0) return true;
-			 else return false;
-		 } catch(Exception e) {
-			 e.printStackTrace();
-		 } finally {
-			 MyBatisConnection.close(conn);
-		 }
-		 return false;
-	}
 	//제출한 과제==========================================================
 	public Sub_as selectSub_as(String user_no, int as_no) {
 		 SqlSession session = MyBatisConnection.getConnection();
@@ -127,10 +112,35 @@ public class AsDao {
 		 }
 		 return null;
 	}
+	//해당 과목을 수강하는 학생 user_no 리스트================================
 	public List<String> selectReg_Std(String class_no) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 return session.getMapper(cls).selectReg_Std(class_no);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
+	
+	//해당 수업의 과제 번호들 select=================================
+	public List<Integer> selectAs_no(Class1 class1) {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAs_no(class1);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
+	public String selectFile(String user_no, int as_no) {
+		 SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectFile(user_no, as_no);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {

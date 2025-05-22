@@ -3,6 +3,7 @@ package models.mappers;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -26,7 +27,10 @@ public interface SubAsMapper {
 	@Insert("INSERT IGNORE INTO submitted_assignments (user_no, as_no)"
 			+ " values(#{user_no}, #{as_no})")
 	public void totStd_list(@Param("user_no") String a, @Param("as_no") int as_no);
-	
+
+	@Delete("Delete from submitted_assignments where user_no=#{user_no} and as_no=#{as_no}")
+	public void deleteStd_list(@Param("user_no") String a,@Param("as_no") int as_no);
+
 	
 	
 }

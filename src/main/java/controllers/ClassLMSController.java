@@ -19,6 +19,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 import com.oreilly.servlet.MultipartRequest;
 
 import gdu.mskim.MskimRequestMapping;
@@ -56,6 +60,8 @@ public class ClassLMSController extends MskimRequestMapping {
 	         request.setAttribute("url", "mainLMS/main");
 	         return "alert";
 	      }
+	       String prof = class1Dao.selectProf(class1);
+	      class1.setProf(prof);
 	      request.getSession().setAttribute("class1", class1); // session 속성으로 class1 지정
 	      return null;
 	   }	
@@ -116,7 +122,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("addAssignmentForm")
 	public String addAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
-		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 
 		if(login.getRole().equals("1")) {
 			request.setAttribute("msg", "접근 권한이 없습니다.");
@@ -134,7 +140,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("addAssignment")
 	public String addAssignment(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
-		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 
 		AsDao dao = new AsDao();	    
 		Assignment as = new Assignment();
@@ -155,10 +161,10 @@ public class ClassLMSController extends MskimRequestMapping {
 	    
 	    as.setAs_point(Integer.parseInt(request.getParameter("as_point")));
     
-	    as.setClass_no(loginclass.getClass_no());
-	    as.setBan(loginclass.getBan());
-	    as.setYear(loginclass.getYear());
-	    as.setTerm(loginclass.getTerm());
+	    as.setClass_no(class1.getClass_no());
+	    as.setBan(class1.getBan());
+	    as.setYear(class1.getYear());
+	    as.setTerm(class1.getTerm());
 		if(dao.insert(as)) {
 			request.setAttribute("msg","과제를 추가하였습니다.");
 			request.setAttribute("url", "manageAs");
@@ -247,11 +253,17 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("deleteAssignment")
 	public String deleteAssignment(HttpServletRequest request , HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 	    String password = request.getParameter("password");
 	    int as_no = Integer.parseInt(request.getParameter("as_no"));
+	    System.out.println(as_no);
 	    String msg = "비밀번호가 맞지 않습니다.";
-	    String url = "deleteAssignmentForm";
+	    String url = "deleteAssignmentForm?as_no=" + as_no;
 	    if (password != null && login.getPassword().equals(password)) {
+	        List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
+	        for(String a : r_stuList) {
+	           subAsDao.deleteStd_list(a, as_no);
+	        }
 	        boolean result = asDao.deleteAssignment(as_no);
 	        if (result) {
 	            msg = "사용자 삭제 완료";
@@ -269,23 +281,24 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("submitAs")
 	public String submitAs(HttpServletRequest request , HttpServletResponse response) {				
 		User login = (User)request.getSession().getAttribute("login");
-		Class1 loginclass = (Class1)request.getSession().getAttribute("class1");
-    
-		System.out.println(loginclass);
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		
 		// 접근권한 넣어야함
 		//===========================
 		
-		List<Assignment> asList = asDao.selectAsbyClass(loginclass);
-//		if(request.getParameter("as_no") != null) {
-//			//as_no = Integer.parseInt(request.getParameter("as_no"));
-//			List<Sub_as> subAsList = subAsDao.list(as_no);
-//			System.out.println(subAsList);
-//			request.setAttribute("selectedAs_no", as_no);
-//			request.setAttribute("subAsList", subAsList);
-//		}
+		List<Assignment> asList = asDao.selectAsbyClass(class1);
+		List<Integer> as_noList = asDao.selectAs_no(class1);
+		System.out.println(as_noList);
+		List<String> filelist = new ArrayList<>();
+		for(int as_no : as_noList) {
+			String file = asDao.selectFile(login.getUser_no(), as_no);
+			filelist.add(file);
+		}
+		System.out.println("파일리스트"+filelist);
 		System.out.println("과제리스트"+asList);
-		System.out.println("세션 정보"+loginclass);
+		System.out.println("세션 정보"+class1);
 
+		request.setAttribute("filelist", filelist);
 		request.setAttribute("asList", asList);
 		return "classLMS/submitAs";
 	}
@@ -302,41 +315,72 @@ public class ClassLMSController extends MskimRequestMapping {
 		return "classLMS/submitassignment";
 	}
 	
-	@RequestMapping("upload")
-	public String upload(HttpServletRequest request , HttpServletResponse response) {	
-		User login = (User)request.getSession().getAttribute("login");
-		String path = request.getServletContext().getRealPath("/") +"files/";
-		File f = new File(path);
-		if(!f.exists()) f.mkdirs();
-		int size = 5*1024*1024;
-		MultipartRequest multi = null;
-		try { multi = new MultipartRequest(request, path, size, "utf-8");
-		} catch(IOException e) { e.printStackTrace(); }
-		String asNo = multi.getParameter("as_no");
-		String fileName = multi.getOriginalFileName("file");
-		Sub_as as = new Sub_as();
-		as.setAs_no(Integer.parseInt(asNo));
-		as.setFile(fileName);
-		as.setUser_no(login.getUser_no());
-		Sub_as existing = asDao.selectSub_as(as.getUser_no(), as.getAs_no());
-		if (existing == null) {
-			if(asDao.insertAs(as)) {
-				request.setAttribute("msg", "과제가 제출되었습니다.");
-				request.setAttribute("url", "submitAs");
-			} else {
-				request.setAttribute("msg", "과제제출에 실패하였습니다.");
-				request.setAttribute("url", "submitassignment");
-			}
-		} else {
-			if(asDao.updateAs(as)) {
-				request.setAttribute("msg", "제출된 파일을 수정했습니다.");
-				request.setAttribute("url", "submitAs");
-			} else {
-				request.setAttribute("msg", "수정에 실패하였습니다.");
-				request.setAttribute("url", "submitassignment");
-			}
-		}
-		return "alert";
+	@RequestMapping("upload") //commons-fileupload-1.4 jar + commons-io-2.6.jar
+	public String upload(HttpServletRequest request , HttpServletResponse response) {
+	    User login = (User)request.getSession().getAttribute("login");
+	    String path = request.getServletContext().getRealPath("/") + "files/";
+	    File uploadDir = new File(path);
+	    if (!uploadDir.exists()) uploadDir.mkdirs();
+	    int maxSize = 5 * 1024 * 1024; // 5MB
+	    String asNo = null;
+	    String fileName = null;
+	    if (ServletFileUpload.isMultipartContent(request)) {
+	        try {
+	            DiskFileItemFactory factory = new DiskFileItemFactory();
+	            factory.setSizeThreshold(1024 * 1024); // 1MB 메모리 임계값
+	            factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
+
+	            ServletFileUpload upload = new ServletFileUpload(factory);
+	            upload.setSizeMax(maxSize);
+
+	            List<FileItem> formItems = upload.parseRequest(request);
+
+	            if (formItems != null && formItems.size() > 0) {
+	                for (FileItem item : formItems) {
+	                    if (item.isFormField()) {
+	                        if (item.getFieldName().equals("as_no")) {
+	                            asNo = item.getString("utf-8");
+	                        }
+	                    } else {
+	                        fileName = new File(item.getName()).getName();
+	                        String filePath = path + fileName;
+	                        File storeFile = new File(filePath);
+	                        item.write(storeFile);
+	                    }
+	                }
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            request.setAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
+	            request.setAttribute("url", "submitassignment");
+	            return "alert";
+	        }
+	    }
+	    Sub_as as = new Sub_as();
+	    as.setAs_no(Integer.parseInt(asNo));
+	    as.setFile(fileName);
+	    as.setUser_no(login.getUser_no());
+
+	    Sub_as existing = asDao.selectSub_as(as.getUser_no(), as.getAs_no());
+	    if (existing.getFile() == null) {
+	        if (asDao.updateAs(as)) {
+	            request.setAttribute("msg", "과제가 제출되었습니다.");
+	            request.setAttribute("url", "submitAs");
+	        } else {
+	            request.setAttribute("msg", "과제제출에 실패하였습니다.");
+	            request.setAttribute("url", "submitassignment");
+	        }
+	    } else {
+	        if (asDao.updateAs(as)) {
+	            request.setAttribute("msg", "제출된 파일을 수정했습니다.");
+	            request.setAttribute("url", "submitAs");
+	        } else {
+	            request.setAttribute("msg", "수정에 실패하였습니다.");
+	            request.setAttribute("url", "submitassignment");
+	        }
+	    }
+
+	    return "alert";
 	}
 	
 	@RequestMapping("manageScore")

@@ -60,6 +60,7 @@ public class SubAsDao {
 		return null;
 	}
 	
+	//수업별 과제 제출 수강생 목록 추가===========================
 	public void totStd_list(String a, int as_no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		try {
@@ -69,6 +70,18 @@ public class SubAsDao {
 		} finally {
 			MyBatisConnection.close(session);
 		}		
+	}
+	
+	//수업별 과제 제출 수강생 목록  삭제==============================
+	public void deleteStd_list(String a, int as_no) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			 session.getMapper(cls).deleteStd_list(a, as_no);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}			
 	}
 	
 	

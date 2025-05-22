@@ -111,4 +111,7 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
 	List<Class1> selectTimeClash(Class1 class1);
+
+	@Select("select user_name from users where user_no=#{user_no}")
+	String selectProf(Class1 class1);
 }
