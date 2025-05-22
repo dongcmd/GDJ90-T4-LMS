@@ -48,7 +48,7 @@ public interface AsMapper {
 	//전체 과제 선택
 	@Select("select * from assignments ")
 	List<Assignment> selectAll();
-	
+  
 	//수업의 수강생 user_no 리스트 불러오기
 	@Select("select user_no from registered_classes where class_no=#{value}")
 	List<String> selectReg_Std(String class_no);
@@ -69,6 +69,15 @@ public interface AsMapper {
 	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
 	List<Assignment> selectAssignmentsByStudent(String classNo);
 	// 메인_과제목록 (교수용)
-	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
-	List<Assignment> selectAssignmentsByProf(String classNo);
+	
+	@Select("SELECT a.* " +
+		  "FROM assignments a " +
+		  "JOIN classes c " +
+		  "ON a.class_no = c.class_no " +
+		  "AND a.ban = c.ban " +
+		  "AND a.year = c.year " +
+		  "AND a.term = c.term " +
+		  "WHERE c.user_no = #{user_no} "
+		)
+	List<Assignment> selectAssignmentsByProf(String class_no);
 }

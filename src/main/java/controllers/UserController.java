@@ -376,6 +376,7 @@ public class UserController extends MskimRequestMapping{
 		@RequestMapping("notificationForm")
 		public String notification(HttpServletRequest request, HttpServletResponse response) throws ParseException {
 			User login = (User) request.getSession().getAttribute("login");
+			System.out.println(login.getUser_no());
 		    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
 		    request.setAttribute("notificationsList", notificationsList);
 		    String deleteNo = request.getParameter("delete");

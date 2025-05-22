@@ -119,7 +119,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		class1.setNow_p(class1Dao.enrolledCount(class1));
-		
+
 		List<Assignment> asList = asDao.list(class1);
 		List<Student> stList = rcDao.studentList(class1);
 		
