@@ -34,23 +34,24 @@ public class BoardController extends MskimRequestMapping {
 	private ArticleDao artiDao = new ArticleDao();
 	private CommentDao commDao = new CommentDao();
 	private UserDao userDao = new UserDao();
+	private Reg_classDao rcDao = new Reg_classDao();
 	private UserController uc = new UserController();
 	
-	public void setLMS(HttpServletRequest req, String board_id) {
-		if(board_id.equals("9999")) { req.setAttribute("lms", "main"); // mainLMS
+	public void setLMS(HttpServletRequest request, String board_id) {
+		if(board_id.equals("9999")) { request.setAttribute("lms", "main"); // mainLMS
 		} else if(board_id.equals("1000") || board_id.equals("2000") || board_id.equals("3000")) {
-			req.setAttribute("lms", "dept"); // deptLMS
-		} else { req.setAttribute("lms", "class"); } // classLMS
+			request.setAttribute("lms", "dept"); // deptLMS
+		} else { request.setAttribute("lms", "class"); } // classLMS
 	}
 	
 	@RequestMapping("board")
-	public String board(HttpServletRequest req,
-			HttpServletResponse res) {
-		String loginCheck = uc.loginIdCheck(req, res); 
+	public String board(HttpServletRequest request,
+			HttpServletResponse response) {
+		String loginCheck = uc.loginIdCheck(request, response); 
 		if(loginCheck != null) { return loginCheck; } // 로그인 확인
-		User login = (User)req.getSession().getAttribute("login");
-		Class1 class1 = (Class1)req.getSession().getAttribute("class1");
-		String board_id = req.getParameter("board_id");
+		User login = (User)request.getSession().getAttribute("login");
+		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		String board_id = request.getParameter("board_id");
 		System.out.println("1번 : " + board_id);
 		
 		if(board_id == null || board_id.trim().equals("") || board_id.trim().equals("9999")) {
@@ -61,27 +62,26 @@ public class BoardController extends MskimRequestMapping {
 			boolean check = false;
 			if(class1 != null) {
 				System.out.println("4번 : " + board_id);
-//				if(class1.getStudents().get(login.getUser_no()) != null) {
-//수정
-//					System.out.println("5번 : " + board_id);
-//					check = true;
-//				}
+				if(rcDao.isStudent(class1, login.getUser_no())) {
+					System.out.println("5번 : " + board_id);
+					check = true;
+				}
 			} else if(!check) {
 				System.out.println("6번 : " + board_id);
-				req.setAttribute("msg", "접근 권한 없음");
-				req.setAttribute("url", "../mainLMS/main");
+				request.setAttribute("msg", "접근 권한 없음");
+				request.setAttribute("url", "../mainLMS/main");
 				return "alert";
 			}
 		}
 
 		System.out.println("7번 : " + board_id);
 		int pageNum = 1;
-		try { pageNum = Integer.parseInt(req.getParameter("pageNum"));
+		try { pageNum = Integer.parseInt(request.getParameter("pageNum"));
 		} catch ( NumberFormatException e) {}
 		System.out.println("8번 : " + board_id);
 		
-		String column = req.getParameter("column");
-		String keyword = req.getParameter("keyword");
+		String column = request.getParameter("column");
+		String keyword = request.getParameter("keyword");
 		System.out.println("9번 : " + board_id);
 		if(column == null || column.trim().equals("") 
 				|| keyword == null || keyword.trim().equals("")) {
@@ -101,73 +101,73 @@ public class BoardController extends MskimRequestMapping {
 		System.out.println("12번 : " + board_id);
 		
 		String board_name = boardDao.selectName(board_id);
-		setLMS(req, board_id); // 어떤 lms에서 접근하는지 전달
-		req.setAttribute("board_id", board_id);
-		req.setAttribute("board_name", board_name); // 게시판명
-		req.setAttribute("artiCount", artiCount); // 글 개수
-		req.setAttribute("artiList", artiList); // 글 List
-		req.setAttribute("pageNum", pageNum); // 페이지번호
-		req.setAttribute("startPage", startPage); // 시작 페이지
-		req.setAttribute("endPage", endPage); // 마지막 페이지
-		req.setAttribute("maxPage", maxPage); // 최대 페이지
+		setLMS(request, board_id); // 어떤 lms에서 접근하는지 전달
+		request.setAttribute("board_id", board_id);
+		request.setAttribute("board_name", board_name); // 게시판명
+		request.setAttribute("artiCount", artiCount); // 글 개수
+		request.setAttribute("artiList", artiList); // 글 List
+		request.setAttribute("pageNum", pageNum); // 페이지번호
+		request.setAttribute("startPage", startPage); // 시작 페이지
+		request.setAttribute("endPage", endPage); // 마지막 페이지
+		request.setAttribute("maxPage", maxPage); // 최대 페이지
 		int artiIndex = artiCount - (pageNum - 1) * limit;
-		req.setAttribute("artiIndex", artiIndex);
+		request.setAttribute("artiIndex", artiIndex);
 		System.out.println("13번 : " + board_id);
 		
 		return "board/board";
 	}
 	
 	@RequestMapping("article")
-	public String article(HttpServletRequest req,
-			HttpServletResponse res) {
-		User login = (User)req.getSession().getAttribute("login");
-		int arti_no = Integer.parseInt(req.getParameter("arti_no"));
+	public String article(HttpServletRequest request,
+			HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		int arti_no = Integer.parseInt(request.getParameter("arti_no"));
 		Article arti = artiDao.selectOne(arti_no);
 		List<Comment> commList = commDao.list(arti_no);
 		String board_name = boardDao.selectName(arti.getBoard_id());
-		setLMS(req, arti.getBoard_id());
-		req.setAttribute("board_name", board_name);
-		req.setAttribute("arti", arti);
-		req.setAttribute("login", login);
-		req.setAttribute("commList", commList);
+		setLMS(request, arti.getBoard_id());
+		request.setAttribute("board_name", board_name);
+		request.setAttribute("arti", arti);
+		request.setAttribute("login", login);
+		request.setAttribute("commList", commList);
 		return "board/article";
 	}
 	
 	@RequestMapping("writeComment")
-	public String writeComment(HttpServletRequest req,
-			HttpServletResponse res) {
-		User login = (User)req.getSession().getAttribute("login");
+	public String writeComment(HttpServletRequest request,
+			HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
 		Comment comm = new Comment();
-		comm.setArti_no(Integer.parseInt(req.getParameter("arti_no")));
+		comm.setArti_no(Integer.parseInt(request.getParameter("arti_no")));
 		comm.setUser_no(login.getUser_no());
-		comm.setComm_content((String)req.getParameter("comm_content"));
+		comm.setComm_content((String)request.getParameter("comm_content"));
 		
 		if(commDao.insert(comm)) {
 			return "redirect:article?arti_no="+comm.getArti_no();
 		}
-		req.setAttribute("msg", "댓글 등록시 오류");
-		req.setAttribute("url", "board/article?arti_no="+comm.getArti_no());
+		request.setAttribute("msg", "댓글 등록시 오류");
+		request.setAttribute("url", "board/article?arti_no="+comm.getArti_no());
 		return "alert";
 	}
 	@RequestMapping("writeForm")
-	public String writeForm(HttpServletRequest req,
-			HttpServletResponse res) {
-		String board_id = req.getParameter("board_id");
+	public String writeForm(HttpServletRequest request,
+			HttpServletResponse response) {
+		String board_id = request.getParameter("board_id");
 		String board_name = boardDao.selectName(board_id);
-		setLMS(req, board_id);
-		req.setAttribute("board_id", board_id); // 게시판명
-		req.setAttribute("board_name", board_name); // 게시판명
+		setLMS(request, board_id);
+		request.setAttribute("board_id", board_id); // 게시판명
+		request.setAttribute("board_name", board_name); // 게시판명
 		return "board/writeForm";
 	}
 	@RequestMapping("write")
-	public String write(HttpServletRequest req, HttpServletResponse res) {
-	    String path = req.getServletContext().getRealPath("/") + "files/";
+	public String write(HttpServletRequest request, HttpServletResponse response) {
+	    String path = request.getServletContext().getRealPath("/") + "files/";
 	    File uploadDir = new File(path);
 	    if (!uploadDir.exists()) uploadDir.mkdirs();
 
 	    int size = 5 * 1024 * 1024; // 5MB 제한
 	    Article arti = new Article();
-	    User login = (User) req.getSession().getAttribute("login");
+	    User login = (User) request.getSession().getAttribute("login");
 
 	    DiskFileItemFactory factory = new DiskFileItemFactory();
 	    factory.setSizeThreshold(1024 * 1024); // 메모리에 저장할 임시 파일 크기 제한
@@ -177,7 +177,7 @@ public class BoardController extends MskimRequestMapping {
 	    upload.setSizeMax(size); // 전체 요청 크기 제한
 
 	    try {
-	        List<FileItem> items = upload.parseRequest(req);
+	        List<FileItem> items = upload.parseRequest(request);
 	        for (FileItem item : items) {
 	            if (item.isFormField()) {
 	                // 일반 form 필드
@@ -207,78 +207,78 @@ public class BoardController extends MskimRequestMapping {
 	        e.printStackTrace();
 	    }
 
-	    req.setAttribute("msg", "게시물 등록 실패");
-	    req.setAttribute("url", "writeForm?board_id=" + arti.getBoard_id());
+	    request.setAttribute("msg", "게시물 등록 실패");
+	    request.setAttribute("url", "writeForm?board_id=" + arti.getBoard_id());
 	    return "alert";
 	}
 
 	@RequestMapping("deleteForm")
-	public String deleteForm(HttpServletRequest req,
-			HttpServletResponse res) {
-		String paramComm_no = req.getParameter("comm_no");
-		String paramArti_no = req.getParameter("arti_no");
+	public String deleteForm(HttpServletRequest request,
+			HttpServletResponse response) {
+		String paramComm_no = request.getParameter("comm_no");
+		String paramArti_no = request.getParameter("arti_no");
 		if(paramComm_no != null) {
 			int comm_no = Integer.parseInt(paramComm_no);
 			Comment comm = commDao.selectOne(comm_no);
 			Article arti = artiDao.selectOne(comm.getArti_no());
-			setLMS(req, arti.getBoard_id());
-			req.setAttribute("arti", arti);
-			req.setAttribute("comm", comm);
-			req.setAttribute("target", "댓글");
+			setLMS(request, arti.getBoard_id());
+			request.setAttribute("arti", arti);
+			request.setAttribute("comm", comm);
+			request.setAttribute("target", "댓글");
 			return "board/deleteForm";
 		}
 		int arti_no = Integer.parseInt(paramArti_no);
 		Article arti = artiDao.selectOne(arti_no);
-		setLMS(req, arti.getBoard_id());
-		req.setAttribute("arti", arti);
-		req.setAttribute("target", "글");
+		setLMS(request, arti.getBoard_id());
+		request.setAttribute("arti", arti);
+		request.setAttribute("target", "글");
 		return "board/deleteForm";
 	}
 	
 	@RequestMapping("delete")
-	public String delete(HttpServletRequest req,
-			HttpServletResponse res) {
-		User login = (User)req.getSession().getAttribute("login");
-		String paramComm_no = req.getParameter("comm_no");
-		String paramArti_no = req.getParameter("arti_no");
-		String inputPass = req.getParameter("password");
+	public String delete(HttpServletRequest request,
+			HttpServletResponse response) {
+		User login = (User)request.getSession().getAttribute("login");
+		String paramComm_no = request.getParameter("comm_no");
+		String paramArti_no = request.getParameter("arti_no");
+		String inputPass = request.getParameter("password");
 		int arti_no;
 		if(userDao.pwCheck(login.getUser_no(), inputPass)) {
 			if(paramComm_no != null && !paramComm_no.trim().equals("")) {
 				int comm_no = Integer.parseInt(paramComm_no);
 				Comment comm = commDao.selectOne(comm_no);
 				if(commDao.delete(comm_no)) {
-					req.setAttribute("msg", comm.getUser_name() + "님의 댓글을 삭제했습니다.");
-					req.setAttribute("url", "article?arti_no="+comm.getArti_no());
+					request.setAttribute("msg", comm.getUser_name() + "님의 댓글을 삭제했습니다.");
+					request.setAttribute("url", "article?arti_no="+comm.getArti_no());
 					return "openeralert";
 				}
 			}
 			arti_no = Integer.parseInt(paramArti_no);
 			Article arti = artiDao.selectOne(arti_no);
 			if(artiDao.delete(arti_no)) {
-				req.setAttribute("msg", arti.getUser_name() + "님의 글을 삭제했습니다.");
-				req.setAttribute("url", "board?board_id="+arti.getBoard_id());
+				request.setAttribute("msg", arti.getUser_name() + "님의 글을 삭제했습니다.");
+				request.setAttribute("url", "board?board_id="+arti.getBoard_id());
 				return "openeralert";
 			}
 		}
-		req.setAttribute("msg", "삭제 실패");
-		req.setAttribute("close", true);
+		request.setAttribute("msg", "삭제 실패");
+		request.setAttribute("close", true);
 		return "alert";
 	}
 	
 	@RequestMapping("updateForm")
-	public String updateForm(HttpServletRequest req,
-			HttpServletResponse res) {
-		int arti_no = Integer.parseInt(req.getParameter("arti_no"));
+	public String updateForm(HttpServletRequest request,
+			HttpServletResponse response) {
+		int arti_no = Integer.parseInt(request.getParameter("arti_no"));
 		Article arti = artiDao.selectOne(arti_no);
-		setLMS(req, arti.getBoard_id());
-		req.setAttribute("arti", arti);
+		setLMS(request, arti.getBoard_id());
+		request.setAttribute("arti", arti);
 		return "board/updateForm";
 	}
 	
 	@RequestMapping("update")
-	public String update(HttpServletRequest req, HttpServletResponse res) {
-	    String path = req.getServletContext().getRealPath("/") + "files/";
+	public String update(HttpServletRequest request, HttpServletResponse response) {
+	    String path = request.getServletContext().getRealPath("/") + "files/";
 	    File uploadDir = new File(path);
 	    if (!uploadDir.exists()) uploadDir.mkdirs();
 
@@ -298,7 +298,7 @@ public class BoardController extends MskimRequestMapping {
 	    upload.setSizeMax(size);
 
 	    try {
-	        List<FileItem> items = upload.parseRequest(req);
+	        List<FileItem> items = upload.parseRequest(request);
 	        for (FileItem item : items) {
 	            if (item.isFormField()) {
 	                String field = item.getFieldName();
@@ -346,8 +346,8 @@ public class BoardController extends MskimRequestMapping {
 	        e.printStackTrace();
 	    }
 
-	    req.setAttribute("msg", "게시물 등록 실패");
-	    req.setAttribute("url", "writeForm?board_id=" + (arti.getBoard_id() != null ? arti.getBoard_id() : ""));
+	    request.setAttribute("msg", "게시물 등록 실패");
+	    request.setAttribute("url", "writeForm?board_id=" + (arti.getBoard_id() != null ? arti.getBoard_id() : ""));
 	    return "alert";
 	}
 

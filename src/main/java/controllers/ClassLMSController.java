@@ -114,15 +114,13 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-		System.out.println(class1);
+		class1.setNow_p(class1Dao.enrolledCount(class1));
+		
 		List<Assignment> asList = asDao.list(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
-		System.out.println("수강생 이름 :"+r_stuList);
 		if(request.getParameter("as_no") != null) {
 			int as_no = Integer.parseInt(request.getParameter("as_no"));
 			for(String a : r_stuList) { // a : string 형태의 수강생 user_no
-			System.out.println(as_no);
-			System.out.println(a);
 			subAsDao.totStd_list(a, as_no);
 			List<Sub_as> subAsList = subAsDao.list(as_no);
 			request.setAttribute("selectedAs_no", as_no);
@@ -289,7 +287,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		
 	    String password = request.getParameter("password");
 	    int as_no = Integer.parseInt(request.getParameter("as_no"));
-	    System.out.println(as_no);
 	    String msg = "비밀번호가 맞지 않습니다.";
 	    String url = "deleteAssignmentForm?as_no=" + as_no;
 	    if (password != null && login.getPassword().equals(password)) {
@@ -431,7 +428,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		studentList.sort((s1, s2) -> s1.getUser_no().compareTo(s2.getUser_no()));
 		// 학번을 오름차순으로 정렬
 		request.setAttribute("reg_users", studentList);
-		return "classLMS/manage";
+		return "classLMS/manageScore";
 	}
 
 }

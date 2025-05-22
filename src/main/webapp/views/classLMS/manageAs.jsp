@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- 원동인 --%>
-<%--이동원
-이전 파일명
-manageassignment
- --%>
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -40,14 +36,14 @@ manageassignment
 			<tbody>
 				<tr>
 					<td style="text-align: center"><a href="manageAs?as_no=${as.as_no}">${as.as_name}</a></td>
-					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /><br>
+					<td><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" />
 						~<fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /></td>
 					<td style="text-align: center">${as.as_content}</td>
 					<td style="text-align: center">${as.as_point}</td>
-					<td style="text-align: center">${as.submittedCount} / ${class1.max_p}</td>
-					<td class="d-flex justify-content-center">
-						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button" style="align-items: center">과제수정</a>
-						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button" style="align-items: center">과제삭제</a>
+					<td style="text-align: center">${as.submittedCount} / ${class1.now_p}</td>
+					<td>
+						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button">과제수정</a>
+						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button">과제삭제</a>
 					</td>
 				</tr>
 			</tbody>
@@ -62,10 +58,12 @@ manageassignment
 	<c:if test="${!empty selectedAs_no}">
 		<a href="download_asXLSX?as_no=${selectedAs_no}" class="btn btn-dark" role="button">
 		양식 다운로드 xlsx</a>
+		<hr>
 	  <form action="upload_asCSV" method="post" enctype="multipart/form-data">
 	  	<input type="hidden" name="as_no" value="${selectedAs_no}">
+	  	<button type="submit" onclick="if(!this.form.file.value) { alert('파일을 선택하세요.'); return false; }" class="btn btn-dark">
+	  		csv 업로드</button>
 	  	<input type="file" name="file" accept=".csv" />
-	  	<button type="submit">${selectedAs_no} | csv 업로드</button>
 		</form>
 	</c:if>
 
@@ -86,8 +84,9 @@ manageassignment
 						<td style="text-align: center">${subAs.user_grade}</td>
 						<td style="text-align: center">${subAs.user_name}</td>
 						<td style="text-align: center">
-							<c:if test="${!empty subAs.file}">제출완료</c:if>
-							<c:if test="${empty subAs.file or subAs.file.trim() == ''}">미제출</c:if>
+							<c:if test="${!empty subAs.file}"><strong>제출완료</strong></c:if>
+							<c:if test="${empty subAs.file or subAs.file.trim() == ''}">
+								<span style="color: red;">미제출</span></c:if>
 						</td>
 					</tr>
 				</c:forEach>

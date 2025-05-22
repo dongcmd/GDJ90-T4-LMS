@@ -54,11 +54,11 @@
 		</c:forEach>
 	</table>
 	<div style="display: flex; justify-content: flex-end; gap: 10px;">
-		<a href="download_stXLSX?"
-			 class="btn btn-dark">양식 다운로드</a>
+		<a href="download_stXLSX" class="btn btn-dark">양식 다운로드</a>&nbsp;&nbsp;&nbsp;
 		<form action="upload_stCSV" method="post" enctype="multipart/form-data">
-			<input type="file" name="file" accept=".csv">
-			<button class="btn btn-light btn-outline-secondary">csv 업로드</button>
+			<button type="submit" onclick="if(!this.form.file.value) { alert('파일을 선택하세요.'); return false; }" class="btn btn-dark">
+	  		csv 업로드</button>
+	  	<input type="file" name="file" accept=".csv" />
 		</form>
 	</div>
 </body>
