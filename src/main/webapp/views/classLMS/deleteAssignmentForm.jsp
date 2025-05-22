@@ -14,17 +14,17 @@
     <div class="bg-white p-4 rounded shadow-sm">
         <ul class="list-group mb-4" style="gap: 10px;">
             <li class="list-group-item" >
-            							 ${as.year}<strong>년도</strong>   
-            							 ${as.term}<strong>학기</strong></li>	
+            							 ${as.year}<strong>년도</strong>
+            							 ${as.term}<strong>학기</strong></li>
             <li class="list-group-item"><strong>강의코드:</strong> ${as.class_no}
-            							<strong>수업명:</strong> ${cl.class_name} aaaa
-            							<strong>반:</strong>${as.ban} </li> 
+            							<strong>수업명:</strong> ${class1.class_name}
+            							<strong>반:</strong>${as.ban} </li>
             <li class="list-group-item"><strong>과제명:</strong> ${as.as_name}</li>
             <li class="list-group-item"><strong>내용:</strong> ${as.as_content}</li>
             <li class="list-group-item"><strong>제출 시작:</strong><fmt:formatDate value="${as.as_s_date}" pattern="yyyy/MM/dd HH:mm" /> </li>
             <li class="list-group-item"><strong>제출 마감:</strong><fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </li>
             <li class="list-group-item"><strong>배점:</strong> ${as.as_point}</li>
-             <li class="list-group-item"><strong>제출 현황:</strong> 3 / 10 </li>
+             <li class="list-group-item"><strong>제출 현황:</strong> ${as.submittedCount} / ${class1.now_p}</li>
         </ul>
 
         <form action="deleteAssignment" method="post">

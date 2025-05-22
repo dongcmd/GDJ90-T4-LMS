@@ -13,11 +13,6 @@
     <h4 class="mb-4">과제 추가</h4>
 
     <form action="addAssignment" method="post" class="bg-white p-4 rounded shadow-sm">
-        <input type="hidden" name="class_no" value="${class_no}">
-        <input type="hidden" name="ban" value="${ban}">
-        <input type="hidden" name="year" value="${year}">
-        <input type="hidden" name="term" value="${term}">
-        
         <div class="form-group">
             <label>과제명</label>
             <input type="text" name="as_name" class="form-control" placeholder="과제명을 입력하세요" required>
@@ -69,7 +64,5 @@
         </div>
     </form>
 </div>
-
 </body>
-</html>
 </html>

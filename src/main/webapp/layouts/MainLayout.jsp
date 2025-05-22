@@ -117,18 +117,18 @@
 	                    <a href="../board/board?board_id=9999">공지게시판</a>
 	                </li>
 	              
-                    <c:if test="${login.role == 3 }">
                     	<li class="nav-item">
+                    	<c:if test="${login.role == 1}">
+							<a href="../deptLMS/classList">학과 LMS</a>
+							</c:if>
+                    	<c:if test="${login.role == 2}">
+							<a href="../deptLMS/myClass">학과 LMS</a>
+							</c:if>
+                    	<c:if test="${login.role == 3}">
 							<a href="../board/board?board_id=1000">학과 LMS</a>
+							</c:if>
 						</li>
-					</c:if>
 					
-					<c:if test="${login.role == 1 || login.role == 2}">
-                    	<li class="nav-item">
-							<a href="../board/board?board_id=${login.major_no}">학과 LMS</a>
-						</li>
-					</c:if>
-
 					<c:if test="${login.role == 1}">
 		                <li class="nav-item">
 		                    <a href="../mainLMS/signUpClass">수강신청</a>

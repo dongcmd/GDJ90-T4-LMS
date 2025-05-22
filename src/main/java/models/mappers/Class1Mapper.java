@@ -111,8 +111,7 @@ public interface Class1Mapper {
 	
 	@Select("SELECT * FROM classes " + "WHERE year = #{year} AND term = #{term} ")
 	List<Class1> selectTimeClash(Class1 class1);
-
-
+  
 	// 강의계획서(원동인)
 	@Select("SELECT * FROM classes WHERE class_no = #{class_no} AND ban = #{ban} AND year = #{year} AND term = #{term}")
 	List<Class1> classinfoList(Class1 class1);
@@ -141,4 +140,5 @@ public interface Class1Mapper {
 	      + "</script>"
 	    )
 	    List<Class1> selectGradesByUserFilter(@Param("user_no") String userNo, @Param("type") String type, @Param("fine") String fine );
+  
 }

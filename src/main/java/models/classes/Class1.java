@@ -1,3 +1,5 @@
+
+
 package models.classes;
 
 import java.util.Date;
@@ -26,6 +28,7 @@ public class Class1 {
 	private String file; // 첨부파일
 	private Date s_date; // 개강일 
 	private Date e_date; // 종강일
+	
 	private String prof; // 교수명
 	
 	private int exam1_score;    // 중간
@@ -35,8 +38,6 @@ public class Class1 {
 	private int status;
 
 	private List<Integer> days; // 수업 요일
-	private Map<String ,Student> students; // 학번, 소속 학생 -이동원
-	private Map<String, Assignment> assignments; // 과제번호, 과제 -이동원
 	
 	
 	@Override
@@ -49,6 +50,7 @@ public class Class1 {
 				+ exam2_score + ", as_tot_score=" + as_tot_score + ", att_score=" + att_score + ", status=" + status
 				+ ", days=" + days + ", students=" + students + ", assignments=" + assignments + "]";
 	}
+	
 	public Class1() {	} // 기본 생성자
 	public Class1(String class_no, String ban, int year, int term) {
 		this.class_no = class_no;
@@ -207,22 +209,6 @@ public class Class1 {
 		this.days = days;
 	}
 
-	public Map<String, Student> getStudents() {
-		return students;
-	}
-
-	public void setStudents(Map<String, Student> students) {
-		this.students = students;
-	}
-
-	public Map<String, Assignment> getAssignments() {
-		return assignments;
-	}
-
-	public void setAssignments(Map<String, Assignment> assignments) {
-		this.assignments = assignments;
-	}
-
 	public Date getS_date() {
 		return s_date;
 	}
@@ -268,4 +254,5 @@ public class Class1 {
 	public void setAtt_score(int att_score) {
 		this.att_score = att_score;
 	}
+  
 }
