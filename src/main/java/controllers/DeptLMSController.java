@@ -64,7 +64,7 @@ public class DeptLMSController extends MskimRequestMapping {
 	    String uploadPath = request.getServletContext().getRealPath("/") + "/files/";
 	    File uploadDir = new File(uploadPath);
 	    if (!uploadDir.exists()) uploadDir.mkdirs();
-
+	    System.out.println(uploadPath);
 	    Class1 cls = new Class1();
 	    cls.setMajor_no(login.getMajor_no());
 	    cls.setUser_no(login.getUser_no());
@@ -82,8 +82,8 @@ public class DeptLMSController extends MskimRequestMapping {
 	    factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
 	    ServletFileUpload upload = new ServletFileUpload(factory);
 	    upload.setHeaderEncoding("UTF-8");
-	    upload.setFileSizeMax(10 * 1024 * 1024); // 10MB per file
-	    upload.setSizeMax(30 * 1024 * 1024);     // 30MB total
+	    upload.setFileSizeMax(20 * 1024 * 1024); // 10MB per file
+	    upload.setSizeMax(50 * 1024 * 1024);     // 30MB total
 
 	    List<Integer> days = new ArrayList<>();
 	    try {
@@ -268,8 +268,8 @@ public class DeptLMSController extends MskimRequestMapping {
         factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
         ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setHeaderEncoding("UTF-8");
-        upload.setFileSizeMax(10 * 1024 * 1024); // 개별 파일 최대 10MB
-        upload.setSizeMax(30 * 1024 * 1024);     // 요청 전체 최대 30MB
+        upload.setFileSizeMax(20 * 1024 * 1024); // 개별 파일 최대 10MB
+        upload.setSizeMax(50 * 1024 * 1024);     // 요청 전체 최대 30MB
         List<Integer> days = new ArrayList<>();
         try {
             List<FileItem> items = upload.parseRequest(request);

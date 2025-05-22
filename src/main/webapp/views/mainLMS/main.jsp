@@ -14,7 +14,8 @@
     <style>
 	    li{list-style: none;}
 	    .di_btn{text-align: center;padding-top: 2px;color: #fff;width: 50px;border-radius: 100px;background-color: #343a40;font-size: 12px;}
-	    .main_list{min-width:600px; height: 400px; background-color: #fff; border:1px solid #eee; border-radius: 10px;}
+	    .main_list { min-width:600px; max-height:400px; background-color:#fff; border:1px solid #eee; border-radius:10px; display:flex; flex-direction:column; }
+		.content-scroll { overflow-y:auto; flex-grow:1; padding-right:5px; }
 	    .main_list .list-group-item{border: none; border-bottom: 1px solid #eee;}
 	    .main_list .list-group-item:last-child{border: none;}
 	    .main_list .list-group a{color:#333;}
@@ -24,8 +25,8 @@
 	private static String[] e_period = { "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" };%>
 <body>
 	<div class="row" style="justify-content: center; gap: 10px;">
-	    <div class="main_list col-sm-5 px-4 py-5">
-	        <h3 class="mb-4 fw_b">공지사항</h3>
+	    <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	        <h3 class="mb-2 fw_b">공지사항</h3>
 	        <ul class="list-group list-group-flush">
 	            <%--  <c:forEach var="m" items="${list}"> --%>
 	                <li class="list-group-item px-0">
@@ -57,8 +58,8 @@
 	        </ul>
 	    </div>
 
-        <div class="main_list col-sm-5 px-4 py-5">
-            <h3 class="mb-4 fw_b">캘린더 
+        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+            <h3 class="mb-2 fw_b">캘린더 
             	<c:if test="${login.role == 3}">
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
             	</c:if>
@@ -99,8 +100,8 @@
 		    </table>
         </div>
 		<c:if test="${login.role != 3}">
-	        <div class="main_list col-sm-5 px-4 py-5">
-	            <h3 class="mb-4 fw_b">강의목록</h3>
+	        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	            <h3 class="mb-2 fw_b">강의목록</h3>
 	            <table class="table">
 	                <!-- 메인 강의목록(학생)  -->
 	                <c:if test="${login.role == 1}">
@@ -162,8 +163,8 @@
 					</c:if>
 	            </table>
 	        </div>
-	        <div class="main_list col-sm-5 px-4 py-5">
-	            <h3 class="mb-4 fw_b">과제목록</h3>
+	        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	            <h3 class="mb-2 fw_b">과제목록</h3>
 	            <c:if test="${login.role == 1}">
 		            <table class="table">
 		                <thead class="thead-light">
