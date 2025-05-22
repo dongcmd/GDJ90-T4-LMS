@@ -29,6 +29,8 @@
 			</tr>
 		</thead>
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
+			<fmt:formatDate value="${cls.s_date}" pattern="yyyy-MM-dd" var="sDate" />
+		  	<fmt:formatDate value="${cls.e_date}" pattern="yyyy-MM-dd" var="eDate" />
 			<tr class="text-center">
 				<td>${stat.index + 1}</td>
 				<td>${cls.class_no}</td>
@@ -47,10 +49,12 @@
 						</c:choose>
 					</c:forEach> <br> <%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%></td>
 				<td>${cls.classroom}</td>
-				<td>${cls.now_p}/${cls.max_p}</td>=
+				<td>${cls.now_p}/${cls.max_p}</td>
 				<td>
 					<c:if test="${cls.status == 0}">
 						<a href="confirmClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 확정 하시겠습니까?');">확정</a>
+					</c:if>
+					<c:if test="${today > sDate }">
 						<a href="dropClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-outline-danger" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a>
 					</c:if>
 				</td>

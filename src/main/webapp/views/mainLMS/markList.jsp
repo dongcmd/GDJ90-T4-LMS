@@ -19,8 +19,8 @@
 		<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
 	</form>
 	<br>
-	<table class="table table-bordered">
-		<thead class="thead-light">
+	<table class="table table-bordered" style="text-align: center">
+		<thead class="thead-light" >
 			<tr>
 				<th>번호</th>
 				<th>수강학기</th>
