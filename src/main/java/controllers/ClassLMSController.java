@@ -100,6 +100,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
+		System.out.println(class1);
 		List<Assignment> asList = asDao.selectAsbyClass(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
 		System.out.println("수강생 이름 :"+r_stuList);
@@ -129,7 +130,6 @@ public class ClassLMSController extends MskimRequestMapping {
 			request.setAttribute("url","classInfo");
 			return "alert";
 		}
-		// 여기 부분은 추후에 수정해야할듯!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		Class1Dao C1Dao = new Class1Dao();
 		List<Class1> cls = C1Dao.selectByProfessor(login.getUser_no());
 		request.setAttribute("cls", cls);
@@ -294,9 +294,9 @@ public class ClassLMSController extends MskimRequestMapping {
 			String file = asDao.selectFile(login.getUser_no(), as_no);
 			filelist.add(file);
 		}
-		System.out.println("파일리스트"+filelist);
-		System.out.println("과제리스트"+asList);
-		System.out.println("세션 정보"+class1);
+//		System.out.println("파일리스트"+filelist);
+//		System.out.println("과제리스트"+asList);
+//		System.out.println("세션 정보"+class1);
 
 		request.setAttribute("filelist", filelist);
 		request.setAttribute("asList", asList);
