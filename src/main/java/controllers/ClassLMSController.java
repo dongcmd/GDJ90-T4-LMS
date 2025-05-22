@@ -116,9 +116,11 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-		List<Assignment> asList = asDao.selectList(class1);
+		class1.setNow_p(class1Dao.enrolledCount(class1));
+		
+		List<Assignment> asList = asDao.list(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
-		System.out.println(request.getParameter("as_no"));
+    
 		if(request.getParameter("as_no") != null) {
 			int as_no = Integer.parseInt(request.getParameter("as_no"));
 			for(String a : r_stuList) { // a : string 형태의 수강생 user_no
@@ -290,7 +292,6 @@ public class ClassLMSController extends MskimRequestMapping {
 		
 	    String password = request.getParameter("password");
 	    int as_no = Integer.parseInt(request.getParameter("as_no"));
-	    System.out.println(as_no);
 	    String msg = "비밀번호가 맞지 않습니다.";
 	    String url = "deleteAssignmentForm?as_no=" + as_no;
 	    if (password != null && login.getPassword().equals(password)) {

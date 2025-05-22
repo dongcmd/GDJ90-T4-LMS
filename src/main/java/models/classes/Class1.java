@@ -1,5 +1,3 @@
-
-
 package models.classes;
 
 import java.util.Date;

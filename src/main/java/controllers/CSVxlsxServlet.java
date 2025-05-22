@@ -60,7 +60,7 @@ public class CSVxlsxServlet extends HttpServlet {
 	    boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 	    if (!isMultipart) {
 	    	request.setAttribute("msg", "파일 형식이 올바르지 않습니다.");
-	        request.setAttribute("url", "../classLMS/manageAs"); // 되돌아갈 페이지 경로
+	        request.setAttribute("url", "classLMS/manageAs"); // 되돌아갈 페이지 경로
 	    } else if(path.equals("/classLMS/upload_asCSV") && class1 != null) { // 과제점수 업로드
 			Map<String, Integer> scores = new HashMap<>(); // 학번, 점수
 		    // 파일 아이템을 생성할 때 사용할 팩토리 객체 생성 (임시 저장소 등 설정 가능)
@@ -87,7 +87,7 @@ public class CSVxlsxServlet extends HttpServlet {
 	            	String line;
 	            	while ((line = reader.readLine()) != null) {
 	            	    if (isFirstLine) { isFirstLine = false; continue; }
-	            	    String[] data = line.split(",");
+	            	    String[] data = line.split(",", -1);
 	            	    try {
 	                	    if(as_no == Integer.parseInt(data[0])) {
 		                	    String user_no = data[1];
@@ -99,7 +99,7 @@ public class CSVxlsxServlet extends HttpServlet {
 	                	    }// if
 	            	    } catch (NumberFormatException e) { 
 	            	    	msg = "양식이 올바르지 않습니다.";
-	        	        	url = "../classLMS/manageAs?as_no=" + as_no;
+	        	        	url = "classLMS/manageAs?as_no=" + as_no;
 	            	    } // try
 	            	} // while
 	            } // try
@@ -107,15 +107,15 @@ public class CSVxlsxServlet extends HttpServlet {
 		        int count = 0;
 		        if( (count = subAsDao.updateScores(as_no, scores)) == scores.size()) { // submitted_assignment 테이블에 점수 넣기
 		        	msg = count + "명의 성적 반영 성공\n꼭 반영여부를 확인하세요.";
-		        	url = "../classLMS/manageAs?as_no=" + as_no;
+		        	url = "classLMS/manageAs?as_no=" + as_no;
 		        } else {
 		        	msg = count + "명의 성적 반영 성공\n성적 반영에 오류가 생겼으니 확인하세요.";
-		        	url = "../classLMS/manageAs?as_no=" + as_no;
+		        	url = "classLMS/manageAs?as_no=" + as_no;
 		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        msg = "오류 발생. 업로드 실패.";
-	        	url = "../classLMS/manageAs?as_no=" + as_no;
+	        	url = "classLMS/manageAs?as_no=" + as_no;
 		    }
 	    } else if(path.equals("/classLMS/upload_stCSV") && class1 != null) { // 학생 점수 업로드
 	    	Map<String, Integer[]> exMap = new HashMap<>(); // 학번, {중간, 기말}
@@ -142,7 +142,7 @@ public class CSVxlsxServlet extends HttpServlet {
 		                	String line;
 		                	while ((line = reader.readLine()) != null) {
 		                	    if (isFirstLine) { isFirstLine = false; continue; }
-		                	    String[] data = line.split(",");
+		                	    String[] data = line.split(",", -1);
 		                	    Integer[] exams = new Integer[2];
 		                	    try {
 			                	    if(stMap.get(data[0]) != null) { // 입력된 학번의 학생이 있는 경우
@@ -162,7 +162,7 @@ public class CSVxlsxServlet extends HttpServlet {
 			                	    } // if
 		                	    } catch (NumberFormatException e) { 
 		                	    	msg = "양식이 올바르지 않습니다.";
-		            	        	url = "../classLMS/manageAs?as_no=" + as_no;
+		            	        	url = "classLMS/manageAs?as_no=" + as_no;
 		                	    } // try
 		                	} // while
 		                } // try
@@ -177,14 +177,16 @@ public class CSVxlsxServlet extends HttpServlet {
 		        e.printStackTrace();
 		        msg = "오류 발생. 업로드 실패.";
 		    }
-		    url = "../classLMS/manageScore";
+		    url = "classLMS/manageScore";
 	    } // if
-	    System.out.println("msg" + msg);
-	    System.out.println("url" + url);
 	    request.setAttribute("msg", msg);
 	    request.setAttribute("url", url);
-	    request.getRequestDispatcher("/views/alert.jsp").forward(request, response);
+	    System.out.println(msg);
+	    System.out.println(url);
+//	    request.getRequestDispatcher("/views/alert.jsp").forward(request, response);
+	    response.sendRedirect(request.getContextPath() + "/" + url);
         return;
+        // alert에서 아무리 해도 EL로 request 객체로 못받아서 Redirect로 처리.
     } // doPost
 
     @Override
@@ -196,8 +198,6 @@ public class CSVxlsxServlet extends HttpServlet {
         	handleStDown(request, response);
         }else if(path.equals("/classLMS/download_asXLSX") && class1 != null){ // 과제
 	        int as_no = Integer.parseInt(request.getParameter("as_no"));
-	        Assignment as = asDao.selectOne(as_no);
-	        request.setAttribute("as", as);
 	        handleAsDown(request, response);
         }
     }
@@ -293,7 +293,6 @@ public class CSVxlsxServlet extends HttpServlet {
 			CellStyle redCell = workbook.createCellStyle();
 			CellStyle nameCell = workbook.createCellStyle();
 			Font font = workbook.createFont();
-			Assignment as = (Assignment)request.getAttribute("as");
 			
 			CellStyle[] CSs = new CellStyle[3];
 			CSs[0] = yellowCell;
@@ -334,9 +333,13 @@ public class CSVxlsxServlet extends HttpServlet {
 			row1.createCell(2).setCellValue("이름");
 			row1.createCell(3).setCellValue("과제점수");
 			int i = 0;
-			for(Sub_as sub_as : as.getSub_as().values()) { if(sub_as == null) continue;
+			
+			int as_no = Integer.parseInt(request.getParameter("as_no"));
+			List<Sub_as> sub_asList = subAsDao.list(as_no);
+			
+			for(Sub_as sub_as : sub_asList) { if(sub_as == null) continue;
 				Row r = sheet.createRow(2 + i);
-				r.createCell(0).setCellValue(as.getAs_no());
+				r.createCell(0).setCellValue(as_no);
 				r.createCell(1).setCellValue(sub_as.getUser_no());
 				r.createCell(2).setCellValue(sub_as.getUser_name());
 				r.createCell(3).setCellValue("");

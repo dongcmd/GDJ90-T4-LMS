@@ -50,10 +50,7 @@ public class Reg_classDao {
 				 map.put("user_no", st.getUser_no());
 				 map.put("exam1", exMap.get(st.getUser_no())[0]);
 				 map.put("exam2", exMap.get(st.getUser_no())[1]);
-				 System.out.println(session.getMapper(cls).updateExamScore(map));
-				 System.out.println(st);
-				 System.out.println(exMap.get(st.getUser_no())[0]);
-				 System.out.println(exMap.get(st.getUser_no())[1]);
+				 if(session.getMapper(cls).updateExamScore(map) <= 0) { continue; }
 			 }
 			 return true;
 		 } catch (Exception e) {
