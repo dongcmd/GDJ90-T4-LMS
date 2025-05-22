@@ -15,7 +15,7 @@ public class SubAsDao {
 	private Map<String, Object> map = new HashMap<>();
 	private int i;
 	
-	public int insertScores(int as_no, Map<String, Integer> scores) {
+	public int updateScores(int as_no, Map<String, Integer> scores) {
 		i = 0; 						// 학번, 점수
 		SqlSession conn = MyBatisConnection.getConnection();
 		map.clear();
@@ -24,7 +24,7 @@ public class SubAsDao {
 			 scores.forEach((user_no, sc) -> {
 				 map.put("user_no", user_no);
 				 map.put("as_score", sc);
-				 if(conn.getMapper(cls).insertScore(map) == 1) { i++; }
+				 if(conn.getMapper(cls).updateScore(map) == 1) { i++; }
 			 });
 		 } catch(Exception e) {
 			 e.printStackTrace();

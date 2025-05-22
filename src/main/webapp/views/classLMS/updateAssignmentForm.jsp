@@ -11,16 +11,16 @@
 <div class="container">
     <h4 class="mb-4">과제 수정</h4>
     <form action="updateAssignment" method="post" class="bg-white p-4 rounded shadow-sm">
-        <input type="hidden" name="as_no" value="${as1.as_no}">
+        <input type="hidden" name="as_no" value="${as.as_no}">
 
         <div class="form-group">
             <label>과제명</label>
-            <input type="text" name="as_name" class="form-control" value="${as1.as_name}" required>
+            <input type="text" name="as_name" class="form-control" value="${as.as_name}" required>
         </div>
 
         <div class="form-group">
             <label>과제내용</label>
-            <textarea name="as_content" class="form-control" rows="4" required>${as1.as_content}</textarea>
+            <textarea name="as_content" class="form-control" rows="4" required>${as.as_content}</textarea>
         </div>
 
         <div class="form-group">
@@ -35,29 +35,29 @@
 
         <div class="form-group">
             <label>과제 배점</label>
-            <input type="number" name="as_point" class="form-control" value="${as1.as_point}" required>
+            <input type="number" name="as_point" class="form-control" value="${as.as_point}" required>
         </div>
 
         <div class="form-group">
             <label>강의코드</label>
-            <input type="text" name="class_no" class="form-control" value="${as1.class_no}" required readonly>
+            <input type="text" name="class_no" class="form-control" value="${as.class_no}" required readonly>
         </div>
 
         <div class="form-group">
             <label>반</label>
-            <input type="text" name="ban" class="form-control" value="${as1.ban}" required readonly>
+            <input type="text" name="ban" class="form-control" value="${as.ban}" required readonly>
         </div>
 
         <div class="form-group">
             <label>년도</label>
-            <input type="number" name="year" class="form-control" value="${as1.year}" required readonly>
+            <input type="number" name="year" class="form-control" value="${as.year}" required readonly>
         </div>
 
         <div class="form-group">
             <label>학기</label>
-            <select name="term" class="form-control" readonly>
-                <option value="1" ${assignment.term == 1 ? 'selected' : ''}>1학기</option>
-                <option value="2" ${assignment.term == 2 ? 'selected' : ''}>2학기</option>
+            <select name="term" class="form-control">
+                <option value="1" selected="${as.term == 1 ? 'selected' : ''}">1학기</option>
+                <option value="2" selected="${as.term == 2 ? 'selected' : ''}">1학기</option>
             </select>
         </div>
 

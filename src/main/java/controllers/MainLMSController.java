@@ -31,6 +31,7 @@ import models.users.UserDao;
 import models.others.Event;
 import models.others.EventDao;
 import models.others.Notification;
+import models.classes.AsDao;
 import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Class1Dao;
@@ -41,6 +42,7 @@ public class MainLMSController extends MskimRequestMapping {
 	private UserController uc = new UserController();
 	private EventDao eventDao = new EventDao();
 	private Class1Dao clsdao = new Class1Dao();
+	private AsDao asDao = new AsDao();
   
 	@RequestMapping("main")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
@@ -64,6 +66,21 @@ public class MainLMSController extends MskimRequestMapping {
 	    List<Class1> classesList_main_p = clsdao.selectByProfessor(userNo);
 	    request.setAttribute("classesList_main_p", classesList_main_p);    
 	
+	    // 메인_과제목록 (메인_내 수강강의 과제)
+	    asDao = new AsDao();
+	    Map<String, List<Assignment>> assignmentMap_main = new HashMap<>();
+	    for (Class1 c : classesList_main_s) {
+	        String classNo = c.getClass_no();
+	        List<Assignment> assignments_main = asDao.selectAssignmentsByClassNo(classNo);
+	        if (assignments_main == null) {
+	        	assignments_main = new ArrayList<>();
+	        }
+	        // 과제가 있는 수업만 저장
+	        if (assignments_main != null && !assignments_main.isEmpty()) {
+	        	assignmentMap_main.put(classNo, assignments_main); 
+	        }
+	    }
+	    request.setAttribute("assignmentMap_main", assignmentMap_main);
 
 		// 캘린더
 		String yearStr = request.getParameter("year");
@@ -399,4 +416,20 @@ public class MainLMSController extends MskimRequestMapping {
 		request.setAttribute("classesList", classesList);
 		return "mainLMS/signUpClass";
 	}
+	
+	// 학점 조회
+	 @RequestMapping("markList")
+	    public String markList(HttpServletRequest request, HttpServletResponse response) {
+	        String loginCheck = uc.loginIdCheck(request, response);
+	        if (loginCheck != null) return loginCheck;
+	        User login = (User) request.getSession().getAttribute("login");
+
+	        String type = request.getParameter("type");
+	        String fine = request.getParameter("fine");
+
+	        List<Class1> classesList = clsdao.selectGradesByUserFilter(login.getUser_no(), type, fine);
+	        request.setAttribute("classesList", classesList);
+
+	        return "mainLMS/markList";
+	    }
 }

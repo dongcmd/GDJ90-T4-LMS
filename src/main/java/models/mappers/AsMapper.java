@@ -12,14 +12,12 @@ import org.apache.ibatis.annotations.Update;
 import models.classes.Assignment;
 import models.classes.Class1;
 import models.classes.Sub_as;
-import models.classes.Submitted_Assignments;
 
 
 public interface AsMapper {
 	
 	// 과제 추가=================
-	@Insert("INSERT INTO assignments "
-			+ "(as_name, as_content, as_s_date, as_e_date, as_point, class_no, ban, year, term) " +
+	@Insert("INSERT INTO assignments (as_name, as_content, as_s_date, as_e_date, as_point, class_no, ban, year, term) " +
 	        "VALUES (#{as_name}, #{as_content}, #{as_s_date}, #{as_e_date}, #{as_point}, #{class_no}, #{ban}, #{year}, #{term})")
 	int insert(Assignment as);
 
@@ -52,7 +50,7 @@ public interface AsMapper {
 	
 	//해당 수업의 과제 리스트 불러오기
 	@Select("select * from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
-	List<Assignment> selectAsByClass(Class1 loginclass);
+	List<Assignment> selectList(Class1 loginclass);
 
 	//수업의 수강생 user_no 리스트 불러오기
 	@Select("select user_no from registered_classes where class_no=#{value}")
@@ -67,4 +65,13 @@ public interface AsMapper {
 	String selectFile(@Param("user_no") String user_no, @Param("as_no") int as_no);
 
 	
+	// 메인_강의목록(학생/교수)_원동인
+	@Select("select class_no, ban, year, term  from registered_classes where user_no = #{user_no}")
+	List<Assignment> main_assignments(List<Class1> classesList_main_s);
+	// 메인_과제목록 (학생용)
+	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
+	List<Assignment> selectAssignmentsByStudent(String classNo);
+	// 메인_과제목록 (교수용)
+	@Select("SELECT * FROM assignments WHERE class_no = #{class_no}")
+	List<Assignment> selectAssignmentsByProf(String classNo);
 }

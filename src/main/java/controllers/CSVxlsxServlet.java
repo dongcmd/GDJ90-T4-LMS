@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +54,15 @@ public class CSVxlsxServlet extends HttpServlet {
 		Class1 class1 = (Class1) request.getSession().getAttribute("class1");
 		// multipart/form-data 형식인지 확인 (파일 업로드 요청인지 체크)
 		int as_no = -1;
+		String msg = null;
+		String url = null;
 		FileItem csvFileItem = null;
 	    boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 	    if (!isMultipart) {
 	    	request.setAttribute("msg", "파일 형식이 올바르지 않습니다.");
-	        request.setAttribute("url", "classLMS/manageAs"); // 되돌아갈 페이지 경로
+	        request.setAttribute("url", "../classLMS/manageAs"); // 되돌아갈 페이지 경로
 	    } else if(path.equals("/classLMS/upload_asCSV") && class1 != null) { // 과제점수 업로드
 			Map<String, Integer> scores = new HashMap<>(); // 학번, 점수
-			String msg, url;
 		    // 파일 아이템을 생성할 때 사용할 팩토리 객체 생성 (임시 저장소 등 설정 가능)
 		    DiskFileItemFactory factory = new DiskFileItemFactory();
 		    // 업로드된 요청을 처리할 업로더 객체 생성
@@ -99,29 +99,32 @@ public class CSVxlsxServlet extends HttpServlet {
 	                	    }// if
 	            	    } catch (NumberFormatException e) { 
 	            	    	msg = "양식이 올바르지 않습니다.";
-	        	        	url = "classLMS/manageAs?as_no=" + as_no;
+	        	        	url = "../classLMS/manageAs?as_no=" + as_no;
 	            	    } // try
 	            	} // while
 	            } // try
 	            
 		        int count = 0;
-		        if( (count = subAsDao.insertScores(as_no, scores)) == scores.size()) { // submitted_assignment 테이블에 점수 넣기
+		        if( (count = subAsDao.updateScores(as_no, scores)) == scores.size()) { // submitted_assignment 테이블에 점수 넣기
 		        	msg = count + "명의 성적 반영 성공\n꼭 반영여부를 확인하세요.";
-		        	url = "classLMS/manageAs?as_no=" + as_no;
+		        	url = "../classLMS/manageAs?as_no=" + as_no;
 		        } else {
 		        	msg = count + "명의 성적 반영 성공\n성적 반영에 오류가 생겼으니 확인하세요.";
-		        	url = "classLMS/manageAs?as_no=" + as_no;
+		        	url = "../classLMS/manageAs?as_no=" + as_no;
 		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        msg = "오류 발생. 업로드 실패.";
-	        	url = "classLMS/manageAs?as_no=" + as_no;
+	        	url = "../classLMS/manageAs?as_no=" + as_no;
 		    }
-	    } else if(path.equals("/classLMS/upload_asCSV") && class1 != null) { // 학생 점수 업로드
-			List<Student> sts = new ArrayList<Student>(class1.getStudents().values());
-			Assignment as = new Assignment();
-			Map<String, Integer> scores = new HashMap<>();
-			String msg, url;
+	    } else if(path.equals("/classLMS/upload_stCSV") && class1 != null) { // 학생 점수 업로드
+	    	Map<String, Integer[]> exMap = new HashMap<>(); // 학번, {중간, 기말}
+	    	
+	    	Map<String, Student> stMap = new HashMap<>();
+	    	List<Student> studentList = rcDao.studentList(class1);
+	    	for(Student st : studentList) { stMap.put(st.getUser_no(), st); }
+			
+			
 		    // 파일 아이템을 생성할 때 사용할 팩토리 객체 생성 (임시 저장소 등 설정 가능)
 		    DiskFileItemFactory factory = new DiskFileItemFactory();
 		    // 업로드된 요청을 처리할 업로더 객체 생성
@@ -140,40 +143,48 @@ public class CSVxlsxServlet extends HttpServlet {
 		                	while ((line = reader.readLine()) != null) {
 		                	    if (isFirstLine) { isFirstLine = false; continue; }
 		                	    String[] data = line.split(",");
+		                	    Integer[] exams = new Integer[2];
 		                	    try {
-			                	    if(as_no == Integer.parseInt(data[0])) {
-				                	    String user_no = data[1];
-				                	    if(data[3] == null || data[3].trim().equals("") || data.length != 4) {
+			                	    if(stMap.get(data[0]) != null) { // 입력된 학번의 학생이 있는 경우
+				                	    String user_no = data[0];
+				                	    if(data.length != 5) {
 				                	    	continue;
 				                	    }
-				                	    int as_score = Integer.parseInt(data[3]);
-				                	    scores.put(user_no, as_score);
-			                	    }// if
+				                	    if(data[3] != null && !data[3].trim().equals("")) {
+				                	    	Integer exam1 = Integer.parseInt(data[3]);
+				                	    	exams[0] = exam1; // 중간점수
+				                	    }
+				                	    if(data[4] != null && !data[4].trim().equals("")) {
+				                	    	Integer exam2 = Integer.parseInt(data[4]);
+				                	    	exams[1] = exam2; // 기말점수
+				                	    }
+				                	    exMap.put(user_no, exams);
+			                	    } // if
 		                	    } catch (NumberFormatException e) { 
 		                	    	msg = "양식이 올바르지 않습니다.";
-		            	        	url = "classLMS/manageAs?as_no=" + as_no;
+		            	        	url = "../classLMS/manageAs?as_no=" + as_no;
 		                	    } // try
 		                	} // while
 		                } // try
 		            } // if
 		        } // for
-		        int count = 0;
-		        if( (count = subAsDao.insertScores(as_no, scores)) == scores.size()) { // submitted_assignment 테이블에 점수 넣기
-		        	msg = count + "명의 성적 반영 성공\n꼭 반영여부를 확인하세요.";
-		        	url = "classLMS/manageAs?as_no=" + as_no;
+		        if(rcDao.updateExamScore(class1, studentList, exMap)) { // registered_classes에 점수 넣기
+		        	msg = "성적 반영 성공!!\n꼭 반영여부를 확인하세요.";
 		        } else {
-		        	msg = count + "명의 성적 반영 성공\n성적 반영에 오류가 생겼으니 확인하세요.";
-		        	url = "classLMS/manageAs?as_no=" + as_no;
+		        	msg = "성적 반영 중 오류가 생겼으니 확인하세요.";
 		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        msg = "오류 발생. 업로드 실패.";
-	        	url = "classLMS/manageAs?as_no=" + as_no;
 		    }
+		    url = "../classLMS/manageScore";
 	    } // if
-	    request.getRequestDispatcher("/alert").forward(request, response);
+	    System.out.println("msg" + msg);
+	    System.out.println("url" + url);
+	    request.setAttribute("msg", msg);
+	    request.setAttribute("url", url);
+	    request.getRequestDispatcher("/views/alert.jsp").forward(request, response);
         return;
-        // path /classLMS/upload_asCSV
     } // doPost
 
     @Override
@@ -184,8 +195,8 @@ public class CSVxlsxServlet extends HttpServlet {
         if(path.equals("/classLMS/download_stXLSX") && class1 != null) { // 학점
         	handleStDown(request, response);
         }else if(path.equals("/classLMS/download_asXLSX") && class1 != null){ // 과제
-	        String as_no = request.getParameter("as_no");
-	        Assignment as = class1.getAssignments().get(as_no);
+	        int as_no = Integer.parseInt(request.getParameter("as_no"));
+	        Assignment as = asDao.selectOne(as_no);
 	        request.setAttribute("as", as);
 	        handleAsDown(request, response);
         }
@@ -200,7 +211,7 @@ public class CSVxlsxServlet extends HttpServlet {
 			CellStyle nameCell = workbook.createCellStyle();
 			Font font = workbook.createFont();
 			Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-			List<Student> sts = new ArrayList<Student>(class1.getStudents().values());
+			List<Student> studentList = rcDao.studentList(class1);
 			
 			CellStyle[] CSs = new CellStyle[3];
 			CSs[0] = yellowCell;
@@ -243,7 +254,7 @@ public class CSVxlsxServlet extends HttpServlet {
 			row1.createCell(3).setCellValue("중간고사 (최대 30)");
 			row1.createCell(4).setCellValue("기말고사 (최대 40)");
 			int i = 0;
-			for(Student st : sts) {
+			for(Student st : studentList) {
 				Row r = sheet.createRow(2 + i);
 				r.createCell(0).setCellValue(st.getUser_no());
 				r.createCell(1).setCellValue(st.getUser_grade());

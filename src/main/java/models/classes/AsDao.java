@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+
+import controllers.registered_classes;
 import models.MyBatisConnection;
 import models.mappers.AsMapper;
 
@@ -18,8 +20,7 @@ public class AsDao {
 	 public boolean insert(Assignment as) {
 		 SqlSession conn = MyBatisConnection.getConnection();
 		 try {
-			 if(conn.getMapper(cls).insert(as) > 0) return true;
-			 else return false;
+			 return conn.getMapper(cls).insert(as) > 0;
 		 } catch(Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -91,8 +92,7 @@ public class AsDao {
 	public boolean updateAs(Sub_as as) {
 		 SqlSession conn = MyBatisConnection.getConnection();
 		 try {
-			 if(conn.getMapper(cls).updateAs(as) > 0) return true;
-			 else return false;
+			 return conn.getMapper(cls).updateAs(as) > 0;
 		 } catch(Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -101,10 +101,10 @@ public class AsDao {
 		 return false;	
 	}
 	// 해당 수업의 모든 과제 리스트 =============================
-	public List<Assignment> selectAsbyClass(Class1 loginclass) {
+	public List<Assignment> selectList(Class1 class1) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
-			 return session.getMapper(cls).selectAsByClass(loginclass);
+			 return session.getMapper(cls).selectList(class1);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -117,6 +117,18 @@ public class AsDao {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 return session.getMapper(cls).selectReg_Std(class_no);
+			  } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
+	// 메인_과제목록 (학생용)
+	public List<Assignment> selectAssignmentsByStudent(String classNo) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAssignmentsByStudent(classNo);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -130,6 +142,19 @@ public class AsDao {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 return session.getMapper(cls).selectAs_no(class1);
+			 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 MyBatisConnection.close(session);
+		 }
+		 return null;
+	}
+
+	// 메인_과제목록 (교수용)
+	public List<Assignment> selectAssignmentsByProf(String classNo) {
+		SqlSession session = MyBatisConnection.getConnection();
+		 try {
+			 return session.getMapper(cls).selectAssignmentsByProf(classNo);
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {
@@ -137,6 +162,7 @@ public class AsDao {
 		 }
 		 return null;
 	}
+
 	public String selectFile(String user_no, int as_no) {
 		 SqlSession session = MyBatisConnection.getConnection();
 		 try {
@@ -148,8 +174,4 @@ public class AsDao {
 		 }
 		 return null;
 	}
-	
-
-
-
 }

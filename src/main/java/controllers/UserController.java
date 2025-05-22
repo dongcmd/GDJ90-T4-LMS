@@ -61,19 +61,19 @@ public class UserController extends MskimRequestMapping{
 		if(adminCheck != null) { return adminCheck; } // 관리자 확인
 
 		String studentCheck = uc.studentCheck(request, response);
-		if(student != null) { return studentCheck; } // 학생 확인
+		if(studentCheck != null) { return studentCheck; } // 학생 확인
 		
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; } // 교수 확인
+
+		String classCheck = uc.classCheck(request, response);
+		if(classCheck != null) { return classCheck; } // 강의 확인
 
 		String user_noCheck = uc.user_noCheck(request, response);
 		if(user_noCheck != null) { return user_noCheck; } // 유저번호 확인
 
 		String majorCheck = uc.majorCheck(request, response);
 		if(majorCheck != null) { return majorCheck; } // 소속학과 확인
-		
-		String classCheck = uc.classCheck(request, response);
-		if(classCheck != null) { return classCheck; } // 강의 확인
 	
 	*/
 	
@@ -170,6 +170,7 @@ public class UserController extends MskimRequestMapping{
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
 		if(login == null) {
+			request.getSession().setAttribute("login", login);
 			request.setAttribute("msg", "로그인 하세요");
 			request.setAttribute("url", "../users/loginForm");
 			return "alert";
