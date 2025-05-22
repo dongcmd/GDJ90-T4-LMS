@@ -39,9 +39,8 @@
 				<th style="width: 8%;">교수명</th>
 				<th style="width: 5%;">학년</th>
 				<th style="width: 8%;">이수학점</th>
-				<th style="width: 12%;">수업일자</th>
 				<th style="width: 10%;">강의시간</th>
-        <th style="width: 5%;">강의실</th>
+        		<th style="width: 5%;">강의실</th>
 				<th style="width: 8%;">정원</th>
 				<th style="width: 11%;">개강</th>
 				<th style="width: 11%;">종강</th>
