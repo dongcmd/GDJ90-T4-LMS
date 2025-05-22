@@ -44,23 +44,19 @@
 					<td>
 						<a href="updateAssignmentForm?as_no=${as.as_no}" class="btn btn-dark" role="button">과제수정</a>
 						<a href="deleteAssignmentForm?as_no=${as.as_no}" class="btn btn-danger" role="button">과제삭제</a>
+						<a href="downloadAs?as_no=${as.as_no}" onclick="return false" class="btn btn-dark" role="button">다운로드</a>
 					</td>
 				</tr>
 			</tbody>
 			</c:forEach>
 		</table>
-		
-		<div class="m-5 d-flex justify-content-end" style="gap: 10px;">
-			<a href="#" class="btn btn-dark" role="button">과제 다운로드</a>
-		</div>
-
-
-	<c:if test="${!empty selectedAs_no}">
-		<a href="download_asXLSX?as_no=${selectedAs_no}" class="btn btn-dark" role="button">
-		양식 다운로드 xlsx</a>
+		<hr>
+		<c:if test="${!empty as_no}">
+		<a href="download_asXLSX?as_no=${as_no}" class="btn btn-dark" role="button">
+		양식 다운로드 xlsx</a><h3 align="center">${asName}</h3>
 		<hr>
 	  <form action="upload_asCSV" method="post" enctype="multipart/form-data">
-	  	<input type="hidden" name="as_no" value="${selectedAs_no}">
+	  	<input type="hidden" name="as_no" value="${as_no}">
 	  	<button type="submit" onclick="if(!this.form.file.value) { alert('파일을 선택하세요.'); return false; }" class="btn btn-dark">
 	  		csv 업로드</button>
 	  	<input type="file" name="file" accept=".csv" />
@@ -74,6 +70,7 @@
 					<th style="text-align: center">학번</th>
 					<th style="text-align: center">학년</th>
 					<th style="text-align: center">학생명</th>
+					<th style="text-align: center">과제점수</th>
 					<th style="text-align: center">제출현황</th>
 				</tr>
 			</thead>
@@ -83,6 +80,7 @@
 						<td style="text-align: center">${subAs.user_no}</td>
 						<td style="text-align: center">${subAs.user_grade}</td>
 						<td style="text-align: center">${subAs.user_name}</td>
+						<td style="text-align: center">${subAs.as_score}</td>
 						<td style="text-align: center">
 							<c:if test="${!empty subAs.file}"><strong>제출완료</strong></c:if>
 							<c:if test="${empty subAs.file or subAs.file.trim() == ''}">

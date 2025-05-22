@@ -61,7 +61,7 @@ public class Reg_classDao {
 		return false;
 	}
 
-	public boolean isStudent(Class1 target, String user_no) {
+	public boolean checkStudent(Class1 target, String user_no) {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
 			 map.clear();
@@ -70,7 +70,7 @@ public class Reg_classDao {
 			 map.put("ban", target.getBan());
 			 map.put("year", target.getYear());
 			 map.put("term", target.getTerm());
-			 return session.getMapper(cls).isStudent(map) > 0;
+			 return user_no.equals(session.getMapper(cls).isStudent(map));
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 } finally {

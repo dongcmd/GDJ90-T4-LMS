@@ -16,10 +16,10 @@
 		<table class="table table-bordered col-sm-4 mb-0">
 			<tr>
 				<th style="background-color: #eee;">파일</th>
-				<td>${class1.class_name}_강의계획서${ext}</td>
+				<c:if test="${!empty class1.file or class1.file.trim().equals('')}">
+				<td>${class1.class_name}_강의계획서${ext}</td> </c:if>
 			</tr>
 		</table>
-		<%-- <a class="btn btn-dark d-flex align-items-center" href="../files/${class1.file}" download>다운로드</a> --%>
 		<a class="btn btn-dark d-flex align-items-center" href="../files/${class1.file}" download="${class1.class_name}_강의계획서${ext}"> 다운로드 </a>
 	</div>
 	<textarea class="form-control" style="resize: none;" rows="20" readonly>${class1.c_plan}</textarea>

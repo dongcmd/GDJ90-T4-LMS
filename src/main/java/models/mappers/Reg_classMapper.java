@@ -26,7 +26,7 @@ public interface Reg_classMapper {
 			+ " and class_no = #{class_no} and ban = #{ban} and year = #{year} and term = #{term}")
 	int updateExamScore(Map<String, Object> map);
 
-	@Select("select * from registered_classes where user_no = #{user_no} and class_no = #{clasS_no} and ban = #{ban} and year = #{year} and term = #{term} and status = '1'")
-	int isStudent(Map<String, Object> map);
+	@Select("select user_no from registered_classes where user_no = #{user_no} and class_no = #{clasS_no} and ban = #{ban} and year = #{year} and term = #{term} and status = '1'")
+	String isStudent(Map<String, Object> map);
 	
 }

@@ -124,7 +124,7 @@ footer ul li p {
 				<option value="class_name">강의명</option>
 				<option value="user_name">교수명</option>
 			</select>
-			<input type="text" name="fine" placeholder="Search" value="${param.fine}" class="form-control" style="width: 230px;">
+			<input type="text" name="find" placeholder="Search" value="${param.find}" class="form-control" style="width: 230px;">
 			<button type="submit" class="btn btn-light btn-outline-secondary">검색</button>
 		</form>
 		<br>
