@@ -306,7 +306,6 @@ public class UserController extends MskimRequestMapping{
 			user.setTel(request.getParameter("tel"));
 			user.setEmail(request.getParameter("email"));
 			user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
-			user.setMajor_no(request.getParameter("major_no"));
 			user.setPassword(request.getParameter("password"));
 			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
 			User login = (User)request.getSession().getAttribute("login");	
@@ -376,6 +375,7 @@ public class UserController extends MskimRequestMapping{
 		@RequestMapping("notificationForm")
 		public String notification(HttpServletRequest request, HttpServletResponse response) throws ParseException {
 			User login = (User) request.getSession().getAttribute("login");
+			System.out.println(login.getUser_no());
 		    List<Notification> notificationsList = NotificationDao.getNotificationsByUser(login.getUser_no());
 		    request.setAttribute("notificationsList", notificationsList);
 		    String deleteNo = request.getParameter("delete");

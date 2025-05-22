@@ -99,18 +99,6 @@ public class AsDao {
 		 }
 		 return false;	
 	}
-	// 해당 수업의 모든 과제 리스트 =============================
-	public List<Assignment> selectList(Class1 class1) {
-		 SqlSession session = MyBatisConnection.getConnection();
-		 try {
-			 return session.getMapper(cls).selectList(class1);
-		 } catch (Exception e) {
-			 e.printStackTrace();
-		 } finally {
-			 MyBatisConnection.close(session);
-		 }
-		 return null;
-	}
 	//해당 과목을 수강하는 학생 user_no 리스트================================
 	public List<String> selectReg_Std(String class_no) {
 		 SqlSession session = MyBatisConnection.getConnection();

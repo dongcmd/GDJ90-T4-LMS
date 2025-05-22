@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 import java.util.Map;
-
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -72,16 +72,21 @@ public class MainLMSController extends MskimRequestMapping {
 	    for (Class1 c : classesList_main_s) {
 	        String classNo = c.getClass_no();
 	        List<Assignment> assignments_main = asDao.list(c);
-	        if (assignments_main == null) {
-	        	assignments_main = new ArrayList<>();
-	        }
-	        // 과제가 있는 수업만 저장
-	        if (assignments_main != null && !assignments_main.isEmpty()) {
-	        	assignmentMap_main.put(classNo, assignments_main); 
+	        if (assignments_main != null) {
+	            // null 요소 제거
+	            assignments_main.removeIf(Objects::isNull);
+
+	            // 비어있지 않은 경우만 Map에 추가
+	            if (!assignments_main.isEmpty()) {
+	                assignmentMap_main.put(classNo, assignments_main);
+	            }
 	        }
 	    }
+	    List<Assignment> assignmentMap_prof = asDao.selectAssignmentsByProf(userNo);
+	    
+	    request.setAttribute("assignmentMap_prof", assignmentMap_prof);
 	    request.setAttribute("assignmentMap_main", assignmentMap_main);
-
+	    
 		// 캘린더
 		String yearStr = request.getParameter("year");
 		String monthStr = request.getParameter("month");

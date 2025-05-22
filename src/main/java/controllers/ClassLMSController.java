@@ -116,7 +116,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		if(classCheck != null) { return classCheck; } // 강의 확인
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
-		List<Assignment> asList = asDao.selectList(class1);
+		List<Assignment> asList = asDao.list(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
 		System.out.println(request.getParameter("as_no"));
 		if(request.getParameter("as_no") != null) {
@@ -320,7 +320,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		// 접근권한 넣어야함
 		//===========================
 		
-		List<Assignment> asList = asDao.selectList(class1);
+		List<Assignment> asList = asDao.list(class1);
 		List<Integer> as_noList = asDao.selectAs_no(class1);
 		List<String> filelist = new ArrayList<>();
 		for(int as_no : as_noList) {

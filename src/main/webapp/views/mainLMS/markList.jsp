@@ -28,6 +28,7 @@
 				<th>강의명</th>
 				<th>교수</th>
 				<th>이수학점</th>
+				<th>이수학점</th>
 				<th>학점</th>
 			</tr>
 		</thead>
@@ -40,8 +41,9 @@
 					<td>${cls.class_name}</td>
 					<td>${cls.prof}</td>
 					<td>${cls.credit}</td>
+					<td>${cls.mark}</td>
 					<td><c:choose>
-					<c:when test="${cls.mark >= 95}">A+<</c:when>
+					<c:when test="${cls.mark >= 95}">A+</c:when>
 					<c:when test="${cls.mark >= 90}">A0<</c:when>
 					<c:when test="${cls.mark >= 85}">B+</c:when>
 					<c:when test="${cls.mark >= 80}">B0</c:when>

@@ -25,7 +25,8 @@
 				<th style="width: 15%;">강의시간</th>
 				<th style="width: 10%;">강의실</th>
 				<th style="width: 8%;">수강인원</th>
-				<th style="width: 10%;">취소/확정</th>
+				<th style="width: 5%;">취소</th>
+				<th style="width: 5%;">확정</th>
 			</tr>
 		</thead>
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
@@ -51,11 +52,13 @@
 				<td>${cls.classroom}</td>
 				<td>${cls.now_p}/${cls.max_p}</td>
 				<td>
+					<c:if test="${today > sDate && cls.status != 2}">
+						<a href="dropClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-outline-danger" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a>
+					</c:if>
+				</td>
+				<td>
 					<c:if test="${cls.status == 0}">
 						<a href="confirmClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-dark" onclick="return confirm('정말 수강 신청을 확정 하시겠습니까?');">확정</a>
-					</c:if>
-					<c:if test="${today > sDate }">
-						<a href="dropClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-outline-danger" onclick="return confirm('정말 수강 신청을 취소 하시겠습니까?');">취소</a>
 					</c:if>
 				</td>
 			</tr>
