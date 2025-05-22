@@ -416,4 +416,20 @@ public class MainLMSController extends MskimRequestMapping {
 		request.setAttribute("classesList", classesList);
 		return "mainLMS/signUpClass";
 	}
+	
+	// 학점 조회
+	 @RequestMapping("markList")
+	    public String markList(HttpServletRequest request, HttpServletResponse response) {
+	        String loginCheck = uc.loginIdCheck(request, response);
+	        if (loginCheck != null) return loginCheck;
+	        User login = (User) request.getSession().getAttribute("login");
+
+	        String type = request.getParameter("type");
+	        String fine = request.getParameter("fine");
+
+	        List<Class1> classesList = clsdao.selectGradesByUserFilter(login.getUser_no(), type, fine);
+	        request.setAttribute("classesList", classesList);
+
+	        return "mainLMS/markList";
+	    }
 }

@@ -349,8 +349,8 @@ public class ClassLMSController extends MskimRequestMapping {
 		return "alert";
 	}
 	
-	@RequestMapping("manageScore")
-	public String manageScore(HttpServletRequest request , HttpServletResponse response) {
+	@RequestMapping("manage")
+	public String manage(HttpServletRequest request , HttpServletResponse response) {
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; } // 교수 확인
 		
@@ -359,7 +359,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		studentList.sort((s1, s2) -> s1.getUser_no().compareTo(s2.getUser_no()));
 		// 학번을 오름차순으로 정렬
 		request.setAttribute("reg_users", studentList);
-		return "classLMS/manageScore";
+		return "classLMS/manage";
 	}
 
 }

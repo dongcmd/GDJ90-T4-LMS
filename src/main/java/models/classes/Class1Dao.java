@@ -288,6 +288,7 @@ public class Class1Dao {
 		return null;
 	}
 
+
 	// 세션에 교수이름(원동인)
 	 public String selectProf(Class1 class1) {
 	      SqlSession session = MyBatisConnection.getConnection();
@@ -301,4 +302,22 @@ public class Class1Dao {
 	      }
 	      return null;   
 	   }
+  
+	 public List<Class1> selectGradesByUserFilter(String userNo, String type, String fine) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            Class1Mapper mapper = session.getMapper(Class1Mapper.class);
+            List<Class1> list = mapper.selectGradesByUserFilter(userNo, type, fine);
+            for (Class1 cls : list) {
+                List<Integer> days = mapper.selectDaysByClass(cls);
+                cls.setDays(days);
+                cls.setNow_p(mapper.enrolledCount(cls));
+            }
+            return list;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+
 }
