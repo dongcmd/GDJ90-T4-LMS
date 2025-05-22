@@ -25,7 +25,7 @@
 	private static String[] e_period = { "09:50", "10:50", "11:50", "12:50", "13:50", "14:50", "15:50", "16:50", "17:50" };%>
 <body>
 	<div class="row" style="justify-content: center; gap: 10px;">
-	    <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	    <div class="main_list col-sm-5 px-4 py-4 content-scroll">
 	        <h3 class="mb-2 fw_b">공지사항</h3>
 	        <ul class="list-group list-group-flush">
 	            <%--  <c:forEach var="m" items="${list}"> --%>
@@ -58,7 +58,7 @@
 	        </ul>
 	    </div>
 
-        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+        <div class="main_list col-sm-5 px-4 py-4 content-scroll">
             <h3 class="mb-2 fw_b">캘린더 
             	<c:if test="${login.role == 3}">
             		<a href="${path}/mainLMS/event" class="btn btn-dark" role="button">등록</a>
@@ -100,23 +100,24 @@
 		    </table>
         </div>
 		<c:if test="${login.role != 3}">
-	        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	        <div class="main_list col-sm-5 px-4 py-4 content-scroll">
 	            <h3 class="mb-2 fw_b">강의목록</h3>
 	            <table class="table">
 	                <!-- 메인 강의목록(학생)  -->
 	                <c:if test="${login.role == 1}">
 	                <thead class="thead-light">
 	                    <tr>
-							<th class="text-center">강의명</th>
 							<th class="text-center">강의실</th>
+							<th class="text-center">강의명</th>
 							<th class="text-center">강의시간</th>
 							<th class="text-center">교수명</th>
 	                    </tr>
 	                </thead>
 	                <c:forEach var="cls" items="${classesList_main_s}" varStatus="stat">
 						<tr class="text-center">
-							<td>${cls.class_name}</td>
 							<td>${cls.classroom}</td>
+							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
+							<td>${cls.prof}</td>
 							<td>
 							<c:forEach var="d" items="${cls.days}">
 								<c:choose>
@@ -127,9 +128,9 @@
 									<c:when test="${d == 4}">금 </c:when>
 								</c:choose>
 							</c:forEach>&nbsp;
+							<br>
 							<%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%>
 							</td>
-							<td>${cls.prof}</td>
 						</tr>
 					</c:forEach>
 					</c:if>				
@@ -137,15 +138,15 @@
 	                <c:if test="${login.role == 2}">
 	                <thead class="thead-light">
 	                    <tr>
-							<th class="text-center">강의명</th>
 							<th class="text-center">강의실</th>
+							<th class="text-center">강의명</th>
 							<th class="text-center">강의시간</th>			
 	                    </tr>
 	                </thead>
 	                <c:forEach var="cls" items="${classesList_main_p}" varStatus="stat">
 						<tr class="text-center">
-							<td>${cls.class_name}</td>
 							<td>${cls.classroom}</td>
+							<td><a href="../classLMS/classInfo?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}"> ${cls.class_name}</a></td>
 							<td>
 							<c:forEach var="d" items="${cls.days}">
 								<c:choose>
@@ -156,6 +157,7 @@
 									<c:when test="${d == 4}">금 </c:when>
 								</c:choose>
 							</c:forEach>&nbsp;
+							<br>
 							<%=s_period[((models.classes.Class1) pageContext.getAttribute("cls")).getS_time() - 1]%> ~ <%=e_period[((models.classes.Class1) pageContext.getAttribute("cls")).getE_time() - 1]%>
 							</td>
 						</tr>
@@ -163,12 +165,13 @@
 					</c:if>
 	            </table>
 	        </div>
-	        <div class="main_list col-sm-5 px-4 py-5 content-scroll">
+	        <div class="main_list col-sm-5 px-4 py-4 content-scroll">
 	            <h3 class="mb-2 fw_b">과제목록</h3>
 	            <c:if test="${login.role == 1}">
 		            <table class="table">
 		                <thead class="thead-light">
 		                    <tr>
+		                    
 		                        <th class="fw_b text-center">과재명</th>
 		                        <th class="fw_b text-center">과제내용</th>
 		                    	<th class="fw_b text-center">제출 기한</th>
@@ -200,9 +203,8 @@
 		                    	<th class="fw_b text-center">마감 기한</th>
 		                    </tr>
 		                </thead>
-		               <c:forEach var="assignmentMap_prof" items="${assignmentMap_prof}">
 						  <tbody>
-						    <c:forEach var="ass_prof" items="${assignmentMap_prof.value}">
+						    <c:forEach var="ass_prof" items="${assignmentMap_prof}">
 						      <tr>
 						        <td class="text-center">${ass_prof.as_name}</td>
 						        <td class="text-center">${ass_prof.as_content}</td>
@@ -213,9 +215,9 @@
 						      </tr>
 						    </c:forEach>
 						  </tbody>
-						</c:forEach>
 		            </table>
 	            </c:if>
+	            
 	        </div>
         </c:if>
     </div>

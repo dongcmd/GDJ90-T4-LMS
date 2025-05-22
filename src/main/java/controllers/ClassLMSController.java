@@ -117,7 +117,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		class1.setNow_p(class1Dao.enrolledCount(class1));
-		
+
 		List<Assignment> asList = asDao.list(class1);
 		List<String> r_stuList = asDao.selectReg_Std(class1.getClass_no());
     
@@ -321,7 +321,7 @@ public class ClassLMSController extends MskimRequestMapping {
 		// 접근권한 넣어야함
 		//===========================
 		
-		List<Assignment> asList = asDao.selectList(class1);
+		List<Assignment> asList = asDao.list(class1);
 		List<Integer> as_noList = asDao.selectAs_no(class1);
 		List<String> filelist = new ArrayList<>();
 		for(int as_no : as_noList) {
