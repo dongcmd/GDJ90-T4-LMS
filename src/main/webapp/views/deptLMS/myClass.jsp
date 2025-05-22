@@ -24,8 +24,11 @@
 		</script>
 	</c:if>
 	<div class="d-flex justify-content-between align-items-center mb-2">
-	<h2>강의 관리</h2>
-	<button type="button" class="btn btn-light btn-outline-secondary" onclick="win_open_classList('../deptLMS/addClassList')">강의 검색</button>
+		<h2>강의 관리</h2>
+		<div class="ml-auto btn-group" role="group">
+			<button type="button" class="btn btn-light btn-outline-secondary" onclick="win_open_classList('../deptLMS/addClassList')">전체 강의 목록</button>
+			<button type="button" class="btn btn-light btn-outline-secondary" onclick="location.href='addClass'">강의 추가</button>
+		</div>
 	</div>
 	<table class="table table-bordered">
 		<thead class="thead-light" style="text-align: center;">
@@ -75,6 +78,6 @@
 			</c:if>
 		</c:forEach>
 	</table>
-	<button type="button" class="btn btn-light btn-outline-secondary" onclick="location.href='addClass'" style="position: fixed; right: 24px; z-index: 1000;">강의 추가</button>
+
 </body>
 </html>
