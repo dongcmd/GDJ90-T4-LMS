@@ -21,6 +21,7 @@ public interface AsMapper {
 	        "VALUES (#{as_name}, #{as_content}, #{as_s_date}, #{as_e_date}, #{as_point}, #{class_no}, #{ban}, #{year}, #{term})")
 	int insert(Assignment as);
 
+	//해당 수업의 과제 리스트 불러오기
 	@Select("select a.*, count(sa.user_no) submittedCount from assignments a join submitted_assignments sa on a.as_no = sa.as_no "
 			+ " where a.class_no = #{class_no} and a.ban = #{ban} and a.year = #{year} and a.term = #{term} group by a.as_no")
 	List<Assignment> list(Class1 class1);
@@ -48,10 +49,6 @@ public interface AsMapper {
 	@Select("select * from assignments ")
 	List<Assignment> selectAll();
 	
-	//해당 수업의 과제 리스트 불러오기
-	@Select("select * from assignments where class_no=#{class_no} and ban=#{ban} and year=#{year} and term=#{term}")
-	List<Assignment> selectList(Class1 loginclass);
-
 	//수업의 수강생 user_no 리스트 불러오기
 	@Select("select user_no from registered_classes where class_no=#{value}")
 	List<String> selectReg_Std(String class_no);

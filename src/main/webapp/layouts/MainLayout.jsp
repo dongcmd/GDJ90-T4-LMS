@@ -150,11 +150,15 @@
 	        <c:if test="${fn:startsWith(relativeURI, '/deptLMS/') or lms == 'dept'}">
 	            <ul class="main_menu nav flex-column text-center" style="width: 100%;">                       
 
-		        	<c:if test="${empty login.major_no}">
+		        	<c:if test="${login.role.equals('3')}">
 		                <li class="nav-item">
-			            	<a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
+			            		<a href="../board/board?board_id=1000">컴퓨터공학과 게시판</a>
+		                </li><li class="nav-item">
 			                <a href="../board/board?board_id=2000">기계공학과 게시판</a>
+		                </li><li class="nav-item">
 			                <a href="../board/board?board_id=3000">건축공학과 게시판</a>
+		                </li><li class="nav-item">
+		                    <a href="../deptLMS/allClasses">모든 강의 조회</a>
 		                </li>
 		            </c:if>
                 <c:if test="${!empty login.major_no}">
@@ -197,9 +201,6 @@
 
 	                <c:if test="${login.role == 1 }"> <!-- 기흔 수정 -->
 		                <li class="nav-item">
-		                    <a href="#">입실/퇴실</a>
-		                </li>
-		                <li class="nav-item">
 		                    <a href="../classLMS/submitAs">과제 제출</a>
 		                </li>
 	                </c:if>
@@ -209,9 +210,6 @@
 		                </li>
 		                <li class="nav-item">
 		                    <a href="../classLMS/manageScore">학점 관리</a>
-		                </li>
-		                <li class="nav-item">
-		                    <a href="#">출결 관리</a>
 		                </li>
 	                </c:if>
 	            </ul>

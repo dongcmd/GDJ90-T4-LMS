@@ -30,6 +30,7 @@ import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import models.classes.Class1;
+import models.classes.Class1Dao;
 import models.classes.Reg_classDao;
 import models.classes.Student;
 import models.others.Major;
@@ -49,6 +50,10 @@ public class UserController extends MskimRequestMapping{
 	private Reg_classDao rcDao = new Reg_classDao();
 	private NotificationDao NotificationDao = new NotificationDao();
 	/*
+	 	Class1 class1 = new Class1();
+		String cs = putClass1Session(request, class1); 
+		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
+	 
 		C 상단에 꼭 선언해야 함.
 		private UserController uc = new UserController();
 		
@@ -268,11 +273,7 @@ public class UserController extends MskimRequestMapping{
 				return null; }
 			request.setAttribute("msg", "자신이 진행하는 강의가 아닙니다.");
 		} else if(login.getRole().equals("1")) { // login이 학생일 경우
-			if(
-				rcDao.isStudent(target, login.getUser_no())
-					
-					
-					) { // 소속학생일 경우
+			if(rcDao.checkStudent(target, login.getUser_no())) { // 소속학생일 경우
 				return null; }
 			request.setAttribute("msg", "수강 중인 강의가 아닙니다.");	
 		}
@@ -306,7 +307,6 @@ public class UserController extends MskimRequestMapping{
 			user.setTel(request.getParameter("tel"));
 			user.setEmail(request.getParameter("email"));
 			user.setUser_grade(Integer.parseInt(request.getParameter("grade")));
-			user.setMajor_no(request.getParameter("major_no"));
 			user.setPassword(request.getParameter("password"));
 			// 비밀번호를 위한 db의 데이터 조회. : login 정보로 조회하기
 			User login = (User)request.getSession().getAttribute("login");	

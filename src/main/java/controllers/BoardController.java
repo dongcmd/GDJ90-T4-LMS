@@ -52,44 +52,33 @@ public class BoardController extends MskimRequestMapping {
 		User login = (User)request.getSession().getAttribute("login");
 		Class1 class1 = (Class1)request.getSession().getAttribute("class1");
 		String board_id = request.getParameter("board_id");
-		System.out.println("1번 : " + board_id);
 		
 		if(board_id == null || board_id.trim().equals("") || board_id.trim().equals("9999")) {
 			board_id = "9999"; // board_id 값이 없으면 공지사항으로 이동
-			System.out.println("2번 : " + board_id);
-		} else if(!board_id.equals(login.getMajor_no())) {
-			System.out.println("3번 : " + board_id);
+		} else if(!board_id.equals(login.getMajor_no()) && !login.getRole().equals("3") ) {
 			boolean check = false;
 			if(class1 != null) {
-				System.out.println("4번 : " + board_id);
-				if(rcDao.isStudent(class1, login.getUser_no())) {
-					System.out.println("5번 : " + board_id);
+				if(rcDao.checkStudent(class1, login.getUser_no())) {
 					check = true;
 				}
 			} else if(!check) {
-				System.out.println("6번 : " + board_id);
 				request.setAttribute("msg", "접근 권한 없음");
 				request.setAttribute("url", "../mainLMS/main");
 				return "alert";
 			}
 		}
 
-		System.out.println("7번 : " + board_id);
 		int pageNum = 1;
 		try { pageNum = Integer.parseInt(request.getParameter("pageNum"));
 		} catch ( NumberFormatException e) {}
-		System.out.println("8번 : " + board_id);
 		
 		String column = request.getParameter("column");
 		String keyword = request.getParameter("keyword");
-		System.out.println("9번 : " + board_id);
 		if(column == null || column.trim().equals("") 
 				|| keyword == null || keyword.trim().equals("")) {
-			System.out.println("10번 : " + board_id);
 			column = null;
 			keyword = null;
 		}
-		System.out.println("11번 : " + board_id);
 		
 		int limit = 10;
 		int artiCount = artiDao.count(board_id, column, keyword);
@@ -98,7 +87,6 @@ public class BoardController extends MskimRequestMapping {
 		int startPage = ((int)Math.ceil(pageNum/10.0) - 1) * 10 + 1;
 		int endPage = Math.min(startPage + 9, maxPage);
 		if(endPage > maxPage) endPage = maxPage;
-		System.out.println("12번 : " + board_id);
 		
 		String board_name = boardDao.selectName(board_id);
 		setLMS(request, board_id); // 어떤 lms에서 접근하는지 전달
@@ -112,7 +100,6 @@ public class BoardController extends MskimRequestMapping {
 		request.setAttribute("maxPage", maxPage); // 최대 페이지
 		int artiIndex = artiCount - (pageNum - 1) * limit;
 		request.setAttribute("artiIndex", artiIndex);
-		System.out.println("13번 : " + board_id);
 		
 		return "board/board";
 	}

@@ -49,8 +49,8 @@ public class DeptLMSController extends MskimRequestMapping {
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; }
 		String type = request.getParameter("type");
-		String fine = request.getParameter("fine");
-		List<Class1> classesList = class1Dao.selectAllClass(type, fine);
+		String find = request.getParameter("fine");
+		List<Class1> classesList = class1Dao.selectAllClass(type, find);
 		request.setAttribute("classesList", classesList);
 		return "deptLMS/addClassList";
 	}
@@ -500,4 +500,18 @@ public class DeptLMSController extends MskimRequestMapping {
 		}
 		return false;
 	}
+	// 관리자가 보는 모든 클래스
+	@RequestMapping("allClasses")
+	public String allClasses(HttpServletRequest request, HttpServletResponse response) {
+		String adminCheck = uc.adminCheck(request, response);
+		if(adminCheck != null) { return adminCheck; } // 관리자 확인
+		
+		List<Class1> classList = class1Dao.selectAllClass("","");
+		for(Class1 c : classList) {
+			System.out.println(c);
+		}
+		request.setAttribute("classList", classList);
+		return "deptLMS/allClasses";
+	}
+	
 }
