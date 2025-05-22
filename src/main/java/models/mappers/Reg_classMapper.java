@@ -22,7 +22,7 @@ public interface Reg_classMapper {
 			+ " ORDER BY u.user_no")
 	List<Student> studentList(Class1 class1);
 
-	@Update("update registered_classes set exam1_score = #{'exam1'}, exam2_score = #{'exam2'} where user_no = #{user_no} "
+	@Update("update registered_classes set exam1_score = #{exam1}, exam2_score = #{exam2} where user_no = #{user_no} "
 			+ " and class_no = #{class_no} and ban = #{ban} and year = #{year} and term = #{term}")
 	int updateExamScore(Map<String, Object> map);
 

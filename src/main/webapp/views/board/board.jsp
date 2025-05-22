@@ -10,24 +10,8 @@
 <title>${board_name} 게시판</title>
 </head>
 <body>
-<c:if test="${class1 != null}">
-<table class="table table-bordered">
-강의게시판일 경우 강의정보 표시 수정필요
-	<%--
-	<tr>
-		<th>수강학기</th><td>${class1.year}-${class1.term}</td>
-		<th>강의코드</th><td>${class1.class_no}-${ban}</td>
-		<th>강의명</th><td>${class1.class_name}</td>
-		<th>학년</th><td>${class1.class_grade}</td>
-	</tr>
-	<tr>
-		<th>교수</th><td>${class1.prof}</td>
-		<th>이수학점</th><td>${class1.credit}</td>
-		<th>강의시간</th><td>요일 및 교시(시간)수정필요</td>
-		<th>강의실</th><td>${class1.classroom}</td>
-	</tr>
-	 --%>
-</table>
+<c:if test="${lms.equals('class')}">
+	<jsp:include page="../classLMS/classTopTable.jsp" />
 </c:if>
 <h2>${board_name} 게시판</h2>
 	<form action="board" method="post" name="searchForm">
@@ -91,32 +75,6 @@
 		f.pageNum.value = page;
 		f.submit();
 	}
-</script> 교시 표시 수정필요
-<script type="text/javascript">
-   const period=[
-      '09:00 ~ 09:50',
-      '10:00 ~ 10:50',
-      '11:00 ~ 11:50',
-      '12:00 ~ 12:50',
-      '13:00 ~ 13:50',
-      '14:00 ~ 14:50',
-      '15:00 ~ 15:50',
-      '16:00 ~ 16:50',
-      '17:00 ~ 17:50'
-   ]
-   function updateTime(type, input) {
-      if(input.value < 1 || input.value > 9){
-         input.value = '';
-         if(type == 0)document.querySelector("#startPeriod").innerHTML = '';
-         if(type == 1)document.querySelector("#endPeriod").innerHTML = '';   
-         return null;
-      }
-      var index = input.value - 1;
-      console.log(type);
-      console.log(input.value);
-      if(type == 0)document.querySelector("#startPeriod").innerHTML = period[index];
-      if(type == 1)document.querySelector("#endPeriod").innerHTML = period[index];   
-   }
 </script>
 </body>
 </html>

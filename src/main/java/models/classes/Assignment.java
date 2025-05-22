@@ -15,14 +15,13 @@ public class Assignment {
 	private String ban;
 	private int year;
 	private int term;
-	private Map<String, Sub_as> sub_as; // 학번, 제출한 과제
 	private int submittedCount; // 제출한 학생 수
 	
 	@Override
 	public String toString() {
 		return "Assignment [as_no=" + as_no + ", as_name=" + as_name + ", as_content=" + as_content + ", as_s_date="
 				+ as_s_date + ", as_e_date=" + as_e_date + ", as_point=" + as_point + ", class_no=" + class_no
-				+ ", ban=" + ban + ", year=" + year + ", term=" + term + ", sub_as=" + sub_as + ", submittedCount="
+				+ ", ban=" + ban + ", year=" + year + ", term=" + term + ", submittedCount="
 				+ submittedCount + "]";
 	}
 
@@ -149,14 +148,5 @@ public class Assignment {
 	public void setSubmittedCount(int submittedCount) {
 		this.submittedCount = submittedCount;
 	}
-
-	public Map<String, Sub_as> getSub_as() {
-		return sub_as;
-	}
-
-	public void setSub_as(Map<String, Sub_as> sub_as) {
-		this.sub_as = sub_as;
-	}
-
 	
 }
