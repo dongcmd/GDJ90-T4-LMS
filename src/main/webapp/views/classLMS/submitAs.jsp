@@ -34,16 +34,14 @@
 					  ~ <fmt:formatDate value="${as.as_e_date}" pattern="yyyy/MM/dd HH:mm" /> </td>
 					<td style="text-align: center">
 						<c:if test="${filelist[status.index] != null and !filelist[status.index].trim().equals('')}">
-						제출
-						</c:if>
-						<c:if test="${filelist[status.index] == null and filelist[status.index].trim().equals('')}">
-						미제출
-						</c:if>						
-					</td>
-					<td>
+						제출</td><td>
 						<div class="d-flex justify-content-center">
 							<a href="../files/${filelist[status.index]}" class="btn btn-dark" role="button" style="text-align: center" download>다운로드</a>
 						</div>
+						</c:if>
+						<c:if test="${filelist[status.index] == null and filelist[status.index].trim().equals('')}">
+						미제출</td><td>
+						</c:if>						
 					</td>
 				</tr>
 			</c:if>

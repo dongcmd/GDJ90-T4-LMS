@@ -71,6 +71,17 @@ public class SubAsDao {
 			MyBatisConnection.close(session);
 		}			
 	}
+	public int count(Assignment tmp) {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.getMapper(cls).count(tmp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		return 0;
+	}
 	
 	
 	

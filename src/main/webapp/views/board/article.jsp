@@ -21,7 +21,7 @@
 	<tr><th>첨부파일</th>
 			<td><c:if test="${empty arti.file}">&nbsp;</c:if>
 			<c:if test="${!empty arti.file}">
-			<a href="../../files/${arti.file}">${arti.file}</a>
+			<a href="../../files/${arti.file}" download>${arti.file}</a>
 			</c:if></td></tr>
 	<tr><td colspan="2" align="center">
 		<c:if test="${login.user_no == arti.user_no}">

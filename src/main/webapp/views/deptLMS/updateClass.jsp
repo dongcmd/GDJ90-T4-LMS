@@ -104,7 +104,7 @@
 				<span id="startPeriod"></span>
 				<span id="middleTilde"></span>
 				<span id="endPeriod"></span></td>
-				<td>개강 날짜 <input type="date" class="form-control" name="sDate" min="${today}" value="${sDateFmt}" placeholder="date input" onchange="document.getElementById('eDate').min = this.value"></td>
+				<td>개강 날짜 <input type="date" class="form-control" name="sDate" value="${sDateFmt}" placeholder="date input" onchange="document.getElementById('eDate').min = this.value"></td>
 				<td></td>
 				<td></td>
 			</tr>
