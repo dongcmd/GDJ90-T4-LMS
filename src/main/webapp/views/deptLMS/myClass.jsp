@@ -50,7 +50,6 @@
 		<c:forEach var="cls" items="${classesList}" varStatus="stat">
 			<fmt:formatDate value="${cls.s_date}" pattern="yyyy-MM-dd" var="sDate" />
 			<fmt:formatDate value="${cls.e_date}" pattern="yyyy-MM-dd" var="eDate" />
-			<c:if test="${eDate > today}">
 				<tr class="text-center">
 					<td>${stat.index + 1}</td>
 					<td>${cls.class_no}</td>
@@ -75,7 +74,6 @@
 							href="deleteClass?class_no=${cls.class_no}&ban=${cls.ban}&year=${cls.year}&term=${cls.term}" class="btn btn-outline-danger" onclick="return confirm('정말 이 강의를 삭제하시겠습니까?');"
 						>삭제</a></td>
 				</tr>
-			</c:if>
 		</c:forEach>
 	</table>
 

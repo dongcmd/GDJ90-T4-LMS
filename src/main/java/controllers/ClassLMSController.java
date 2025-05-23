@@ -41,7 +41,6 @@ public class ClassLMSController extends MskimRequestMapping {
 	private Class1Dao class1Dao = new Class1Dao();
 	private AsDao asDao = new AsDao();
 	private Reg_classDao rcDao = new Reg_classDao();
-	private UserDao userDao = new UserDao();
 	private SubAsDao subAsDao = new SubAsDao();	
 	
 	// 세션의 class1 값 체크. 없다면 강의선택페이지로 이동 ===
@@ -121,6 +120,9 @@ public class ClassLMSController extends MskimRequestMapping {
 		class1.setNow_p(class1Dao.enrolledCount(class1));
 
 		List<Assignment> asList = asDao.list(class1);
+		for(Assignment tmp : asList) {
+			tmp.setSubmittedCount(subAsDao.count(tmp));
+		}
 		List<Student> stList = rcDao.studentList(class1);
 		
 		if(request.getParameter("as_no") != null) {
@@ -275,8 +277,8 @@ public class ClassLMSController extends MskimRequestMapping {
 	// (dwCheck)과제 삭제폼 =====================================================
 	@RequestMapping("deleteAssignmentForm")
 	public String deleteAssignmentForm(HttpServletRequest request, HttpServletResponse response) {
-		String adminCheck = uc.adminCheck(request, response);
-		if(adminCheck != null) { return adminCheck; } // 관리자 확인
+		String profCheck = uc.profCheck(request, response);
+		if(profCheck != null) { return profCheck; } // 교수 확인
 		Class1 class1 = new Class1();
 		String cs = putClass1Session(request, class1); 
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
@@ -293,8 +295,8 @@ public class ClassLMSController extends MskimRequestMapping {
 	@RequestMapping("deleteAssignment")
 	public String deleteAssignment(HttpServletRequest request , HttpServletResponse response) {
 		User login = (User)request.getSession().getAttribute("login");
-		String adminCheck = uc.adminCheck(request, response);
-		if(adminCheck != null) { return adminCheck; } // 관리자 확인
+		String profCheck = uc.profCheck(request, response);
+		if(profCheck != null) { return profCheck; } // 교수 확인
 		Class1 class1 = new Class1();
 		String cs = putClass1Session(request, class1); 
 		if(cs != null) { return cs; } // 세션, class1 변수에 클래스 초기화
@@ -312,10 +314,10 @@ public class ClassLMSController extends MskimRequestMapping {
 	        }
 	        boolean result = asDao.deleteAssignment(as_no);
 	        if (result) {
-	            msg = "사용자 삭제 완료";
+	            msg = "과제를 삭제하였습니다.";
 	            url = "manageAs";
 	        } else {
-	            msg = "사용자 삭제 실패";
+	            msg = "과제 삭제 실패";
 	        }
 	    }
 	    request.setAttribute("msg", msg);
@@ -369,7 +371,7 @@ public class ClassLMSController extends MskimRequestMapping {
 	    String path = request.getServletContext().getRealPath("/") + "files/";
 	    File uploadDir = new File(path);
 	    if (!uploadDir.exists()) uploadDir.mkdirs();
-	    int maxSize = 5 * 1024 * 1024; // 5MB
+	    int maxSize = 10 * 1024 * 1024; // 10MB
 	    String asNo = null;
 	    String fileName = null;
 	    if (ServletFileUpload.isMultipartContent(request)) {

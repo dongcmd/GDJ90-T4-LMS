@@ -402,7 +402,7 @@ public class DeptLMSController extends MskimRequestMapping {
 		String profCheck = uc.profCheck(request, response);
 		if(profCheck != null) { return profCheck; }
 		Class1 key = new Class1();
-		key.setClass_no(request.getParameter("no"));
+		key.setClass_no(request.getParameter("class_no"));
 		key.setBan(request.getParameter("ban"));
 		key.setYear(Integer.parseInt(request.getParameter("year")));
 		key.setTerm(Integer.parseInt(request.getParameter("term")));

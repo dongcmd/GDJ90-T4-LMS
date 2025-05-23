@@ -22,10 +22,9 @@ public interface AsMapper {
 	int insert(Assignment as);
 
 	//해당 수업의 과제 리스트 불러오기
-	@Select("select a.*, count(sa.user_no) submittedCount from assignments a join submitted_assignments sa on a.as_no = sa.as_no "
-			+ " where a.class_no = #{class_no} and a.ban = #{ban} and a.year = #{year} and a.term = #{term} group by a.as_no")
+	@Select("select a.* from assignments a where a.class_no = #{class_no} and a.ban = #{ban} and a.year = #{year} and a.term = #{term}")
 	List<Assignment> list(Class1 class1);
-
+	
 	@Select("select * from assignments where as_no = #{value}")
 	Assignment selectOne(int as_no);
 
